@@ -35,7 +35,7 @@ public class Connection {
         this.PORT = port;
 
         log = Log.getInstance();
-        time = new Time("mm:ss.SSS");
+        time = new Time("SSS");
 
         incomeMessages = new ArrayDeque<String>();
         outcomeMessages = new ArrayDeque<String>();
@@ -61,7 +61,7 @@ public class Connection {
 
     public void sendMessage(String message) {
         synchronized (outcomeMessages) {
-            outcomeMessages.add(message);
+            outcomeMessages.add(message+"-"+time.getTime()+";");
             outcomeMessages.notify();
             log.network("Sending in q: " + message);
         }

@@ -32,7 +32,7 @@ public class PlayState extends State {
             hero.moveHorizontally(-1*SPEED);
         } else if(Gdx.input.isKeyPressed(Input.Keys.D)){
             hero.moveHorizontally(SPEED);
-        } else if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
+        } else if(Gdx.input.isKeyPressed(Input.Keys.Z)){   //TODO: i need correctly working ESC button
             messageManager.pause();
         }
     }

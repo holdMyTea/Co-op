@@ -1,0 +1,15 @@
+/home/rise42/Projects/Co-op/Coop/logs/*
+*.txt
+Coop/.gradle/
+Coop/.idea/
+Coop/core/assets/
+Coop/core/build/
+Coop/desktop/build/
+Coop/gradle.properties
+Coop/gradle/
+Coop/gradlew
+Coop/gradlew.bat
+Coop/settings.gradle
+Server/.idea/
+Server/__pycache__/
+

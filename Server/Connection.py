@@ -14,16 +14,19 @@ class Connection:
             while True:
                 data = self.conn.recv(1024)
                 print("received: "+str(data))
-                if data:
-                    print("sending: "+str(data))
+                if data == b'':
+                    print("Job's done")
+                    sys.exit()
+                elif data:
                     self.conn.sendall(b'a'+data)
-                time.sleep(0.1)
+                    time.sleep(0.1)
         except ConnectionResetError as error:
             print("Connection lost: "+str(error))
             sys.exit()
 
     def send(self, msg):
         try:
+            print("sending: " + str(msg))
             self.conn.sendall(b'm'+msg)
         except ConnectionResetError as error:
             print("Sending error: " + str(error))

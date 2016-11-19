@@ -1,6 +1,7 @@
 package com.forsenboyz.rise42.coop.network;
 
 
+import com.badlogic.gdx.Gdx;
 import com.forsenboyz.rise42.coop.states.StateManager;
 
 import java.util.Queue;
@@ -22,6 +23,8 @@ public class MessageManager {
         this.connection = new Connection(host, port);
 
         this.connection.connect();
+
+        this.startHandlingThread();
     }
 
     public void pause() {
@@ -32,7 +35,7 @@ public class MessageManager {
         this.connection.sendMessage(PLAY_CODE);
     }
 
-    private void handleUpdates() {
+    private void startHandlingThread() {
         new Thread(() -> {
             Queue<String> incomes;
             String s;
@@ -40,15 +43,19 @@ public class MessageManager {
             while (this.connection.isConnected()) {
                 incomes = this.connection.getIncomeMessages();
 
-                while (!incomes.isEmpty()) {
-                    s = incomes.poll().substring(1, 3);
+                while (incomes == null || !incomes.isEmpty()) {
+                    s = incomes.poll().substring(1, 2);
                     System.out.println("!!!!!!!!!!!!!!!!!!" + s);
                     switch (s) {
                         case PAUSE_CODE:
-                            this.stateManager.pause();
+                            Gdx.app.postRunnable(
+                                    () -> this.stateManager.pause()
+                            );
                             break;
                         case PLAY_CODE:
-                            this.stateManager.play();
+                            Gdx.app.postRunnable(
+                                    () -> this.stateManager.play()
+                            );
                             break;
                     }
                 }
