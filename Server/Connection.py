@@ -7,6 +7,7 @@ class Connection:
 
     def __init__(self, conn):
         self.conn = conn
+        self.last_millis = 0
         t = threading.Thread(target=self.make_it_read()).start()
 
     def make_it_read(self):
@@ -18,7 +19,8 @@ class Connection:
                     print("Job's done")
                     sys.exit()
                 elif data:
-                    self.conn.sendall(b'a'+data)
+                    self.ping(data)
+                    self.send(data)
                     time.sleep(0.1)
         except ConnectionResetError as error:
             print("Connection lost: "+str(error))
@@ -30,3 +32,8 @@ class Connection:
             self.conn.sendall(b'm'+msg)
         except ConnectionResetError as error:
             print("Sending error: " + str(error))
+
+    def ping(self, msg):
+        millis = abs(int(msg.split(b'-')[1].split(b';')[0]))
+        print("ping: "+str(millis))
+        self.last_millis = millis
