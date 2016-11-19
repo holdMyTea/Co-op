@@ -8,7 +8,7 @@ public class Log {
 
     private static Log instance;
 
-    private static final String DIR = "D:\\Projects\\Co-op\\Coop\\logs\\";
+    private static final String DIR = "/home/rise42/Projects/Co-op/Coop/logs";
 
     private Time time;
     private BufferedWriter writer;
