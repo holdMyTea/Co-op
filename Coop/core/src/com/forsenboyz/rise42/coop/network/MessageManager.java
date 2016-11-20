@@ -38,28 +38,30 @@ public class MessageManager {
     private void startHandlingThread() {
         new Thread(() -> {
             Queue<String> incomes;
-            String s;
 
             while (this.connection.isConnected()) {
                 incomes = this.connection.getIncomeMessages();
 
-                while (incomes == null || !incomes.isEmpty()) {
-                    s = incomes.poll().substring(1, 2);
+                while (incomes != null && !incomes.isEmpty()) {
+                    String s = incomes.poll();
                     System.out.println("!!!!!!!!!!!!!!!!!!" + s);
-                    switch (s) {
-                        case PAUSE_CODE:
-                            Gdx.app.postRunnable(
-                                    () -> this.stateManager.pause()
-                            );
-                            break;
-                        case PLAY_CODE:
-                            Gdx.app.postRunnable(
-                                    () -> this.stateManager.play()
-                            );
-                            break;
-                    }
+                    Gdx.app.postRunnable(() -> {
+                        switch (s.substring(1,2)) {
+                            case PAUSE_CODE:
+                                this.stateManager.pause();
+                                break;
+                            case PLAY_CODE:
+                                this.stateManager.play();
+                                break;
+                            case MOVE_CODE:
+                                //
+                                break;
+                        }
+                    });
                 }
+
             }
+
         }).start();
     }
 }

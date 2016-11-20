@@ -61,7 +61,7 @@ public class Connection {
 
     public void sendMessage(String message) {
         synchronized (outcomeMessages) {
-            outcomeMessages.add(message+"-"+time.getTime()+";");
+            outcomeMessages.add("c"+message+"-"+time.getTime()+";");
             outcomeMessages.notify();
             log.network("Sending in q: " + message);
         }

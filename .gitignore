@@ -1,5 +1,6 @@
 /home/rise42/Projects/Co-op/Coop/logs/*
 *.txt
+!msg.txt
 Coop/.gradle/
 Coop/.idea/
 Coop/core/assets/

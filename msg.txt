@@ -1,0 +1,13 @@
+<source>:<code(<params>)>-<time sent millis>;
+
+source:
+c - client
+s - server
+r - server response
+
+code:
+1 - pause
+2 - play
+3 - move(+/-)
+
+

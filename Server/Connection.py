@@ -28,8 +28,9 @@ class Connection:
 
     def send(self, msg):
         try:
-            print("sending: " + str(msg))
-            self.conn.sendall(b'm'+msg)
+            m = msg.split(b'-')[0]
+            print("sending: " + str(m))
+            self.conn.sendall(b'r'+m)
         except ConnectionResetError as error:
             print("Sending error: " + str(error))
 
