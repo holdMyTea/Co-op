@@ -1,7 +1,7 @@
-import threading
 import time
 import sys
 import Message
+import multiprocessing
 
 
 class Connection:
@@ -9,22 +9,27 @@ class Connection:
     def __init__(self, conn, server, key):
         self.conn = conn
         self.server = server
-        self._key = key
+        self.key = key
 
     def start(self):
-        t = threading.Thread(target=self.make_it_read()).start()
+        t = multiprocessing.Process(
+            target=self.make_it_read,
+            args=(self.conn, self.key, self.server)
+        )
+        t.start()
 
-    def make_it_read(self):
+    @staticmethod
+    def make_it_read(conn, key, server):
         try:
 
             while True:
-                data = self.conn.recv(1024)
+                data = conn.recv(1024)
                 print("received: "+str(data))
                 if data == b'':
                     print("Job's done")
                     sys.exit()
-                data = Message.Message(data, self._key)
-                self.server.spread_msg(data)
+                data = Message.Message(data, key)
+                server.spread_msg(data)
                 time.sleep(0.1)
 
         except ConnectionResetError as error:
@@ -37,6 +42,3 @@ class Connection:
             self.conn.sendall(msg)
         except ConnectionResetError as error:
             print("Sending error: " + str(error))
-
-    def get_key(self):
-        return self._key

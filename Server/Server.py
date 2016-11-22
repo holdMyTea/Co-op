@@ -19,17 +19,15 @@ class Server:
 
     def listen(self):
         self.server.listen()
-        print("Listening")
 
         while True:
             if True:
+                print("Listening")
                 conn, addr = self.server.accept()
                 print("Connected with " + addr[0] + ":" + str(addr[1]))
                 new_con = Connection.Connection(conn, self, len(self.connections))
                 self.connections.append(new_con)
-                print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-                print("Connections: "+str(len(self.connections)))
-                print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+                print("Connections amount: "+str(len(self.connections)))
                 new_con.start()
         self.server.close()
 
@@ -38,9 +36,9 @@ class Server:
         if others_msg is not None:
             pass
         else:
-            print("Right branch "+str(len(self.connections)))
+            # print("Right branch "+str(len(self.connections)))
             for con in self.connections:
-                if con.get_key() != msg.source_key:
+                if con.key != msg.source_key:
                     con.send(b's' + msg.code + b';')
                 else:
                     con.send(b'r' + msg.code + b';')
