@@ -9,8 +9,6 @@ import java.util.Queue;
 
 public class MessageManager {
 
-    private final int OK_CODE = 0;
-
     private final String PAUSE_CODE = "1";
     private final String PLAY_CODE = "2";
     private final String MOVE_CODE = "3";
@@ -35,6 +33,10 @@ public class MessageManager {
         this.connection.sendMessage(PLAY_CODE);
     }
 
+    public void move(boolean forward) {
+        this.connection.sendMessage(MOVE_CODE+":d("+ (forward ? "+" : "-")+")");
+    }
+
     private void startHandlingThread() {
         new Thread(() -> {
             Queue<String> incomes;
@@ -54,7 +56,14 @@ public class MessageManager {
                                 this.stateManager.play();
                                 break;
                             case MOVE_CODE:
-                                //
+                                System.out.println(s.substring(s.indexOf("(")+1,s.lastIndexOf(")")));
+                                int position = Integer.parseInt(s.substring(s.indexOf("(")+1,s.lastIndexOf(")")));
+                                System.out.println("QQQQQQQQQQQQQQQQQQQQQQQQQQQ"+position);
+                                if(s.substring(0,1).equals("r")){
+                                    stateManager.getPlayState().moveHero(position);
+                                } else if(s.substring(0,1).equals("s")){
+                                    stateManager.getPlayState().moveAnotherHero(position);
+                                }
                                 break;
                         }
                     });

@@ -41,4 +41,7 @@ abstract class State {
         this.active = false;
     }
 
+    public boolean isActive() {
+        return active;
+    }
 }

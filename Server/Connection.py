@@ -1,5 +1,3 @@
-import time
-import sys
 import Message
 import multiprocessing
 
@@ -10,13 +8,15 @@ class Connection:
         self.conn = conn
         self.server = server
         self.key = key
+        self.t = None
 
     def start(self):
-        t = multiprocessing.Process(
+        self.t = multiprocessing.Process(
             target=self.make_it_read,
             args=(self.conn, self.key, self.server)
         )
-        t.start()
+        self.t.daemon = True
+        self.t.start()
 
     @staticmethod
     def make_it_read(conn, key, server):
@@ -27,14 +27,13 @@ class Connection:
                 print("received: "+str(data))
                 if data == b'':
                     print("Job's done")
-                    sys.exit()
-                data = Message.Message(data, key)
+                    server.exit()
+                data = Message.Message(data, key, server.params)
                 server.spread_msg(data)
-                time.sleep(0.1)
 
         except ConnectionResetError as error:
             print("Connection lost: "+str(error))
-            sys.exit()
+            server.exit()
 
     def send(self, msg):
         try:
@@ -42,3 +41,6 @@ class Connection:
             self.conn.sendall(msg)
         except ConnectionResetError as error:
             print("Sending error: " + str(error))
+
+    def stop(self):
+        self.t.terminate()

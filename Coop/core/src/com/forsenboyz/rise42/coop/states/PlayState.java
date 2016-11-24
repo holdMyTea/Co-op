@@ -12,6 +12,7 @@ public class PlayState extends State {
     public static final int SPEED = 5;
 
     Hero hero;
+    Hero anotherHero;
 
     PlayState(MessageManager messageManager, boolean active){
         super(messageManager, active);
@@ -19,8 +20,17 @@ public class PlayState extends State {
         hero = new Hero(50,100);
         objects.add(hero);
 
-        objects.add(0,new Object(new Texture("back.jpg"),0,0));
+        anotherHero = new Hero("vampire.png",400,100);
+        objects.add(anotherHero);
+
+        objects.add(0,new Object("back.jpg",0,0));
     }
+
+    public void moveHero(int positionX){
+        this.hero.moveHorizontally(positionX);
+    }
+
+    public void moveAnotherHero(int positionX) {this.anotherHero.moveHorizontally(positionX);}
 
     @Override
     protected void update(float delta) {
@@ -29,9 +39,9 @@ public class PlayState extends State {
 
     private void handleInput(){
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
-            hero.moveHorizontally(-1*SPEED);
+            messageManager.move(false);
         } else if(Gdx.input.isKeyPressed(Input.Keys.D)){
-            hero.moveHorizontally(SPEED);
+            messageManager.move(true);
         } else if(Gdx.input.isKeyPressed(Input.Keys.Z)){   //TODO: i need correctly working ESC button
             messageManager.pause();
         }

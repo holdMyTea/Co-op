@@ -1,4 +1,4 @@
-<source><code>:<params>-<time sent millis>;
+<source><code>:<(params)>#<time sent millis>;
 
 source:
 c - client

@@ -8,7 +8,11 @@ public class Hero extends Object {
         super(new Texture("ghost.png"),x,y);
     }
 
-    public void moveHorizontally(int distance){
-        this.x += distance;
+    public Hero(String path, int x, int y) {
+        super(path, x, y);
+    }
+
+    public void moveHorizontally(int positionX){
+        this.x = positionX;
     }
 }

@@ -42,4 +42,8 @@ public class StateManager {
         currentState = playState;
     }
 
+    public PlayState getPlayState(){
+        return playState;
+    }
+
 }

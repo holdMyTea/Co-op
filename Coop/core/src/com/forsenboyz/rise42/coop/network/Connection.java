@@ -61,7 +61,7 @@ public class Connection {
 
     public void sendMessage(String message) {
         synchronized (outcomeMessages) {
-            outcomeMessages.add("c"+message+"-"+time.getTime()+";");
+            outcomeMessages.add("c"+message+"#"+time.getTime()+";");
             outcomeMessages.notify();
             log.network("Sending in q: " + message);
         }
@@ -93,7 +93,7 @@ public class Connection {
                                     log.network("Added: "+s);
                                     log.network("Current input q: "+incomeMessages.size());
                                 }
-                                incomeMessages.wait(200);
+                                //incomeMessages.wait(200);
                             }
                         }
                     } catch (Exception e){

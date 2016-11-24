@@ -13,6 +13,10 @@ public class Object {
         this.y = y;
     }
 
+    public Object(String texturePath, int x, int y){
+        this(new Texture(texturePath), x, y);
+    }
+
     public void render(SpriteBatch sb){
         sb.draw(texture,x,y);
     }
