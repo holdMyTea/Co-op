@@ -32,6 +32,14 @@ public class PlayState extends State {
 
     public void moveAnotherHero(int positionX) {this.anotherHero.moveHorizontally(positionX);}
 
+    public void setInitialParameters(int variant){
+        if(variant == 1) {
+            Hero buffer = hero;
+            hero = anotherHero;
+            anotherHero = buffer;
+        }
+    }
+
     @Override
     protected void update(float delta) {
         handleInput();

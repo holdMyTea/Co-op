@@ -21,15 +21,16 @@ class Server:
     def listen(self):
         self.server.listen()
 
-        while True:
-            if True:
-                print("Listening")
-                conn, addr = self.server.accept()
-                print("Connected with " + addr[0] + ":" + str(addr[1]))
-                new_con = Connection.Connection(conn, self, len(self.connections))
-                self.connections.append(new_con)
-                print("Connections amount: " + str(len(self.connections)))
-                new_con.start()
+        while len(self.connections) < 2:
+            print("Listening")
+            conn, addr = self.server.accept()
+            print("Connected with " + addr[0] + ":" + str(addr[1]))
+            new_con = Connection.Connection(conn, self, len(self.connections))
+            self.connections.append(new_con)
+            print("Connections amount: " + str(len(self.connections)))
+
+        for con in self.connections:
+            con.start()
 
     def spread_msg(self, msg):
         print("spreading msg from " + str(msg.source_key) + ": " + str(msg.source_response))

@@ -11,11 +11,14 @@ class Connection:
         self.t = None
 
     def start(self):
+
+        self.send(b's0:var('+bytes(str(self.key), encoding="utf-8")+b');')
+
         self.t = multiprocessing.Process(
             target=self.make_it_read,
             args=(self.conn, self.key, self.server)
         )
-        self.t.daemon = True
+        # self.t.daemon = True
         self.t.start()
 
     @staticmethod

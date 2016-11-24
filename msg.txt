@@ -6,8 +6,7 @@ s - server
 r - server response
 
 code:
+0 - init:var(0/1)
 1 - pause
 2 - play
-3 - move(+/-)
-
-
+3 - move:pos(+/-)

@@ -44,9 +44,9 @@ class Message:
 
         elif self.source_key == self.params.KEY_VAMP:
 
-            if self.msg[self.msg.find(b'(') + 1] == b'-':
+            if bytes(chr(self.msg[5]), encoding="utf-8") == b'-':
                 self.params.move_vamp_left()
-            elif self.msg[self.msg.find(b'(') + 1] == b'+':
+            elif bytes(chr(self.msg[5]), encoding="utf-8") == b'+':
                 self.params.move_vamp_right()
 
             self.source_response = b'r3:pos(' \
