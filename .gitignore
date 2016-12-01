@@ -13,4 +13,5 @@ Coop/gradlew.bat
 Coop/settings.gradle
 Server/.idea/
 Server/__pycache__/
+Server/.gradle/
 
