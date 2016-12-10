@@ -92,7 +92,7 @@ public class Connection {
                                     incomeMessages.add(s);
                                     log.network("Added: "+s);
                                     log.network("Current input q: "+incomeMessages.size());
-                                }
+                                } else System.exit(0);
                                 //incomeMessages.wait(200);
                             }
                         }

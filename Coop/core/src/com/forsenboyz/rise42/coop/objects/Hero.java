@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 public class Hero extends Object {
 
     public Hero(int x, int y){
-        super(new Texture("ghost.png"),x,y);
+        super(new Texture("mage.png"),x,y);
     }
 
     public Hero(String path, int x, int y) {

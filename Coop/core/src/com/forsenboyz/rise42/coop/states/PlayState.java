@@ -17,13 +17,13 @@ public class PlayState extends State {
     PlayState(MessageManager messageManager, boolean active){
         super(messageManager, active);
 
-        hero = new Hero(50,100);
+        hero = new Hero("mage.png",50,100);
         objects.add(hero);
 
-        anotherHero = new Hero("vampire.png",400,100);
+        anotherHero = new Hero("war.png",400,100);
         objects.add(anotherHero);
 
-        objects.add(0,new Object("back.jpg",0,0));
+        objects.add(0,new Object("back.png",0,0));
     }
 
     public void moveHero(int positionX){

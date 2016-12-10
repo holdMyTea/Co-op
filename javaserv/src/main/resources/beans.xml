@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+ 		http://www.springframework.org/schema/beans
+ 		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+
+    <bean class="com.forsenboyz.rise42.server.Main" name="app">
+           <constructor-arg ref="server"/>
+    </bean>
+
+    <bean class="com.forsenboyz.rise42.server.state.State" name="state"/>
+
+    <bean class="com.forsenboyz.rise42.server.network.Server" name="server">
+        <constructor-arg name="host" value="localhost" type="java.lang.String"/>
+        <constructor-arg name="port" value="1488" type="int"/>
+        <constructor-arg ref="state" type="com.forsenboyz.rise42.server.state.State"/>
+    </bean>
+
+</beans>
