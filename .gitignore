@@ -10,8 +10,8 @@ Coop/gradle.properties
 Coop/gradle/
 Coop/gradlew
 Coop/gradlew.bat
-Coop/settings.gradle
 Server/*
+javaserv/java-serv.iml
 javaserv/.idea/
 javaserv/javaserv.iml
 javaserv/target/

@@ -21,7 +21,6 @@ public class Connection {
 
     Connection(int number, Socket socket, Server server) {
         this.NUMBER = number;
-
         this.server = server;
 
         try {
@@ -32,9 +31,7 @@ public class Connection {
             startInputThread(socket);
             System.out.println("connection "+NUMBER+" input thread started");
 
-            outputWriter.write("s0:var("+NUMBER+");");
-            outputWriter.flush();
-            System.out.println("connection "+NUMBER+" preset send");
+            sendInitialMessage();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -74,10 +71,6 @@ public class Connection {
         thread.start();
     }
 
-    public int getNUMBER() {
-        return NUMBER;
-    }
-
     private String readMessage() {
         try {
             byte[] buffer = new byte[255];
@@ -97,5 +90,11 @@ public class Connection {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private void sendInitialMessage() throws IOException {
+        outputWriter.write("s0:var("+NUMBER+");");
+        outputWriter.flush();
+        System.out.println("connection "+NUMBER+" preset send");
     }
 }

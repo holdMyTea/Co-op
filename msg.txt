@@ -2,11 +2,18 @@
 
 source:
 c - client
-s - server
+s - server income
 r - server response
 
-code:
-0 - init:var(0/1)
-1 - pause
-2 - play
-3 - move:pos(+/-)
+client:
+pause - c1;
+play - c2;
+move -
+rotate - c4:clk(0/1);
+
+server:
+init - s0:var(0/1);
+pause - r1;/s1;
+play - r2;/s2;
+move -
+rotate - r4:ang(0-360);/s4:ang(0-360);
