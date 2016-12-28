@@ -20,11 +20,11 @@ public class State {
 
     private int mageX = 50;
     private int mageY = 100;
-    private int mageAngle = 0;
+    private int mageAngle = -90;
 
     private int warX = 400;
     private int warY = 100;
-    private int warAngle = 0;
+    private int warAngle = -90;
 
     private final Message DEFAULT_PAUSE_MESSAGE = new Message(-1, "r1;", "s1;");
 
@@ -44,29 +44,21 @@ public class State {
                     break;
 
                 case MOVE_CODE:
-                    char direction = raw.charAt(raw.indexOf('(')+1);
+                    boolean forward = raw.charAt(raw.indexOf('(')+1) == '1';;
 
                     if(source == MAGE){
-                        if(direction == '1'){
-                            moveMageRight();
-                        } else if(direction == '0'){
-                            moveMageLeft();
-                        }
+                        moveMage(forward);
                         message = new Message(
                                 source,
-                                "r3:pos("+mageX+");",
-                                "s3:pos("+mageX+");"
+                                "r3:x("+mageX+"):y("+mageY+");",
+                                "s3:x("+mageX+"):y("+mageY+");"
                         );
                     } else if(source == WAR){   //useless because of the top check it is always true
-                        if(direction == '1'){
-                            moveWarRight();
-                        } else if(direction == '0'){
-                            moveWarLeft();
-                        }
+                        moveWar(forward);
                         message = new Message(
                                 source,
-                                "r3:pos("+warX+");",
-                                "s3:pos("+warX+");"
+                                "r3:x("+warX+"):y("+warY+");",
+                                "s3:x("+warX+"):y("+warY+");"
                         );
                     } else {
                         message = DEFAULT_PAUSE_MESSAGE;
@@ -124,19 +116,25 @@ public class State {
         } else return check;
     }
 
-    private void moveMageLeft(){
-        this.mageX -= MAGE_VELOCITY;
+    private void moveMage(boolean forward){
+        if(forward){
+            mageX += MAGE_VELOCITY * Math.cos(Math.toRadians(mageAngle));
+            mageY += MAGE_VELOCITY * Math.sin(Math.toRadians(mageAngle));
+        } else{
+            int backDegree = handleAngle(mageAngle, 180);
+            mageX += MAGE_VELOCITY * Math.cos(Math.toRadians(backDegree));
+            mageY += MAGE_VELOCITY * Math.sin(Math.toRadians(backDegree));
+        }
     }
 
-    private void moveMageRight(){
-        this.mageX += MAGE_VELOCITY;
-    }
-
-    private void moveWarLeft(){
-        this.warX -= WAR_VELOCITY;
-    }
-
-    private void moveWarRight(){
-        this.warX += WAR_VELOCITY;
+    private void moveWar(boolean forward){
+        if(forward){
+            warX += WAR_VELOCITY * Math.cos(Math.toRadians(warAngle));
+            warY += WAR_VELOCITY * Math.sin(Math.toRadians(warAngle));
+        } else{
+            int backDegree = handleAngle(warAngle, 180);
+            warX += WAR_VELOCITY * Math.cos(Math.toRadians(backDegree));
+            warY += WAR_VELOCITY * Math.sin(Math.toRadians(backDegree));
+        }
     }
 }

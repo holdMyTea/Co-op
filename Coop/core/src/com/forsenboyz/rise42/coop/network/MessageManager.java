@@ -71,11 +71,12 @@ public class MessageManager {
                                 break;
 
                             case MOVE_CODE:
-                                int position = Integer.parseInt(s.substring(s.indexOf("(")+1,s.lastIndexOf(")")));
-                                if(s.substring(0,1).equals("r")){
-                                    this.stateManager.getPlayState().moveHero(0,0);
-                                } else if(s.substring(0,1).equals("s")){
-                                    this.stateManager.getPlayState().moveAnotherHero(0,0);
+                                int x = msg.getParams().get("x").intValue();
+                                int y = msg.getParams().get("y").intValue();
+                                if(msg.isResponse()){
+                                    this.stateManager.getPlayState().moveHero(x,y);
+                                } else{
+                                    this.stateManager.getPlayState().moveAnotherHero(x,y);
                                 }
                                 break;
 
