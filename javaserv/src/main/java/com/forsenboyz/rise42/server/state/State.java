@@ -20,11 +20,11 @@ public class State {
 
     private int mageX = 50;
     private int mageY = 100;
-    private int mageAngle = -90;
+    private int mageAngle = 90;
 
     private int warX = 400;
     private int warY = 100;
-    private int warAngle = -90;
+    private int warAngle = 270;
 
     private final Message DEFAULT_PAUSE_MESSAGE = new Message(-1, "r1;", "s1;");
 
@@ -65,7 +65,7 @@ public class State {
                     }
                     break;
 
-                case 4:
+                case ROTATE_CODE:
                     boolean clockwise = raw.charAt(raw.indexOf('(')+1) == '1';
 
                     if(source == MAGE){
@@ -116,6 +116,7 @@ public class State {
         } else return check;
     }
 
+    //TODO: IntelliJ says following two methods are copypasta
     private void moveMage(boolean forward){
         if(forward){
             mageX += MAGE_VELOCITY * Math.cos(Math.toRadians(mageAngle));

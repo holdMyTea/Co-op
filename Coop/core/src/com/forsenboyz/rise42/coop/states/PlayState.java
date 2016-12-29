@@ -9,7 +9,7 @@ import com.forsenboyz.rise42.coop.objects.RotatableObject;
 public class PlayState extends State {
 
     // delta between inputs read
-    private static final float INPUT_WAIT = 7.5f * 0.01f;
+    private static final float INPUT_WAIT = 2 * 0.01f;
 
     private RotatableObject hero;
     private RotatableObject anotherHero;
@@ -21,7 +21,7 @@ public class PlayState extends State {
 
         lastInputTime = INPUT_WAIT;
 
-        hero = new RotatableObject("mage.png", 50, 100);
+        hero = new RotatableObject("mage.png", 50, 100, 90);
         objects.add(hero);
 
         anotherHero = new RotatableObject("war.png", 400, 100);

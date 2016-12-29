@@ -22,6 +22,16 @@ public class RotatableObject extends Object {
         this.rotation = 0;
     }
 
+    /*public RotatableObject(Texture texture, int x, int y, int rotation){
+        this(texture, x, y);
+        this.rotation = rotation;
+    }*/
+
+    public RotatableObject(String texturePath, int x, int y, int rotation){
+        this(texturePath, x, y);
+        this.rotation = rotation;
+    }
+
     @Override
     public void render(SpriteBatch sb) {
         sb.draw(texture, x, y, originX, originY, texture.getWidth(), texture.getHeight(), 1, 1, rotation,

@@ -17,6 +17,9 @@ public class StateManager {
 
         this.pauseState = new PauseState(this.messageManager, false);
         this.playState = new PlayState(this.messageManager, false);
+
+        this.messageManager.connect();  // possible null, if move before states init
+
         this.currentState = this.pauseState;
 
         this.pause();

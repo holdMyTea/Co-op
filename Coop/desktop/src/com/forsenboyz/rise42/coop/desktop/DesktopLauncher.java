@@ -14,6 +14,8 @@ public class DesktopLauncher {
 
 	private void doEngine(){
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = App.WIDTH;
+		config.height = App.HEIGHT;
 		new LwjglApplication(new App(), config);
 	}
 

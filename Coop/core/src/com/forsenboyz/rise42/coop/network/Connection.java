@@ -30,7 +30,7 @@ public class Connection {
 
     private final Time time;
 
-    public Connection(String host, int port) {
+    Connection(String host, int port) {
         this.HOST = host;
         this.PORT = port;
 
@@ -41,7 +41,7 @@ public class Connection {
         outcomeMessages = new ArrayDeque<String>();
     }
 
-    public void connect() {
+    void connect() {
         try {
             socket = new Socket();
             socket.connect(new InetSocketAddress(HOST, PORT));
@@ -55,7 +55,8 @@ public class Connection {
             startOutputThread();
             log.network("Threads started");
         } catch (IOException ioEx) {
-            log.network("Connection init " + ioEx.toString());
+            //log.network("Connection init " + ioEx.toString());
+            ioEx.printStackTrace();
         }
     }
 
@@ -67,16 +68,13 @@ public class Connection {
         }
     }
 
-    public void sendMessage(int code) {
-        sendMessage(Integer.toString(code));
-    }
-
     synchronized Queue<String> getIncomeMessages() {
         return incomeMessages;
     }
 
+    //TODO: apparently does not what is expected
     boolean isConnected() {
-        return this.socket.isConnected();
+        return (this.socket != null) && this.socket.isConnected() ;
     }
 
     private void startInputThread(){
@@ -93,7 +91,6 @@ public class Connection {
                                     log.network("Added: "+s);
                                     log.network("Current input q: "+incomeMessages.size());
                                 } else System.exit(0);
-                                //incomeMessages.wait(200);
                             }
                         }
                     } catch (Exception e){

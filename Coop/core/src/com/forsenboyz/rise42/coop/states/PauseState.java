@@ -30,6 +30,7 @@ class PauseState extends State {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                messageManager.connect();
                 messageManager.play();
                 System.out.println("Clicked");
             }

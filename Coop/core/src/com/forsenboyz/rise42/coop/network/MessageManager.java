@@ -1,9 +1,7 @@
 package com.forsenboyz.rise42.coop.network;
 
 
-import com.badlogic.gdx.Gdx;
 import com.forsenboyz.rise42.coop.states.StateManager;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.Queue;
 
@@ -19,12 +17,22 @@ public class MessageManager {
     private Connection connection;
     private StateManager stateManager;
 
+    Thread handlingThread;
+
     public MessageManager(String host, int port, StateManager stateManager) {
         this.stateManager = stateManager;
         this.connection = new Connection(host, port);
+    }
 
-        this.connection.connect();
-        this.startHandlingThread();
+    public void connect() {
+        if (!connection.isConnected()) {
+            if (this.handlingThread != null) {
+                this.handlingThread.interrupt();
+            }
+
+            this.connection.connect();
+            this.startHandlingThread();
+        }
     }
 
     public void pause() {
@@ -36,64 +44,64 @@ public class MessageManager {
     }
 
     public void move(boolean forward) {
-        this.connection.sendMessage(MOVE_CODE+":for("+ (forward ? "1" : "0")+")");
+        this.connection.sendMessage(MOVE_CODE + ":for(" + (forward ? "1" : "0") + ")");
     }
 
     public void rotate(boolean clockwise) {
-        this.connection.sendMessage(ROTATE_CODE+":clk("+ (clockwise ? "1" : "0")+")");
+        this.connection.sendMessage(ROTATE_CODE + ":clk(" + (clockwise ? "1" : "0") + ")");
     }
 
     private void startHandlingThread() {
-        new Thread(() -> {
+        handlingThread = new Thread(() -> {
             Queue<String> incomes;
 
-            while (this.connection.isConnected()) {
+            while (this.connection.isConnected() && !handlingThread.isInterrupted()) {
                 incomes = this.connection.getIncomeMessages();
 
                 while (incomes != null && !incomes.isEmpty()) {
-                    String s = incomes.poll();
-                    System.out.println("!!!!!!!!!!!!!!!!!!" + s);
-                    Gdx.app.postRunnable(() -> {
-                        Message msg = new Message(s);
-                        switch (msg.getCode()) {
+                    Message msg = new Message(incomes.poll());
+                    System.out.println("!!!!!!!!!!!!!!!!!!" + msg.toString());
 
-                            case INIT_CODE:
-                                int variant = (int) msg.getParams().get("var").floatValue();
-                                this.stateManager.getPlayState().setInitialParameters(variant);
-                                break;
+                    switch (msg.getCode()) {
 
-                            case PAUSE_CODE:
-                                this.stateManager.pause();
-                                break;
+                        case INIT_CODE:
+                            int variant = msg.getParams().get("var").intValue();
+                            this.stateManager.getPlayState().setInitialParameters(variant);
+                            break;
 
-                            case PLAY_CODE:
-                                this.stateManager.play();
-                                break;
+                        case PAUSE_CODE:
+                            this.stateManager.pause();
+                            break;
 
-                            case MOVE_CODE:
-                                int x = msg.getParams().get("x").intValue();
-                                int y = msg.getParams().get("y").intValue();
-                                if(msg.isResponse()){
-                                    this.stateManager.getPlayState().moveHero(x,y);
-                                } else{
-                                    this.stateManager.getPlayState().moveAnotherHero(x,y);
-                                }
-                                break;
+                        case PLAY_CODE:
+                            this.stateManager.play();
+                            break;
 
-                            case ROTATE_CODE:
-                                int angle = msg.getParams().get("ang").intValue();
-                                if(msg.isResponse()){
-                                    this.stateManager.getPlayState().rotateHero(angle);
-                                } else{
-                                    this.stateManager.getPlayState().rotateAnotherHero(angle);
-                                }
-                                break;
-                        }
-                    });
+                        case MOVE_CODE:
+                            int x = msg.getParams().get("x").intValue();
+                            int y = msg.getParams().get("y").intValue();
+                            if (msg.isResponse()) {
+                                this.stateManager.getPlayState().moveHero(x, y);
+                            } else {
+                                this.stateManager.getPlayState().moveAnotherHero(x, y);
+                            }
+                            break;
+
+                        case ROTATE_CODE:
+                            int angle = msg.getParams().get("ang").intValue();
+                            if (msg.isResponse()) {
+                                this.stateManager.getPlayState().rotateHero(angle);
+                            } else {
+                                this.stateManager.getPlayState().rotateAnotherHero(angle);
+                            }
+                            break;
+                    }
                 }
 
             }
 
-        }).start();
+        });
+        handlingThread.setDaemon(true);
+        handlingThread.start();
     }
 }

@@ -8,8 +8,8 @@ import com.forsenboyz.rise42.coop.states.StateManager;
 
 public class App extends ApplicationAdapter {
 
-    public static final int WIDTH = 1024;
-    public static final int HEIGHT = 640;
+    public static final int WIDTH = 640;
+    public static final int HEIGHT = 480;
 
 	public static final String HOST = "localhost";
 	public static final int PORT = 1488;
