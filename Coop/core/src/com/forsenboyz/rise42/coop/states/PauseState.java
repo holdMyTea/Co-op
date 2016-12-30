@@ -52,6 +52,8 @@ class PauseState extends State {
     @Override
     public void activate() {
         super.activate();
-        background.setTexture(new Texture(ScreenUtils.getFrameBufferPixmap(0, 0, App.WIDTH, App.HEIGHT)));
+        background.setTexture(
+                        new Texture(
+                                ScreenUtils.getFrameBufferPixmap(0, 0, App.WIDTH, App.HEIGHT)));
     }
 }

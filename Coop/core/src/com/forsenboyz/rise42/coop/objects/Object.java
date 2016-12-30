@@ -2,31 +2,40 @@ package com.forsenboyz.rise42.coop.objects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Object {
 
-    protected int x,y;
-    protected Texture texture;
+    protected int x, y;
+    protected TextureRegion textureRegion;
 
-    public Object(Texture texture, int x, int y){
-        this.texture = texture;
-        this.x = x;
-        this.y = y;
+    public Object(Texture texture, int x, int y) {
+        this(new TextureRegion(texture), x, y);
     }
 
-    public Object(String texturePath, int x, int y){
+    public Object(TextureRegion region, int x, int y) {
+        this.textureRegion = region;
+        this.x = x;
+        this.y = y;
+
+        System.out.println("Created Object: "+region.getRegionHeight()+" "+region.getRegionWidth());
+    }
+
+    public Object(String texturePath, int x, int y) {
         this(new Texture(texturePath), x, y);
     }
 
-    public void render(SpriteBatch sb){
-        sb.draw(texture,x,y);
+    public void render(SpriteBatch sb) {
+        sb.draw(textureRegion, x, y);
     }
 
-    public void setTexture(Texture texture) {
-        this.texture = texture;
+    public void setTexture(TextureRegion textureRegion) {
+        this.textureRegion = textureRegion;
     }
 
-    public void setPosition(int x, int y){
+    public void setTexture(Texture texture) {this.textureRegion = new TextureRegion(texture);}
+
+    public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
     }

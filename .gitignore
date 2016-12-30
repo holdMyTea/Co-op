@@ -3,7 +3,6 @@
 !msg.txt
 Coop/.gradle/
 Coop/.idea/
-Coop/core/assets/
 Coop/core/build/
 Coop/desktop/build/
 Coop/gradle.properties
@@ -15,4 +14,6 @@ javaserv/java-serv.iml
 javaserv/.idea/
 javaserv/javaserv.iml
 javaserv/target/
-
+assets_base/
+*.png
+*.png~

@@ -2,6 +2,7 @@ package com.forsenboyz.rise42.coop.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.forsenboyz.rise42.coop.network.MessageManager;
 import com.forsenboyz.rise42.coop.objects.Object;
 import com.forsenboyz.rise42.coop.objects.RotatableObject;
@@ -21,10 +22,12 @@ public class PlayState extends State {
 
         lastInputTime = INPUT_WAIT;
 
-        hero = new RotatableObject("mage.png", 50, 100, 90);
+        TextureAtlas charAtlas = new TextureAtlas(Gdx.files.internal("characters.atlas"));
+
+        hero = new RotatableObject(charAtlas.findRegion("mage",-1), 50, 100, 90);
         objects.add(hero);
 
-        anotherHero = new RotatableObject("war.png", 400, 100);
+        anotherHero = new RotatableObject(charAtlas.findRegion("war",-1), 400, 100, 90);
         objects.add(anotherHero);
 
         objects.add(0, new Object("back.png", 0, 0));
