@@ -25,8 +25,8 @@ public class StateManager {
         this.pause();
     }
 
-    public void render(SpriteBatch sb){
-        currentState.render(sb);
+    public void render(SpriteBatch sb, float delta){
+        currentState.render(sb, delta);
     }
 
     public void update(float delta){

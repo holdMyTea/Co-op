@@ -21,7 +21,7 @@ abstract class State {
         objects = new ArrayList<Object>();
     }
 
-    protected void render(SpriteBatch sb){
+    protected void render(SpriteBatch sb, float delta){
         for(Object o: objects){
             o.render(sb);
         }

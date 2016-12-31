@@ -2,6 +2,8 @@ package com.forsenboyz.rise42.coop.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.forsenboyz.rise42.coop.network.MessageManager;
 import com.forsenboyz.rise42.coop.objects.Object;
@@ -17,6 +19,9 @@ public class PlayState extends State {
 
     private float lastInputTime;
 
+    Animation animation;
+    float time=0;
+
     PlayState(MessageManager messageManager, boolean active) {
         super(messageManager, active);
 
@@ -24,13 +29,29 @@ public class PlayState extends State {
 
         TextureAtlas charAtlas = new TextureAtlas(Gdx.files.internal("characters.atlas"));
 
-        hero = new RotatableObject(charAtlas.findRegion("mage",-1), 50, 100, 90);
+        hero = new RotatableObject(charAtlas.findRegion("mage", -1), 50, 100, 90);
         objects.add(hero);
 
-        anotherHero = new RotatableObject(charAtlas.findRegion("war",-1), 400, 100, 90);
+        anotherHero = new RotatableObject(charAtlas.findRegion("war", -1), 400, 100, 90);
         objects.add(anotherHero);
 
         objects.add(0, new Object("back.png", 0, 0));
+
+        System.out.println(new TextureAtlas(Gdx.files.internal("war_strk.atlas")).getRegions().size+"############################");
+
+        animation = new Animation(
+                .025f,
+                new TextureAtlas(Gdx.files.internal("war_strk.atlas")).findRegions("war-strk"),
+                Animation.PlayMode.LOOP);
+    }
+
+    @Override
+    protected void render(SpriteBatch sb, float delta) {
+        time += delta;
+        super.render(sb, delta);
+        //System.out.println("drawning!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        sb.draw(animation.getKeyFrame(time, true), 300, 300);
+        //System.out.println("drawwwwwwwwwwwwwwwwwWWWWWWWWWWWWWWWnnnnnn");
     }
 
     public void moveHero(int x, int y) {
@@ -67,14 +88,16 @@ public class PlayState extends State {
     }
 
     private void handleInput() {
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)) {
             messageManager.rotate(false);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+        } else if (Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)) {
             messageManager.rotate(true);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+        } else if (Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)) {
             messageManager.move(true);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+        } else if (Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)) {
             messageManager.move(false);
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+            //
         } else if (Gdx.input.isKeyPressed(Input.Keys.Z)) {   //TODO: i need correctly working ESC button
             messageManager.pause();
         }

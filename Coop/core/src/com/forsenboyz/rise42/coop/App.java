@@ -29,7 +29,7 @@ public class App extends ApplicationAdapter {
 		// Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		sb.begin();
 		stateManager.update(Gdx.graphics.getRawDeltaTime());
-        stateManager.render(sb);
+        stateManager.render(sb, Gdx.graphics.getRawDeltaTime());
 		sb.end();
 	}
 	
