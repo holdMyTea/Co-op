@@ -2,25 +2,21 @@ package com.forsenboyz.rise42.coop.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.forsenboyz.rise42.coop.network.MessageManager;
+import com.forsenboyz.rise42.coop.objects.AttachedAnimation;
+import com.forsenboyz.rise42.coop.objects.Character;
 import com.forsenboyz.rise42.coop.objects.Object;
-import com.forsenboyz.rise42.coop.objects.RotatableObject;
 
 public class PlayState extends State {
 
     // delta between inputs read
     private static final float INPUT_WAIT = 2 * 0.01f;
 
-    private RotatableObject hero;
-    private RotatableObject anotherHero;
+    private Character hero;
+    private Character anotherHero;
 
     private float lastInputTime;
-
-    Animation animation;
-    float time=0;
 
     PlayState(MessageManager messageManager, boolean active) {
         super(messageManager, active);
@@ -29,29 +25,20 @@ public class PlayState extends State {
 
         TextureAtlas charAtlas = new TextureAtlas(Gdx.files.internal("characters.atlas"));
 
-        hero = new RotatableObject(charAtlas.findRegion("mage", -1), 50, 100, 90);
+        hero = new Character(charAtlas.findRegion("mage"), 50, 100);
+        hero.addAnimation(
+                "strike",
+                new AttachedAnimation(
+                        new TextureAtlas("war_strk.atlas").findRegions("war-strk"),
+                        0.25f
+                )
+        );
         objects.add(hero);
 
-        anotherHero = new RotatableObject(charAtlas.findRegion("war", -1), 400, 100, 90);
+        anotherHero = new Character(charAtlas.findRegion("war"), 400, 100, 90);
         objects.add(anotherHero);
 
         objects.add(0, new Object("back.png", 0, 0));
-
-        System.out.println(new TextureAtlas(Gdx.files.internal("war_strk.atlas")).getRegions().size+"############################");
-
-        animation = new Animation(
-                .025f,
-                new TextureAtlas(Gdx.files.internal("war_strk.atlas")).findRegions("war-strk"),
-                Animation.PlayMode.LOOP);
-    }
-
-    @Override
-    protected void render(SpriteBatch sb, float delta) {
-        time += delta;
-        super.render(sb, delta);
-        //System.out.println("drawning!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        sb.draw(animation.getKeyFrame(time, true), 300, 300);
-        //System.out.println("drawwwwwwwwwwwwwwwwwWWWWWWWWWWWWWWWnnnnnn");
     }
 
     public void moveHero(int x, int y) {
@@ -72,7 +59,7 @@ public class PlayState extends State {
 
     public void setInitialParameters(int variant) {
         if (variant == 1) {
-            RotatableObject buffer = hero;
+            Character buffer = hero;
             hero = anotherHero;
             anotherHero = buffer;
         }
@@ -97,7 +84,7 @@ public class PlayState extends State {
         } else if (Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)) {
             messageManager.move(false);
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
-            //
+            hero.activateAnimation("strike");
         } else if (Gdx.input.isKeyPressed(Input.Keys.Z)) {   //TODO: i need correctly working ESC button
             messageManager.pause();
         }

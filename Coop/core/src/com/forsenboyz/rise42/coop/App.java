@@ -3,7 +3,6 @@ package com.forsenboyz.rise42.coop;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.forsenboyz.rise42.coop.network.MessageManager;
 import com.forsenboyz.rise42.coop.states.StateManager;
 
 public class App extends ApplicationAdapter {

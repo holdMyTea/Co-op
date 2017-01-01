@@ -20,7 +20,7 @@ public class State {
 
     private int mageX = 50;
     private int mageY = 100;
-    private int mageAngle = 90;
+    private int mageAngle = 0;
 
     private int warX = 400;
     private int warY = 100;
@@ -116,7 +116,7 @@ public class State {
         } else return check;
     }
 
-    //TODO: IntelliJ says following two methods are copypasta
+    //TODO: IntelliJ (SkyNet) says following two methods are copypasta
     private void moveMage(boolean forward){
         if(forward){
             mageX += MAGE_VELOCITY * Math.cos(Math.toRadians(mageAngle));

@@ -23,7 +23,7 @@ abstract class State {
 
     protected void render(SpriteBatch sb, float delta){
         for(Object o: objects){
-            o.render(sb);
+            o.render(sb, delta);
         }
     }
 

@@ -8,10 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.text.SimpleDateFormat;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Queue;
 
 public class Connection {
@@ -46,7 +44,12 @@ public class Connection {
             socket = new Socket();
             socket.connect(new InetSocketAddress(HOST, PORT));
             log.network("Connected");
+        } catch (IOException ioex){
+            log.network("No connection");
+            return;
+        }
 
+        try {
             inputStream = socket.getInputStream();
             outputWriter = new OutputStreamWriter(socket.getOutputStream());
             log.network("Streams opened");

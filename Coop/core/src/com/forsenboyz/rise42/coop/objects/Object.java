@@ -25,7 +25,7 @@ public class Object {
         this(new Texture(texturePath), x, y);
     }
 
-    public void render(SpriteBatch sb) {
+    public void render(SpriteBatch sb, float delta) {
         sb.draw(textureRegion, x, y);
     }
 
@@ -38,5 +38,21 @@ public class Object {
     public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getWidth(){
+        return textureRegion.getRegionWidth();
+    }
+
+    public int getHeight(){
+        return textureRegion.getRegionHeight();
     }
 }

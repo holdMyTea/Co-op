@@ -40,12 +40,17 @@ public class RotatableObject extends Object {
     }
 
     @Override
-    public void render(SpriteBatch sb) {
+    public void render(SpriteBatch sb, float delta) {
         sb.draw(textureRegion, x, y, originX, originY, textureRegion.getRegionWidth(), textureRegion.getRegionHeight(),
-                1, 1, rotation);
+                1, 1, rotation-90);
+        //System.out.println("X:"+x+" Y:"+y+" A:"+rotation);
     }
 
     public void setRotation(int rotation) {
         this.rotation = rotation;
+    }
+
+    public int getRotation() {
+        return rotation;
     }
 }
