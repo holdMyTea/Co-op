@@ -58,7 +58,7 @@ public class Connection {
                     while(socket.isConnected()){
                         String msg = readMessage();
 
-                        System.out.println("connection "+NUMBER+" read: "+msg);
+                        //System.out.println("connection "+NUMBER+" read: "+msg);
 
                         if(msg != null){
                             server.spreadMessage(msg, this.NUMBER);

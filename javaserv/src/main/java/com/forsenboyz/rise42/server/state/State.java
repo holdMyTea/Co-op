@@ -12,18 +12,18 @@ public class State {
     private final int MOVE_CODE = 3;
     private final int ROTATE_CODE = 4;
 
-    private final int MAGE_VELOCITY = 8;
-    private final int WAR_VELOCITY = 10;
+    private final int MAGE_VELOCITY = 6;
+    private final int WAR_VELOCITY = 8;
 
     private final int MAGE_ROTATION = 10;
     private final int WAR_ROTATION = 12;
 
-    private int mageX = 50;
-    private int mageY = 100;
+    private float mageX = 50;
+    private float mageY = 100;
     private int mageAngle = 0;
 
-    private int warX = 400;
-    private int warY = 100;
+    private float warX = 400;
+    private float warY = 100;
     private int warAngle = 270;
 
     private final Message DEFAULT_PAUSE_MESSAGE = new Message(-1, "r1;", "s1;");
@@ -50,15 +50,15 @@ public class State {
                         moveMage(forward);
                         message = new Message(
                                 source,
-                                "r3:x("+mageX+"):y("+mageY+");",
-                                "s3:x("+mageX+"):y("+mageY+");"
+                                "r3:x("+mageX+"):y("+mageY+"):ang("+mageAngle+");",
+                                "s3:x("+mageX+"):y("+mageY+"):ang("+mageAngle+");"
                         );
                     } else if(source == WAR){   //useless because of the top check it is always true
                         moveWar(forward);
                         message = new Message(
                                 source,
-                                "r3:x("+warX+"):y("+warY+");",
-                                "s3:x("+warX+"):y("+warY+");"
+                                "r3:x("+warX+"):y("+warY+"):ang("+warAngle+");",
+                                "s3:x("+warX+"):y("+warY+"):ang("+warAngle+");"
                         );
                     } else {
                         message = DEFAULT_PAUSE_MESSAGE;
@@ -116,7 +116,6 @@ public class State {
         } else return check;
     }
 
-    //TODO: IntelliJ (SkyNet) says following two methods are copypasta
     private void moveMage(boolean forward){
         if(forward){
             mageX += MAGE_VELOCITY * Math.cos(Math.toRadians(mageAngle));

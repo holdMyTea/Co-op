@@ -78,14 +78,15 @@ public class MessageManager {
                             break;
 
                         case MOVE_CODE:
-                            int x = msg.getParams().get("x").intValue();
-                            int y = msg.getParams().get("y").intValue();
+                            float x = msg.getParams().get("x");
+                            float y = msg.getParams().get("y");
+
                             if (msg.isResponse()) {
                                 this.stateManager.getPlayState().moveHero(x, y);
                             } else {
                                 this.stateManager.getPlayState().moveAnotherHero(x, y);
                             }
-                            break;
+                            //break;    WOW, it's probably cool
 
                         case ROTATE_CODE:
                             int angle = msg.getParams().get("ang").intValue();

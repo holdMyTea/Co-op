@@ -40,8 +40,8 @@ public class Server {
     }
 
     void spreadMessage(String raw, int source){
-        System.out.println("Spreading: "+raw+", from "+source);
         Message message = this.STATE.parseMessage(raw,source);
+        System.out.println(message.toString());
         for(Connection connection : connections){
             connection.sendMessage(message);
         }

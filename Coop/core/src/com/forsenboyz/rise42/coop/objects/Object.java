@@ -6,14 +6,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Object {
 
-    protected int x, y;
+    protected float x, y;
     protected TextureRegion textureRegion;
 
-    public Object(Texture texture, int x, int y) {
+    public Object(Texture texture, float x, float y) {
         this(new TextureRegion(texture), x, y);
     }
 
-    public Object(TextureRegion region, int x, int y) {
+    public Object(TextureRegion region, float x, float y) {
         this.textureRegion = region;
         this.x = x;
         this.y = y;
@@ -21,7 +21,7 @@ public class Object {
         System.out.println("Created Object: "+region.getRegionHeight()+" "+region.getRegionWidth());
     }
 
-    public Object(String texturePath, int x, int y) {
+    public Object(String texturePath, float x, float y) {
         this(new Texture(texturePath), x, y);
     }
 
@@ -35,16 +35,16 @@ public class Object {
 
     public void setTexture(Texture texture) {this.textureRegion = new TextureRegion(texture);}
 
-    public void setPosition(int x, int y) {
+    public void setPosition(float x, float y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
+    public float getX() {
         return x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 

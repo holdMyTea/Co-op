@@ -12,38 +12,37 @@ public class RotatableObject extends Object {
     private final int originX;
     private final int originY;
 
-    public RotatableObject(TextureRegion textureRegion, int x, int y, int rotation) {
+    public RotatableObject(TextureRegion textureRegion, float x, float y, int rotation) {
         super(textureRegion, x, y);
         this.originX = this.textureRegion.getRegionWidth() / 2;
         this.originY = this.textureRegion.getRegionHeight() / 2;
         this.rotation = rotation;
     }
 
-    public RotatableObject(Texture texture, int x, int y, int rotation) {
+    public RotatableObject(Texture texture, float x, float y, int rotation) {
         this(new TextureRegion(texture), x, y, rotation);
     }
 
-    public RotatableObject(String texturePath, int x, int y) {
+    public RotatableObject(String texturePath, float x, float y) {
         this(new Texture(texturePath), x, y);
     }
 
-    public RotatableObject(Texture texture, int x, int y) {
+    public RotatableObject(Texture texture, float x, float y) {
         this(texture, x, y, 0);
     }
 
-    public RotatableObject(TextureRegion textureRegion, int x, int y) {
+    public RotatableObject(TextureRegion textureRegion, float x, float y) {
         this(textureRegion, x, y, 0);
     }
 
-    public RotatableObject(String texturePath, int x, int y, int rotation) {
+    public RotatableObject(String texturePath, float x, float y, int rotation) {
         this(new Texture(texturePath), x, y, rotation);
     }
 
     @Override
     public void render(SpriteBatch sb, float delta) {
         sb.draw(textureRegion, x, y, originX, originY, textureRegion.getRegionWidth(), textureRegion.getRegionHeight(),
-                1, 1, rotation-90);
-        //System.out.println("X:"+x+" Y:"+y+" A:"+rotation);
+                1, 1, rotation);
     }
 
     public void setRotation(int rotation) {
@@ -52,5 +51,13 @@ public class RotatableObject extends Object {
 
     public int getRotation() {
         return rotation;
+    }
+
+    public int getOriginX() {
+        return originX;
+    }
+
+    public int getOriginY() {
+        return originY;
     }
 }

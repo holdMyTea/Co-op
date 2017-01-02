@@ -15,5 +15,5 @@ server:
 init - s0:var(0/1);
 pause - r1;/s1;
 play - r2;/s2;
-move - r3:x(int):y(int);/s3:x(int):y(int);
+move - r3:x(int):y(int):ang(0-360);/s3:x(int):y(int):ang(0-360);
 rotate - r4:ang(0-360);/s4:ang(0-360);

@@ -9,12 +9,12 @@ public class Character extends RotatableObject {
 
     private HashMap<String, StatusAnimation> animations;
 
-    public Character(TextureRegion region, int x, int y, int rotation) {
+    public Character(TextureRegion region, float x, float y, int rotation) {
         super(region, x, y, rotation);
         animations = new HashMap<>();
     }
 
-    public Character(TextureRegion region, int x, int y) {
+    public Character(TextureRegion region, float x, float y) {
         this(region, x, y, 0);
     }
 
@@ -23,7 +23,6 @@ public class Character extends RotatableObject {
         super.render(sb, delta);
         for(StatusAnimation a:animations.values()){
             if(a.isActive()){
-                System.out.println("smth is active");
                 AttachedAnimation animation = a.getAnimation();
                 if(animation.hasFinished()){
                     animation.resetStateTime();

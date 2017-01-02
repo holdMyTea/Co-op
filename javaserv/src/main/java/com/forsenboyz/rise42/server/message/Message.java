@@ -23,4 +23,9 @@ public class Message {
     public String getOthersResponse() {
         return othersResponse;
     }
+
+    @Override
+    public String toString(){
+        return othersResponse;
+    }
 }

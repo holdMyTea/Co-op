@@ -1,7 +1,9 @@
 package com.forsenboyz.rise42.coop.states;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.forsenboyz.rise42.coop.input.InputProcessor;
 import com.forsenboyz.rise42.coop.network.MessageManager;
 import com.forsenboyz.rise42.coop.objects.Object;
 
@@ -9,14 +11,17 @@ import java.util.ArrayList;
 
 abstract class State {
 
+    protected InputProcessor inputProcessor;
+
     protected MessageManager messageManager;
     protected ArrayList<Object> objects;
 
     protected boolean active;
 
-    State(MessageManager messageManager, boolean active){
+    State(MessageManager messageManager, InputProcessor inputProcessor, boolean active){
         this.messageManager = messageManager;
         this.active = active;
+        this.inputProcessor = inputProcessor;
 
         objects = new ArrayList<Object>();
     }
@@ -28,10 +33,13 @@ abstract class State {
     }
 
     protected  void update(float delta){
+        handleInput();
         if(!active){
             return;
         }
     }
+
+    protected void handleInput(){}
 
     public void activate(){
         this.active = true;

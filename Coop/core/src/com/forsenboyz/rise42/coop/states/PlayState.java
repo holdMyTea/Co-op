@@ -2,7 +2,9 @@ package com.forsenboyz.rise42.coop.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.forsenboyz.rise42.coop.input.InputProcessor;
 import com.forsenboyz.rise42.coop.network.MessageManager;
 import com.forsenboyz.rise42.coop.objects.AttachedAnimation;
 import com.forsenboyz.rise42.coop.objects.Character;
@@ -11,15 +13,15 @@ import com.forsenboyz.rise42.coop.objects.Object;
 public class PlayState extends State {
 
     // delta between inputs read
-    private static final float INPUT_WAIT = 2 * 0.01f;
+    private static final float INPUT_WAIT = 7.5f * 0.01f;
 
     private Character hero;
     private Character anotherHero;
 
     private float lastInputTime;
 
-    PlayState(MessageManager messageManager, boolean active) {
-        super(messageManager, active);
+    PlayState(MessageManager messageManager, InputProcessor inputProcessor, boolean active) {
+        super(messageManager, inputProcessor, active);
 
         lastInputTime = INPUT_WAIT;
 
@@ -41,11 +43,11 @@ public class PlayState extends State {
         objects.add(0, new Object("back.png", 0, 0));
     }
 
-    public void moveHero(int x, int y) {
+    public void moveHero(float x, float y) {
         this.hero.setPosition(x, y);
     }
 
-    public void moveAnotherHero(int x, int y) {
+    public void moveAnotherHero(float x, float y) {
         this.anotherHero.setPosition(x, y);
     }
 
@@ -67,6 +69,7 @@ public class PlayState extends State {
 
     @Override
     protected void update(float delta) {
+        super.update(delta);
         lastInputTime += delta;
         if (lastInputTime > INPUT_WAIT) {
             handleInput();
@@ -74,18 +77,19 @@ public class PlayState extends State {
         }
     }
 
-    private void handleInput() {
-        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)) {
+    @Override
+    protected void handleInput() {
+        if (inputProcessor.isHeldLeft()) {
             messageManager.rotate(false);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)) {
+        } else if (inputProcessor.isHeldRight()) {
             messageManager.rotate(true);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)) {
+        } else if (inputProcessor.isHeldUp()) {
             messageManager.move(true);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)) {
+        } else if (inputProcessor.isHeldDown()) {
             messageManager.move(false);
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+        } else if (inputProcessor.isHeldQ()) {
             hero.activateAnimation("strike");
-        } else if (Gdx.input.isKeyPressed(Input.Keys.Z)) {   //TODO: i need correctly working ESC button
+        } else if (inputProcessor.isHeldZ()) {   //TODO: i need correctly working ESC button
             messageManager.pause();
         }
     }

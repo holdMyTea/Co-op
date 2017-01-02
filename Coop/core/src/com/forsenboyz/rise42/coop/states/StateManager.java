@@ -1,7 +1,10 @@
 package com.forsenboyz.rise42.coop.states;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.forsenboyz.rise42.coop.App;
+import com.forsenboyz.rise42.coop.input.InputProcessor;
 import com.forsenboyz.rise42.coop.network.MessageManager;
 
 public class StateManager {
@@ -15,8 +18,11 @@ public class StateManager {
     public StateManager(){
         this.messageManager = new MessageManager(App.HOST,App.PORT,this);
 
-        this.pauseState = new PauseState(this.messageManager, false);
-        this.playState = new PlayState(this.messageManager, false);
+        InputProcessor inputProcessor = new InputProcessor();
+        Gdx.input.setInputProcessor(new InputMultiplexer(inputProcessor));
+
+        this.pauseState = new PauseState(this.messageManager, inputProcessor, false);
+        this.playState = new PlayState(this.messageManager, inputProcessor, false);
 
         this.messageManager.connect();  // possible null, if move before states init
 
