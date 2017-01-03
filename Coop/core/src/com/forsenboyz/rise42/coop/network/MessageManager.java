@@ -47,8 +47,8 @@ public class MessageManager {
         this.connection.sendMessage(MOVE_CODE + ":for(" + (forward ? "1" : "0") + ")");
     }
 
-    public void rotate(boolean clockwise) {
-        this.connection.sendMessage(ROTATE_CODE + ":clk(" + (clockwise ? "1" : "0") + ")");
+    public void rotate(int angle) {
+        this.connection.sendMessage(ROTATE_CODE + ":clk(" + angle + ")");
     }
 
     private void startHandlingThread() {

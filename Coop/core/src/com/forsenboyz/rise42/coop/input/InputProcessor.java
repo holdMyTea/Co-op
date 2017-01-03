@@ -5,6 +5,8 @@ import com.badlogic.gdx.InputAdapter;
 
 public class InputProcessor extends InputAdapter{
 
+    private int mouseX, mouseY;
+
     private boolean heldUp;
     private boolean heldDown;
     private boolean heldLeft;
@@ -29,14 +31,21 @@ public class InputProcessor extends InputAdapter{
     }
 
     @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        this.mouseX = screenX;
+        this.mouseY = screenY;
+        return false;
+    }
+
+    @Override
     public boolean keyDown(int keyCode) {
-        if (keyCode == Input.Keys.DPAD_LEFT) {
+        if (keyCode == Input.Keys.A) {
             heldLeft = true;
-        } else if (keyCode == Input.Keys.DPAD_RIGHT) {
+        } else if (keyCode == Input.Keys.D) {
             heldRight = true;
-        } else if (keyCode == Input.Keys.DPAD_UP) {
+        } else if (keyCode == Input.Keys.W) {
             heldUp = true;
-        } else if (keyCode == Input.Keys.DPAD_DOWN) {
+        } else if (keyCode == Input.Keys.S) {
             heldDown = true;
         } else if (keyCode == Input.Keys.Q) {
             heldQ = true;
@@ -94,5 +103,13 @@ public class InputProcessor extends InputAdapter{
 
     public boolean isHeldSpace() {
         return heldSpace;
+    }
+
+    public int getMouseX() {
+        return mouseX;
+    }
+
+    public int getMouseY() {
+        return mouseY;
     }
 }

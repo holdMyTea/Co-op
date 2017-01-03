@@ -28,12 +28,12 @@ public class State {
 
     private final Message DEFAULT_PAUSE_MESSAGE = new Message(-1, "r1;", "s1;");
 
-    public Message parseMessage(String raw, int source){
-        if(source == MAGE || source == WAR){    // odd man out
+    public Message parseMessage(String raw, int source) {
+        if (source == MAGE || source == WAR) {    // odd man out
 
             Message message;
 
-            switch(Character.getNumericValue(raw.charAt(1))){
+            switch (Character.getNumericValue(raw.charAt(1))) {
 
                 case PAUSE_CODE:
                     message = new Message(source, "r1;", "s1;");
@@ -44,21 +44,22 @@ public class State {
                     break;
 
                 case MOVE_CODE:
-                    boolean forward = raw.charAt(raw.indexOf('(')+1) == '1';;
+                    boolean forward = raw.charAt(raw.indexOf('(') + 1) == '1';
+                    ;
 
-                    if(source == MAGE){
+                    if (source == MAGE) {
                         moveMage(forward);
                         message = new Message(
                                 source,
-                                "r3:x("+mageX+"):y("+mageY+"):ang("+mageAngle+");",
-                                "s3:x("+mageX+"):y("+mageY+"):ang("+mageAngle+");"
+                                "r3:x(" + mageX + "):y(" + mageY + "):ang(" + mageAngle + ");",
+                                "s3:x(" + mageX + "):y(" + mageY + "):ang(" + mageAngle + ");"
                         );
-                    } else if(source == WAR){   //useless because of the top check it is always true
+                    } else if (source == WAR) {   //useless because of the top check it is always true
                         moveWar(forward);
                         message = new Message(
                                 source,
-                                "r3:x("+warX+"):y("+warY+"):ang("+warAngle+");",
-                                "s3:x("+warX+"):y("+warY+"):ang("+warAngle+");"
+                                "r3:x(" + warX + "):y(" + warY + "):ang(" + warAngle + ");",
+                                "s3:x(" + warX + "):y(" + warY + "):ang(" + warAngle + ");"
                         );
                     } else {
                         message = DEFAULT_PAUSE_MESSAGE;
@@ -66,23 +67,28 @@ public class State {
                     break;
 
                 case ROTATE_CODE:
-                    boolean clockwise = raw.charAt(raw.indexOf('(')+1) == '1';
+                    int angle = Integer.parseInt(
+                            raw.substring(
+                                    raw.indexOf('(')+1,
+                                    raw.indexOf(')')
+                            )
+                    );
 
-                    if(source == MAGE){
-                        rotateMage(clockwise);
+                    if (source == MAGE) {
+                        mageAngle = angle;
                         message = new Message(
                                 source,
-                                "r4:ang("+mageAngle+");",
-                                "s4:ang("+mageAngle+");"
+                                "r4:ang(" + mageAngle + ");",
+                                "s4:ang(" + mageAngle + ");"
                         );
-                    } else if(source == WAR){
-                        rotateWar(clockwise);
+                    } else if (source == WAR) {
+                        warAngle = angle;
                         message = new Message(
                                 source,
-                                "r4:ang("+warAngle+");",
-                                "s4:ang("+warAngle+");"
+                                "r4:ang(" + warAngle + ");",
+                                "s4:ang(" + warAngle + ");"
                         );
-                    } else{
+                    } else {
                         message = DEFAULT_PAUSE_MESSAGE;
                     }
                     break;
@@ -98,40 +104,32 @@ public class State {
         return DEFAULT_PAUSE_MESSAGE;
     }
 
-    private void rotateMage(boolean clockwise){
-        mageAngle = handleAngle(mageAngle, clockwise ? MAGE_ROTATION * (-1) : MAGE_ROTATION);
-    }
-
-    private void rotateWar(boolean clockwise){
-        warAngle = handleAngle(warAngle, clockwise ? WAR_ROTATION * (-1) : WAR_ROTATION);
-    }
-
-    private int handleAngle(int initial, int delta){
+    private int handleAngle(int initial, int delta) {
         int check = initial + delta;
 
-        if(check < 0){
+        if (check < 0) {
             return 360 + check;
-        } else if(check >= 360){
+        } else if (check >= 360) {
             return check - 360;
         } else return check;
     }
 
-    private void moveMage(boolean forward){
-        if(forward){
+    private void moveMage(boolean forward) {
+        if (forward) {
             mageX += MAGE_VELOCITY * Math.cos(Math.toRadians(mageAngle));
             mageY += MAGE_VELOCITY * Math.sin(Math.toRadians(mageAngle));
-        } else{
+        } else {
             int backDegree = handleAngle(mageAngle, 180);
             mageX += MAGE_VELOCITY * Math.cos(Math.toRadians(backDegree));
             mageY += MAGE_VELOCITY * Math.sin(Math.toRadians(backDegree));
         }
     }
 
-    private void moveWar(boolean forward){
-        if(forward){
+    private void moveWar(boolean forward) {
+        if (forward) {
             warX += WAR_VELOCITY * Math.cos(Math.toRadians(warAngle));
             warY += WAR_VELOCITY * Math.sin(Math.toRadians(warAngle));
-        } else{
+        } else {
             int backDegree = handleAngle(warAngle, 180);
             warX += WAR_VELOCITY * Math.cos(Math.toRadians(backDegree));
             warY += WAR_VELOCITY * Math.sin(Math.toRadians(backDegree));

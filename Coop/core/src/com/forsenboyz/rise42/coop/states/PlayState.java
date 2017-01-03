@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.forsenboyz.rise42.coop.App;
 import com.forsenboyz.rise42.coop.input.InputProcessor;
@@ -13,10 +14,11 @@ import com.forsenboyz.rise42.coop.objects.AttachedAnimation;
 import com.forsenboyz.rise42.coop.objects.Character;
 import com.forsenboyz.rise42.coop.objects.Object;
 
+
 public class PlayState extends State {
 
     // delta between inputs read
-    private static final float INPUT_WAIT = 7.5f * 0.01f;
+    private static final float INPUT_WAIT = 2.5f * 0.01f;
 
     private OrthographicCamera camera;
 
@@ -100,11 +102,16 @@ public class PlayState extends State {
     @Override
     protected void handleInput() {
         super.handleInput();
-        if (inputProcessor.isHeldLeft()) {
-            messageManager.rotate(false);
-        } else if (inputProcessor.isHeldRight()) {
-            messageManager.rotate(true);
-        } else if (inputProcessor.isHeldUp()) {
+
+        int newAngle = 360 - (int)  new Vector2(
+                inputProcessor.getMouseX()-Gdx.graphics.getWidth()/2,
+                inputProcessor.getMouseY()-Gdx.graphics.getHeight()/2).angle();
+
+        if(newAngle != hero.getRotation()) {
+            messageManager.rotate(newAngle);
+        }
+
+        if (inputProcessor.isHeldUp()) {
             messageManager.move(true);
         } else if (inputProcessor.isHeldDown()) {
             messageManager.move(false);

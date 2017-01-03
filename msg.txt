@@ -9,7 +9,7 @@ client:
 pause - c1;
 play - c2;
 move - c3:for(0/1);
-rotate - c4:clk(0/1);
+rotate - c4:clk(0-360);
 
 server:
 init - s0:var(0/1);
