@@ -45,6 +45,7 @@ public class InputProcessor extends InputAdapter{
             heldRight = true;
         } else if (keyCode == Input.Keys.W) {
             heldUp = true;
+            System.out.println("true");
         } else if (keyCode == Input.Keys.S) {
             heldDown = true;
         } else if (keyCode == Input.Keys.Q) {
@@ -59,13 +60,13 @@ public class InputProcessor extends InputAdapter{
 
     @Override
     public boolean keyUp(int keyCode) {
-        if (keyCode == Input.Keys.DPAD_LEFT) {
+        if (keyCode == Input.Keys.A) {
             heldLeft = false;
-        } else if (keyCode == Input.Keys.DPAD_RIGHT) {
+        } else if (keyCode == Input.Keys.D) {
             heldRight = false;
-        } else if (keyCode == Input.Keys.DPAD_UP) {
+        } else if (keyCode == Input.Keys.W) {
             heldUp = false;
-        } else if (keyCode == Input.Keys.DPAD_DOWN) {
+        } else if (keyCode == Input.Keys.S) {
             heldDown = false;
         } else if (keyCode == Input.Keys.Q) {
             heldQ = false;

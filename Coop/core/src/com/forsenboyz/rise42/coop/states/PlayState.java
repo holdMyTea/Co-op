@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.forsenboyz.rise42.coop.App;
 import com.forsenboyz.rise42.coop.input.InputProcessor;
@@ -22,17 +22,36 @@ public class PlayState extends State {
 
     private OrthographicCamera camera;
 
+    // borders, which camera should stay in, to hide the scenes
+    private final int CAMERA_MIN_X;
+    private final int CAMERA_MAX_X;
+    private final int CAMERA_MIN_Y;
+    private final int CAMERA_MAX_Y;
+
+    private Object background;
+
     private Character hero;
     private Character anotherHero;
 
     private float lastInputTime;
 
+    // indicates, whether hero's angle was changed
+    private boolean rotated;
+
     PlayState(MessageManager messageManager, InputProcessor inputProcessor, boolean active) {
         super(messageManager, inputProcessor, active);
 
+        lastInputTime = INPUT_WAIT;
+
+        background = new Object("back.png", 0, 0);
+        objects.add(0, background);
+
         camera = new OrthographicCamera(App.WIDTH, App.HEIGHT);
 
-        lastInputTime = INPUT_WAIT;
+        CAMERA_MIN_X = (int)(background.getX() + camera.viewportWidth/2);
+        CAMERA_MAX_X = (int)(background.getWidth() + background.getX() - camera.viewportWidth/2);
+        CAMERA_MAX_Y = (int)(background.getY()+background.getHeight() - camera.viewportHeight/2);
+        CAMERA_MIN_Y = (int)(background.getY() + camera.viewportHeight/2);
 
         TextureAtlas charAtlas = new TextureAtlas(Gdx.files.internal("characters.atlas"));
 
@@ -48,8 +67,91 @@ public class PlayState extends State {
 
         anotherHero = new Character(charAtlas.findRegion("war"), 400, 100, 90);
         objects.add(anotherHero);
+    }
 
-        objects.add(0, new Object("back.png", 0, 0));
+    @Override
+    protected void render(SpriteBatch sb, float delta) {
+        sb.setProjectionMatrix(camera.combined);
+
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        super.render(sb, delta);
+    }
+
+    @Override
+    protected void update(float delta) {
+        super.update(delta);
+        lastInputTime += delta;
+        centerCamera(hero);
+    }
+
+    @Override
+    protected void handleInput() {
+        super.handleInput();
+
+        if (lastInputTime < INPUT_WAIT) {
+            return;
+        }
+
+        lastInputTime = 0;
+
+        // rotating hero according to mouse position, relatively to the center of the screen
+        float angle = (float)Math.atan2(
+                inputProcessor.getMouseY()-Gdx.graphics.getHeight()/2,
+                inputProcessor.getMouseX()-Gdx.graphics.getWidth()/2
+        ) * MathUtils.radiansToDegrees;
+        if (angle < 0) angle = 360 - (angle + 360);
+        else angle = 360 - angle;
+
+        if(hero.getRotation() != (int) angle){
+            rotated = true;
+            this.rotateHero((int)angle);
+        }
+
+        //actually handling input
+        if (inputProcessor.isHeldUp()) {
+            messageManager.move(true);
+        } else if (inputProcessor.isHeldDown()) {
+            messageManager.move(false);
+        } else if (inputProcessor.isHeldQ()) {
+            hero.activateAnimation("strike");
+        } else if (inputProcessor.isHeldZ()) {
+            messageManager.pause();
+        }
+    }
+
+    private void centerCamera(Object target){
+        camera.unproject(new Vector3(target.getX(), target.getY(), 0));
+
+        int targetX = (int) target.getX();
+
+        if(targetX < CAMERA_MIN_X){
+            camera.position.x = CAMERA_MIN_X;
+        } else if(targetX > CAMERA_MAX_X){
+            camera.position.x = CAMERA_MAX_X;
+        } else camera.position.x = targetX;
+
+        int targetY = (int) target.getY();
+
+        if(targetY < CAMERA_MIN_Y){
+            camera.position.y = CAMERA_MIN_Y;
+        } else if(targetY > CAMERA_MAX_Y){
+            camera.position.y = CAMERA_MAX_Y;
+        } else camera.position.y = targetY;
+
+        camera.update();
+    }
+
+    public boolean hasRotated() {
+        return rotated;
+    }
+
+    public void setInitialParameters(int variant) {
+        if (variant == 1) {
+            Character buffer = hero;
+            hero = anotherHero;
+            anotherHero = buffer;
+        }
     }
 
     public void moveHero(float x, float y) {
@@ -68,57 +170,8 @@ public class PlayState extends State {
         this.anotherHero.setRotation(angle);
     }
 
-    public void setInitialParameters(int variant) {
-        if (variant == 1) {
-            Character buffer = hero;
-            hero = anotherHero;
-            anotherHero = buffer;
-        }
-    }
-
-    @Override
-    protected void render(SpriteBatch sb, float delta) {
-        camera.unproject(new Vector3(hero.getX(), hero.getY(), 0));
-        camera.position.x = hero.getX();
-        camera.position.y = hero.getY();
-        camera.update();
-        sb.setProjectionMatrix(camera.combined);
-
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        super.render(sb, delta);
-    }
-
-    @Override
-    protected void update(float delta) {
-        super.update(delta);
-        lastInputTime += delta;
-        if (lastInputTime > INPUT_WAIT) {
-            handleInput();
-            lastInputTime = 0;
-        }
-    }
-
-    @Override
-    protected void handleInput() {
-        super.handleInput();
-
-        int newAngle = 360 - (int)  new Vector2(
-                inputProcessor.getMouseX()-Gdx.graphics.getWidth()/2,
-                inputProcessor.getMouseY()-Gdx.graphics.getHeight()/2).angle();
-
-        if(newAngle != hero.getRotation()) {
-            messageManager.rotate(newAngle);
-        }
-
-        if (inputProcessor.isHeldUp()) {
-            messageManager.move(true);
-        } else if (inputProcessor.isHeldDown()) {
-            messageManager.move(false);
-        } else if (inputProcessor.isHeldQ()) {
-            hero.activateAnimation("strike");
-        } else if (inputProcessor.isHeldZ()) {   //TODO: i need correctly working ESC button
-            messageManager.pause();
-        }
+    public int updateRotation(){
+        rotated = false;
+        return hero.getRotation();
     }
 }

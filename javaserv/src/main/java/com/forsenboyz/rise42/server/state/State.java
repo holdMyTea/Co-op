@@ -51,8 +51,8 @@ public class State {
                         moveMage(forward);
                         message = new Message(
                                 source,
-                                "r3:x(" + mageX + "):y(" + mageY + "):ang(" + mageAngle + ");",
-                                "s3:x(" + mageX + "):y(" + mageY + "):ang(" + mageAngle + ");"
+                                "r3:x(" + mageX + "):y(" + mageY + ");",
+                                "s3:x(" + mageX + "):y(" + mageY + ");"
                         );
                     } else if (source == WAR) {   //useless because of the top check it is always true
                         moveWar(forward);

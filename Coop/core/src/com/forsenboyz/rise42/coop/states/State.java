@@ -17,7 +17,7 @@ abstract class State {
 
     protected boolean active;
 
-    State(MessageManager messageManager, InputProcessor inputProcessor, boolean active){
+    State(MessageManager messageManager, InputProcessor inputProcessor, boolean active) {
         this.messageManager = messageManager;
         this.active = active;
         this.inputProcessor = inputProcessor;
@@ -25,26 +25,28 @@ abstract class State {
         objects = new ArrayList<Object>();
     }
 
-    protected void render(SpriteBatch sb, float delta){
-        for(Object o: objects){
+    protected void render(SpriteBatch sb, float delta) {
+        for (Object o : objects) {
             o.render(sb, delta);
         }
     }
 
-    protected  void update(float delta){
+    protected void update(float delta) {
+        if (!active) return;
         handleInput();
-        if(!active){
-            return;
+    }
+
+    protected void handleInput() {
+    }
+
+    public void activate() {
+        this.active = true;
+        synchronized (this) {
+            this.notify();
         }
     }
 
-    protected void handleInput(){}
-
-    public void activate(){
-        this.active = true;
-    }
-
-    public void deactivate(){
+    public void deactivate() {
         this.active = false;
     }
 

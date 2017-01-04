@@ -5,7 +5,9 @@ import com.forsenboyz.rise42.server.state.State;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Server {
 
@@ -17,10 +19,14 @@ public class Server {
 
     ArrayList<Connection> connections;
 
+    SimpleDateFormat dateFormat;
+
     Server(String host, int port, State state) {
         this.HOST = host;
         this.PORT = port;
         this.STATE = state;
+
+        dateFormat = new SimpleDateFormat("mm:ss.SSS");
 
         connections = new ArrayList<Connection>(2);
     }
@@ -41,7 +47,7 @@ public class Server {
 
     void spreadMessage(String raw, int source){
         Message message = this.STATE.parseMessage(raw,source);
-        System.out.println(message.toString());
+        System.out.println(dateFormat.format(new Date())+": "+message.toString());
         for(Connection connection : connections){
             connection.sendMessage(message);
         }

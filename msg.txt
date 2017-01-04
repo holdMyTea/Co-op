@@ -8,12 +8,12 @@ r - server response
 client:
 pause - c1;
 play - c2;
-move - c3:for(0/1);
+move - c3:for(0/1):ang(0-360);
 rotate - c4:clk(0-360);
 
 server:
 init - s0:var(0/1);
 pause - r1;/s1;
 play - r2;/s2;
-move - r3:x(int):y(int):ang(0-360);/s3:x(int):y(int):ang(0-360);
+move - r3:x(int):y(int);/s3:x(int):y(int);
 rotate - r4:ang(0-360);/s4:ang(0-360);

@@ -1,5 +1,6 @@
 package com.forsenboyz.rise42.coop.network;
 
+import com.badlogic.gdx.utils.TimeUtils;
 import com.forsenboyz.rise42.coop.log.Log;
 import com.forsenboyz.rise42.coop.log.Time;
 
@@ -28,12 +29,14 @@ public class Connection {
 
     private final Time time;
 
+    private long lastOutputTime;
+
     Connection(String host, int port) {
         this.HOST = host;
         this.PORT = port;
 
         log = Log.getInstance();
-        time = new Time("SSS");
+        time = new Time("mm:ss.SSS");
 
         incomeMessages = new ArrayDeque<String>();
         outcomeMessages = new ArrayDeque<String>();
@@ -54,6 +57,8 @@ public class Connection {
             outputWriter = new OutputStreamWriter(socket.getOutputStream());
             log.network("Streams opened");
 
+            lastOutputTime = TimeUtils.millis();
+
             startInputThread();
             startOutputThread();
             log.network("Threads started");
@@ -63,8 +68,9 @@ public class Connection {
         }
     }
 
-    public void sendMessage(String message) {
+    void sendMessage(String message) {
         synchronized (outcomeMessages) {
+            lastOutputTime = TimeUtils.millis();
             outcomeMessages.add("c"+message+"#"+time.getTime()+";");
             outcomeMessages.notify();
             log.network("Sending in q: " + message);
@@ -75,7 +81,11 @@ public class Connection {
         return incomeMessages;
     }
 
-    //TODO: apparently does not what is expected
+    long getLastOutputTime() {
+        return lastOutputTime;
+    }
+
+    //TODO: apparently, does not what is expected
     boolean isConnected() {
         return (this.socket != null) && this.socket.isConnected() ;
     }
