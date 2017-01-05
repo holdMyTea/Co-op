@@ -1,6 +1,8 @@
 package com.forsenboyz.rise42.server.state;
 
-import com.forsenboyz.rise42.server.message.Message;
+import com.forsenboyz.rise42.server.message.IncomeMessage;
+import com.forsenboyz.rise42.server.message.Parameters;
+import com.forsenboyz.rise42.server.message.OutcomeMessage;
 
 public class State {
 
@@ -15,9 +17,6 @@ public class State {
     private final int MAGE_VELOCITY = 6;
     private final int WAR_VELOCITY = 8;
 
-    private final int MAGE_ROTATION = 10;
-    private final int WAR_ROTATION = 12;
-
     private float mageX = 50;
     private float mageY = 100;
     private int mageAngle = 0;
@@ -26,85 +25,100 @@ public class State {
     private float warY = 100;
     private int warAngle = 270;
 
-    private final Message DEFAULT_PAUSE_MESSAGE = new Message(-1, "r1;", "s1;");
+    private final OutcomeMessage DEFAULT_PAUSE_OUTCOME_MESSAGE =
+            new OutcomeMessage(-1, "r1;", "s1;");
 
-    public Message parseMessage(String raw, int source) {
-        if (source == MAGE || source == WAR) {    // odd man out
+    public OutcomeMessage parseMessage(IncomeMessage incomeMessage) {
+        if (incomeMessage.SOURCE == MAGE || incomeMessage.SOURCE == WAR) {    // odd man out
 
-            Message message;
+            OutcomeMessage outcomeMessage;
 
-            switch (Character.getNumericValue(raw.charAt(1))) {
+            switch (incomeMessage.CODE) {
 
                 case PAUSE_CODE:
-                    message = new Message(source, "r1;", "s1;");
+                    outcomeMessage = new OutcomeMessage(incomeMessage.SOURCE, "r1;", "s1;");
                     break;
 
                 case PLAY_CODE:
-                    message = new Message(source, "r2;", "s2;");
+                    outcomeMessage = new OutcomeMessage(incomeMessage.SOURCE, "r2;", "s2;");
                     break;
 
                 case MOVE_CODE:
-                    boolean forward = raw.charAt(raw.indexOf('(') + 1) == '1';
-                    ;
-
-                    if (source == MAGE) {
-                        moveMage(forward);
-                        message = new Message(
-                                source,
-                                "r3:x(" + mageX + "):y(" + mageY + ");",
-                                "s3:x(" + mageX + "):y(" + mageY + ");"
-                        );
-                    } else if (source == WAR) {   //useless because of the top check it is always true
-                        moveWar(forward);
-                        message = new Message(
-                                source,
-                                "r3:x(" + warX + "):y(" + warY + "):ang(" + warAngle + ");",
-                                "s3:x(" + warX + "):y(" + warY + "):ang(" + warAngle + ");"
-                        );
-                    } else {
-                        message = DEFAULT_PAUSE_MESSAGE;
-                    }
+                    outcomeMessage = move(incomeMessage);
                     break;
 
                 case ROTATE_CODE:
-                    int angle = Integer.parseInt(
-                            raw.substring(
-                                    raw.indexOf('(')+1,
-                                    raw.indexOf(')')
-                            )
-                    );
-
-                    if (source == MAGE) {
-                        mageAngle = angle;
-                        message = new Message(
-                                source,
-                                "r4:ang(" + mageAngle + ");",
-                                "s4:ang(" + mageAngle + ");"
-                        );
-                    } else if (source == WAR) {
-                        warAngle = angle;
-                        message = new Message(
-                                source,
-                                "r4:ang(" + warAngle + ");",
-                                "s4:ang(" + warAngle + ");"
-                        );
-                    } else {
-                        message = DEFAULT_PAUSE_MESSAGE;
-                    }
+                    outcomeMessage = rotate(incomeMessage);
                     break;
 
                 default:
-                    message = DEFAULT_PAUSE_MESSAGE; // pause if stuff
+                    outcomeMessage = DEFAULT_PAUSE_OUTCOME_MESSAGE; // pause if stuff
             }
 
-            return message;
+            return outcomeMessage;
 
         }
 
-        return DEFAULT_PAUSE_MESSAGE;
+        return DEFAULT_PAUSE_OUTCOME_MESSAGE;
     }
 
-    private int handleAngle(int initial, int delta) {
+    private OutcomeMessage move(IncomeMessage incomeMessage) {
+        rotate(incomeMessage);
+        OutcomeMessage outcomeMessage;
+        boolean forward = incomeMessage.getParam(Parameters.FOR) == 1;
+
+        if (incomeMessage.SOURCE == MAGE) {
+            mageX = checkBorders(computeMoveX(forward, mageX, MAGE_VELOCITY, mageAngle));
+            mageY = checkBorders(computeMoveY(forward, mageY, MAGE_VELOCITY, mageAngle));
+            outcomeMessage = new OutcomeMessage(
+                    incomeMessage.SOURCE,
+                    "r3:"+Parameters.X+"(" + mageX + "):"+Parameters.Y+"(" + mageY + "):"
+                            +Parameters.ANG+"(" + mageAngle + ");",
+                    "s3:"+Parameters.X+"(" + mageX + "):"+Parameters.Y+"(" + mageY + "):"
+                            +Parameters.ANG+"(" + mageAngle + ");"
+            );
+        } else if (incomeMessage.SOURCE == WAR) {   //useless because of the top check it is always true
+            warX = checkBorders(computeMoveX(forward, warX, WAR_VELOCITY, warAngle));
+            warY = checkBorders(computeMoveY(forward, warY, WAR_VELOCITY, warAngle));
+            outcomeMessage = new OutcomeMessage(
+                    incomeMessage.SOURCE,
+                    "r3:"+Parameters.X+"(" + warX + "):"+Parameters.Y+"(" + warY + "):"
+                            +Parameters.ANG+"(" + warAngle + ");",
+                    "s3:"+Parameters.X+"(" + warX + "):"+Parameters.Y+"(" + warY + "):"
+                            +Parameters.ANG+"(" + warAngle + ");"
+            );
+        } else {
+            outcomeMessage = DEFAULT_PAUSE_OUTCOME_MESSAGE;
+        }
+        return outcomeMessage;
+    }
+
+    private OutcomeMessage rotate(IncomeMessage incomeMessage) {
+        OutcomeMessage outcomeMessage;
+        int angle = (int) incomeMessage.getParam(Parameters.ANG);
+
+        if (incomeMessage.SOURCE == MAGE) {
+            mageAngle = angle;
+            outcomeMessage = new OutcomeMessage(
+                    incomeMessage.SOURCE,
+                    "r4:" + Parameters.ANG + "(" + mageAngle + ");",
+                    "s4:" + Parameters.ANG + "(" + mageAngle + ");"
+            );
+        } else if (incomeMessage.SOURCE == WAR) {
+            warAngle = angle;
+            outcomeMessage = new OutcomeMessage(
+                    incomeMessage.SOURCE,
+                    "r4:" + Parameters.ANG + "(" + warAngle + ");",
+                    "s4:" + Parameters.ANG + "(" + warAngle + ");"
+            );
+        } else {
+            outcomeMessage = DEFAULT_PAUSE_OUTCOME_MESSAGE;
+        }
+
+        return outcomeMessage;
+    }
+
+    private int convertAngle(int initial, int delta) {
         int check = initial + delta;
 
         if (check < 0) {
@@ -114,25 +128,24 @@ public class State {
         } else return check;
     }
 
-    private void moveMage(boolean forward) {
-        if (forward) {
-            mageX += MAGE_VELOCITY * Math.cos(Math.toRadians(mageAngle));
-            mageY += MAGE_VELOCITY * Math.sin(Math.toRadians(mageAngle));
-        } else {
-            int backDegree = handleAngle(mageAngle, 180);
-            mageX += MAGE_VELOCITY * Math.cos(Math.toRadians(backDegree));
-            mageY += MAGE_VELOCITY * Math.sin(Math.toRadians(backDegree));
-        }
+    private int computeMoveX(boolean forward, float initialX, int velocity, int angle){
+        return forward ?
+                (int) (initialX + velocity * Math.cos(Math.toRadians(angle))) :
+                (int) (initialX + velocity * Math.cos(Math.toRadians(convertAngle(angle, 180))));
     }
 
-    private void moveWar(boolean forward) {
-        if (forward) {
-            warX += WAR_VELOCITY * Math.cos(Math.toRadians(warAngle));
-            warY += WAR_VELOCITY * Math.sin(Math.toRadians(warAngle));
-        } else {
-            int backDegree = handleAngle(warAngle, 180);
-            warX += WAR_VELOCITY * Math.cos(Math.toRadians(backDegree));
-            warY += WAR_VELOCITY * Math.sin(Math.toRadians(backDegree));
-        }
+    private int computeMoveY(boolean forward, float initialY, int velocity, int angle){
+        return forward ?
+                (int) (initialY + velocity * Math.sin(Math.toRadians(angle))) :
+                (int) (initialY + velocity * (int) Math.sin(Math.toRadians(convertAngle(angle, 180))));
     }
+
+    private int checkBorders(int position){
+        if(position < Sizes.HERO_MIN_Y){
+            return Sizes.HERO_MIN_Y;
+        } else if(position > Sizes.HERO_MAX_Y){
+            return Sizes.HERO_MAX_Y;
+        } else return position;
+    }
+
 }

@@ -2,6 +2,7 @@ package com.forsenboyz.rise42.coop.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.forsenboyz.rise42.coop.App;
 import com.forsenboyz.rise42.coop.input.InputProcessor;

@@ -38,7 +38,7 @@ public class Log {
         }
     }
 
-    public void network(String msg) {
+    /*public void network(String msg) {
         try {
             msg = time.getTime()+": "+"NET"+": "+msg+"\n";
             System.out.print(msg);
@@ -47,6 +47,10 @@ public class Log {
         } catch (IOException e) {
             System.out.println("Taking heavy casualties");
         }
-    }
+    }*/
 
+    public void network(String msg) {
+            msg = time.getTime()+": "+"NET"+": "+msg+"\n";
+            System.out.print(msg);
+    }
 }

@@ -18,11 +18,11 @@ import com.forsenboyz.rise42.coop.objects.Object;
 public class PlayState extends State {
 
     // delta between inputs read
-    private static final float INPUT_WAIT = 2.5f * 0.01f;
+    private static final float INPUT_WAIT = 1.0f * 0.01f;
 
     private OrthographicCamera camera;
 
-    // borders, which camera should stay in, to hide the scenes
+    // borders, which camera should stay in to hide the scenes
     private final int CAMERA_MIN_X;
     private final int CAMERA_MAX_X;
     private final int CAMERA_MIN_Y;
@@ -33,9 +33,10 @@ public class PlayState extends State {
     private Character hero;
     private Character anotherHero;
 
+    // last time input was processed
     private float lastInputTime;
 
-    // indicates, whether hero's angle was changed
+    // indicates, whether hero's angle was changed, if true angle POSSIBLY will be submitted in MessageManager
     private boolean rotated;
 
     PlayState(MessageManager messageManager, InputProcessor inputProcessor, boolean active) {
@@ -115,6 +116,7 @@ public class PlayState extends State {
             messageManager.move(false);
         } else if (inputProcessor.isHeldQ()) {
             hero.activateAnimation("strike");
+            //messageManager.animation(1, hero.getRotation());
         } else if (inputProcessor.isHeldZ()) {
             messageManager.pause();
         }

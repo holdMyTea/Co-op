@@ -1,6 +1,6 @@
 package com.forsenboyz.rise42.server.network;
 
-import com.forsenboyz.rise42.server.message.Message;
+import com.forsenboyz.rise42.server.message.OutcomeMessage;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,12 +39,12 @@ public class Connection {
         System.out.println("Connection "+NUMBER+" created");
     }
 
-    void sendMessage(Message message){
+    void sendMessage(OutcomeMessage outcomeMessage){
         try{
-            if(message.SOURCE == this.NUMBER){
-                outputWriter.write(message.getSourceResponse());
+            if(outcomeMessage.SOURCE == this.NUMBER){
+                outputWriter.write(outcomeMessage.getSourceResponse());
             } else{
-                outputWriter.write(message.getOthersResponse());
+                outputWriter.write(outcomeMessage.getOthersResponse());
             }
             outputWriter.flush();
         } catch(IOException e){
@@ -93,7 +93,7 @@ public class Connection {
     }
 
     private void sendInitialMessage() throws IOException {
-        outputWriter.write("s0:var("+NUMBER+");");
+        outputWriter.write("s0:VAR("+NUMBER+");");
         outputWriter.flush();
         System.out.println("connection "+NUMBER+" preset send");
     }

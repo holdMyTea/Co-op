@@ -1,7 +1,10 @@
 package com.forsenboyz.rise42.coop.states;
 
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.forsenboyz.rise42.coop.App;
 import com.forsenboyz.rise42.coop.input.InputProcessor;
 import com.forsenboyz.rise42.coop.network.MessageManager;
 import com.forsenboyz.rise42.coop.objects.Object;
@@ -32,7 +35,9 @@ abstract class State {
     }
 
     protected void update(float delta) {
-        if (!active) return;
+        if (!active){
+           return;
+        }
         handleInput();
     }
 

@@ -1,5 +1,6 @@
 package com.forsenboyz.rise42.coop.states;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.forsenboyz.rise42.coop.App;
@@ -16,21 +17,23 @@ class PauseState extends State {
         background = new Object(new Texture("play.png"), 0, 0);
         objects.add(background);
 
-        objects.add(new Object("play.png",0,0));
+        objects.add(new Object("play.png", 0, 0));
     }
 
     @Override
     public void activate() {
-        super.activate();
-        background.setTexture(
+        Gdx.app.postRunnable(
+                () -> background.setTexture(
                         new Texture(
-                                ScreenUtils.getFrameBufferPixmap(0, 0, App.WIDTH, App.HEIGHT)));
+                                ScreenUtils.getFrameBufferPixmap(0, 0, App.WIDTH, App.HEIGHT)))
+        );
+        super.activate();
     }
 
     @Override
     protected void handleInput() {
         super.handleInput();
-        if(inputProcessor.isHeldSpace()){
+        if (inputProcessor.isHeldSpace()) {
             messageManager.connect();
             messageManager.play();
         }

@@ -14,6 +14,7 @@ public class MessageManager {
     private final String PLAY_CODE = "2";
     private final String MOVE_CODE = "3";
     private final String ROTATE_CODE = "4";
+    private final String ANIMATION_CODE = "5";
 
     private final static int OUTPUT_WAIT = 50;
 
@@ -49,11 +50,18 @@ public class MessageManager {
     }
 
     public void move(boolean forward) {
-        this.connection.sendMessage(MOVE_CODE + ":for(" + (forward ? "1" : "0") + ")");
+        this.connection.sendMessage(
+                MOVE_CODE + ":"+Parameters.FOR+"(" + (forward ? "1" : "0") + ")" +
+                        ":"+Parameters.ANG+"("+this.stateManager.getPlayState().updateRotation()+")"
+        );
     }
 
     public void rotate(int angle) {
-        this.connection.sendMessage(ROTATE_CODE + ":clk(" + angle + ")");
+        this.connection.sendMessage(ROTATE_CODE + ":"+Parameters.ANG+"(" + angle + ")");
+    }
+
+    public void animation(int num, int angle) {
+        this.connection.sendMessage(ANIMATION_CODE+":"+Parameters.N+"("+num+"):"+Parameters.ANG+"(" + angle + ")");
     }
 
     private void startInputThread() {
@@ -71,7 +79,7 @@ public class MessageManager {
                             switch (msg.getCode()) {
 
                                 case INIT_CODE:
-                                    int variant = msg.getParams().get("var").intValue();
+                                    int variant = msg.getParams().get(Parameters.VAR).intValue();
                                     this.stateManager.getPlayState().setInitialParameters(variant);
                                     break;
 
@@ -84,8 +92,8 @@ public class MessageManager {
                                     break;
 
                                 case MOVE_CODE:
-                                    float x = msg.getParams().get("x");
-                                    float y = msg.getParams().get("y");
+                                    float x = msg.getParams().get(Parameters.X);
+                                    float y = msg.getParams().get(Parameters.Y);
 
                                     if (msg.isResponse()) {
                                         this.stateManager.getPlayState().moveHero(x, y);
@@ -95,7 +103,7 @@ public class MessageManager {
                                     break;
 
                                 case ROTATE_CODE:
-                                    int angle = msg.getParams().get("ang").intValue();
+                                    int angle = msg.getParams().get(Parameters.ANG).intValue();
                                     if (msg.isResponse()) {
                                         this.stateManager.getPlayState().rotateHero(angle);
                                     } else {
@@ -118,7 +126,6 @@ public class MessageManager {
     private void startOutputThread() {
         outputThread = new Thread(
                 () -> {
-                    System.out.println("auto-rotate started");
                     while (this.connection.isConnected()) {
 
                         while (stateManager.getPlayState().isActive()) {

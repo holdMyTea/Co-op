@@ -1,6 +1,7 @@
 package com.forsenboyz.rise42.server.network;
 
-import com.forsenboyz.rise42.server.message.Message;
+import com.forsenboyz.rise42.server.message.IncomeMessage;
+import com.forsenboyz.rise42.server.message.OutcomeMessage;
 import com.forsenboyz.rise42.server.state.State;
 
 import java.io.IOException;
@@ -46,10 +47,12 @@ public class Server {
     }
 
     void spreadMessage(String raw, int source){
-        Message message = this.STATE.parseMessage(raw,source);
-        System.out.println(dateFormat.format(new Date())+": "+message.toString());
-        for(Connection connection : connections){
-            connection.sendMessage(message);
+        for(String msg : raw.split(";")) {
+            OutcomeMessage outcomeMessage = this.STATE.parseMessage(new IncomeMessage(msg, source));
+            System.out.println(dateFormat.format(new Date()) + ": " + outcomeMessage.toString());
+            for (Connection connection : connections) {
+                connection.sendMessage(outcomeMessage);
+            }
         }
     }
 }
