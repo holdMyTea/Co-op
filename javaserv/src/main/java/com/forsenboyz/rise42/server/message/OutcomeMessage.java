@@ -6,26 +6,31 @@ public class OutcomeMessage {
 
     public final int SOURCE;
 
-    private String sourceResponse;
-    private String othersResponse;
+    public final int CODE;
+
+    private String response;
 
 
-    public OutcomeMessage(int source, String sourceResponse, String othersResponse){
+    public OutcomeMessage(int source, int code){
         this.SOURCE = source;
-        this.sourceResponse = sourceResponse;
-        this.othersResponse = othersResponse;
+        this.CODE = code;
+        this.response = Integer.toString(code);
+    }
+
+    public void addParameter(Parameters parameter, float value){
+        this.response += ":"+parameter + "("+value+")";
     }
 
     public String getSourceResponse() {
-        return sourceResponse;
+        return "r"+response+";";
     }
 
     public String getOthersResponse() {
-        return othersResponse;
+        return "s"+response+";";
     }
 
     @Override
     public String toString(){
-        return othersResponse;
+        return getOthersResponse();
     }
 }

@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class RotatableObject extends Object {
 
-    private int rotation;
+    protected int rotation;
 
     private final int originX;
     private final int originY;

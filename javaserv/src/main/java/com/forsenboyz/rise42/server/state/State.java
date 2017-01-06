@@ -13,20 +13,20 @@ public class State {
     private final int PLAY_CODE = 2;
     private final int MOVE_CODE = 3;
     private final int ROTATE_CODE = 4;
+    private final int ANIMATION_CODE = 5;
 
     private final int MAGE_VELOCITY = 6;
     private final int WAR_VELOCITY = 8;
 
-    private float mageX = 50;
-    private float mageY = 100;
-    private int mageAngle = 0;
+    private float mageX = 850;
+    private float mageY = 1064;
+    private int mageAngle = 180;
 
-    private float warX = 400;
-    private float warY = 100;
-    private int warAngle = 270;
+    private float warX = 1200;
+    private float warY = 1056;
+    private int warAngle = 0;
 
-    private final OutcomeMessage DEFAULT_PAUSE_OUTCOME_MESSAGE =
-            new OutcomeMessage(-1, "r1;", "s1;");
+    private final OutcomeMessage DEFAULT_PAUSE_OUTCOME_MESSAGE = new OutcomeMessage(-1,PAUSE_CODE);
 
     public OutcomeMessage parseMessage(IncomeMessage incomeMessage) {
         if (incomeMessage.SOURCE == MAGE || incomeMessage.SOURCE == WAR) {    // odd man out
@@ -36,11 +36,10 @@ public class State {
             switch (incomeMessage.CODE) {
 
                 case PAUSE_CODE:
-                    outcomeMessage = new OutcomeMessage(incomeMessage.SOURCE, "r1;", "s1;");
-                    break;
+                    // drop to PLAY_CODE
 
                 case PLAY_CODE:
-                    outcomeMessage = new OutcomeMessage(incomeMessage.SOURCE, "r2;", "s2;");
+                    outcomeMessage = new OutcomeMessage(incomeMessage.SOURCE, incomeMessage.CODE);
                     break;
 
                 case MOVE_CODE:
@@ -49,6 +48,10 @@ public class State {
 
                 case ROTATE_CODE:
                     outcomeMessage = rotate(incomeMessage);
+                    break;
+
+                case ANIMATION_CODE:
+                    outcomeMessage = animation(incomeMessage);
                     break;
 
                 default:
@@ -63,7 +66,9 @@ public class State {
     }
 
     private OutcomeMessage move(IncomeMessage incomeMessage) {
+        // just to rotate, the return result is ignored
         rotate(incomeMessage);
+
         OutcomeMessage outcomeMessage;
         boolean forward = incomeMessage.getParam(Parameters.FOR) == 1;
 
@@ -72,24 +77,25 @@ public class State {
             mageY = checkBorders(computeMoveY(forward, mageY, MAGE_VELOCITY, mageAngle));
             outcomeMessage = new OutcomeMessage(
                     incomeMessage.SOURCE,
-                    "r3:"+Parameters.X+"(" + mageX + "):"+Parameters.Y+"(" + mageY + "):"
-                            +Parameters.ANG+"(" + mageAngle + ");",
-                    "s3:"+Parameters.X+"(" + mageX + "):"+Parameters.Y+"(" + mageY + "):"
-                            +Parameters.ANG+"(" + mageAngle + ");"
+                    MOVE_CODE
             );
-        } else if (incomeMessage.SOURCE == WAR) {   //useless because of the top check it is always true
+            outcomeMessage.addParameter(Parameters.X, mageX);
+            outcomeMessage.addParameter(Parameters.Y, mageY);
+            outcomeMessage.addParameter(Parameters.ANG, mageAngle);
+        }
+        else if (incomeMessage.SOURCE == WAR) {   //useless because of the top check it is always true
             warX = checkBorders(computeMoveX(forward, warX, WAR_VELOCITY, warAngle));
             warY = checkBorders(computeMoveY(forward, warY, WAR_VELOCITY, warAngle));
             outcomeMessage = new OutcomeMessage(
                     incomeMessage.SOURCE,
-                    "r3:"+Parameters.X+"(" + warX + "):"+Parameters.Y+"(" + warY + "):"
-                            +Parameters.ANG+"(" + warAngle + ");",
-                    "s3:"+Parameters.X+"(" + warX + "):"+Parameters.Y+"(" + warY + "):"
-                            +Parameters.ANG+"(" + warAngle + ");"
+                    MOVE_CODE
             );
-        } else {
-            outcomeMessage = DEFAULT_PAUSE_OUTCOME_MESSAGE;
+            outcomeMessage.addParameter(Parameters.X, warX);
+            outcomeMessage.addParameter(Parameters.Y, warY);
+            outcomeMessage.addParameter(Parameters.ANG, warAngle);
         }
+        else outcomeMessage = DEFAULT_PAUSE_OUTCOME_MESSAGE;
+
         return outcomeMessage;
     }
 
@@ -101,19 +107,47 @@ public class State {
             mageAngle = angle;
             outcomeMessage = new OutcomeMessage(
                     incomeMessage.SOURCE,
-                    "r4:" + Parameters.ANG + "(" + mageAngle + ");",
-                    "s4:" + Parameters.ANG + "(" + mageAngle + ");"
+                    ROTATE_CODE
             );
-        } else if (incomeMessage.SOURCE == WAR) {
+            outcomeMessage.addParameter(Parameters.ANG, mageAngle);
+        }
+        else if (incomeMessage.SOURCE == WAR) {
             warAngle = angle;
             outcomeMessage = new OutcomeMessage(
                     incomeMessage.SOURCE,
-                    "r4:" + Parameters.ANG + "(" + warAngle + ");",
-                    "s4:" + Parameters.ANG + "(" + warAngle + ");"
+                    ROTATE_CODE
             );
-        } else {
-            outcomeMessage = DEFAULT_PAUSE_OUTCOME_MESSAGE;
+            outcomeMessage.addParameter(Parameters.ANG, warAngle);
         }
+        else outcomeMessage = DEFAULT_PAUSE_OUTCOME_MESSAGE;
+
+        return outcomeMessage;
+    }
+
+    private OutcomeMessage animation(IncomeMessage incomeMessage) {
+        OutcomeMessage outcomeMessage;
+        int angle = (int) incomeMessage.getParam(Parameters.ANG);
+        int index = (int) incomeMessage.getParam(Parameters.IND);
+
+        if (incomeMessage.SOURCE == MAGE) {
+            mageAngle = angle;
+            outcomeMessage = new OutcomeMessage(
+                    incomeMessage.SOURCE,
+                    ANIMATION_CODE
+            );
+            outcomeMessage.addParameter(Parameters.ANG, mageAngle);
+            outcomeMessage.addParameter(Parameters.IND, index);
+        }
+        else if (incomeMessage.SOURCE == WAR) {
+            warAngle = angle;
+            outcomeMessage = new OutcomeMessage(
+                    incomeMessage.SOURCE,
+                    ANIMATION_CODE
+            );
+            outcomeMessage.addParameter(Parameters.ANG, warAngle);
+            outcomeMessage.addParameter(Parameters.IND, index);
+        }
+        else outcomeMessage = DEFAULT_PAUSE_OUTCOME_MESSAGE;
 
         return outcomeMessage;
     }
@@ -128,24 +162,24 @@ public class State {
         } else return check;
     }
 
-    private int computeMoveX(boolean forward, float initialX, int velocity, int angle){
+    private int computeMoveX(boolean forward, float initialX, int velocity, int angle) {
         return forward ?
                 (int) (initialX + velocity * Math.cos(Math.toRadians(angle))) :
                 (int) (initialX + velocity * Math.cos(Math.toRadians(convertAngle(angle, 180))));
     }
 
-    private int computeMoveY(boolean forward, float initialY, int velocity, int angle){
+    private int computeMoveY(boolean forward, float initialY, int velocity, int angle) {
         return forward ?
                 (int) (initialY + velocity * Math.sin(Math.toRadians(angle))) :
                 (int) (initialY + velocity * (int) Math.sin(Math.toRadians(convertAngle(angle, 180))));
     }
 
-    private int checkBorders(int position){
-        if(position < Sizes.HERO_MIN_Y){
+    private int checkBorders(int coordinate) {
+        if (coordinate < Sizes.HERO_MIN_Y) {
             return Sizes.HERO_MIN_Y;
-        } else if(position > Sizes.HERO_MAX_Y){
+        } else if (coordinate > Sizes.HERO_MAX_Y) {
             return Sizes.HERO_MAX_Y;
-        } else return position;
+        } else return coordinate;
     }
 
 }

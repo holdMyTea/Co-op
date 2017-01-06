@@ -12,7 +12,7 @@ public class AttachedAnimation {
     private float stateTime;
 
     public AttachedAnimation(Array<? extends TextureRegion> regions, float frameDuration) {
-        this.animation = new Animation(frameDuration, regions, Animation.PlayMode.LOOP);
+        this.animation = new Animation(frameDuration, regions, Animation.PlayMode.NORMAL);
         stateTime = 0;
     }
 

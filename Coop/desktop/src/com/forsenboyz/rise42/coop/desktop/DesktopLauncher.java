@@ -20,7 +20,7 @@ public class DesktopLauncher {
 
 	private void doStuff(){
 		TexturePacker.process("/home/rise42/Projects/Co-op/assets_base/animations",
-				"/home/rise42/Projects/Co-op/Coop/core/assets/","war_strk");
+				"/home/rise42/Projects/Co-op/Coop/core/assets/","strk");
 	}
 
 }

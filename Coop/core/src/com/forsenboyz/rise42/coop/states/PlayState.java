@@ -56,17 +56,28 @@ public class PlayState extends State {
 
         TextureAtlas charAtlas = new TextureAtlas(Gdx.files.internal("characters.atlas"));
 
-        hero = new Character(charAtlas.findRegion("mage"), 50, 100);
+        TextureAtlas strikeAtlas = new TextureAtlas(Gdx.files.internal("strk.atlas"));
+
+        // r3:X(849.0):Y(1064.0):ANG(131.0);
+        hero = new Character(charAtlas.findRegion("mage"), 850, 1064, 180);
         hero.addAnimation(
-                "strike",
+                0,
                 new AttachedAnimation(
-                        new TextureAtlas("war_strk.atlas").findRegions("war-strk"),
+                        strikeAtlas.findRegions("mag-strk"),
                         0.25f
                 )
         );
         objects.add(hero);
 
-        anotherHero = new Character(charAtlas.findRegion("war"), 400, 100, 90);
+        // r3:X(1197.0):Y(1056.0):ANG(357.0);
+        anotherHero = new Character(charAtlas.findRegion("war"), 1200, 1056, 0);
+        anotherHero.addAnimation(
+                0,
+                new AttachedAnimation(
+                        strikeAtlas.findRegions("war-strk"),
+                        0.25f
+                )
+        );
         objects.add(anotherHero);
     }
 
@@ -74,7 +85,8 @@ public class PlayState extends State {
     protected void render(SpriteBatch sb, float delta) {
         sb.setProjectionMatrix(camera.combined);
 
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        //TODO: check whether it's needed
+        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         super.render(sb, delta);
     }
@@ -106,7 +118,7 @@ public class PlayState extends State {
 
         if(hero.getRotation() != (int) angle){
             rotated = true;
-            this.rotateHero((int)angle);
+            this.hero.setRotation((int)angle);
         }
 
         //actually handling input
@@ -115,8 +127,8 @@ public class PlayState extends State {
         } else if (inputProcessor.isHeldDown()) {
             messageManager.move(false);
         } else if (inputProcessor.isHeldQ()) {
-            hero.activateAnimation("strike");
-            //messageManager.animation(1, hero.getRotation());
+            //hero.activateAnimation(0);
+            messageManager.animation(0, hero.getRotation());
         } else if (inputProcessor.isHeldZ()) {
             messageManager.pause();
         }
@@ -156,20 +168,12 @@ public class PlayState extends State {
         }
     }
 
-    public void moveHero(float x, float y) {
-        this.hero.setPosition(x, y);
+    public Character getHero() {
+        return hero;
     }
 
-    public void moveAnotherHero(float x, float y) {
-        this.anotherHero.setPosition(x, y);
-    }
-
-    public void rotateHero(int angle) {
-        this.hero.setRotation(angle);
-    }
-
-    public void rotateAnotherHero(int angle) {
-        this.anotherHero.setRotation(angle);
+    public Character getAnotherHero() {
+        return anotherHero;
     }
 
     public int updateRotation(){
