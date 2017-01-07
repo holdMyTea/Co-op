@@ -1,6 +1,7 @@
 package com.forsenboyz.rise42.server;
 
 import com.forsenboyz.rise42.server.network.Server;
+import com.forsenboyz.rise42.server.parser.ConfigParser;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

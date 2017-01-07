@@ -2,7 +2,7 @@ package com.forsenboyz.rise42.server.network;
 
 import com.forsenboyz.rise42.server.message.IncomeMessage;
 import com.forsenboyz.rise42.server.message.OutcomeMessage;
-import com.forsenboyz.rise42.server.state.State;
+import com.forsenboyz.rise42.server.message.MessageProcessor;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -14,7 +14,7 @@ public class Server {
 
     private final String HOST;
     private final int PORT;
-    private final State STATE;
+    private final MessageProcessor MessageProcessor;
 
     private ServerSocket serverSocket;
 
@@ -22,10 +22,10 @@ public class Server {
 
     SimpleDateFormat dateFormat;
 
-    Server(String host, int port, State state) {
+    Server(String host, int port, MessageProcessor messageProcessor) {
         this.HOST = host;
         this.PORT = port;
-        this.STATE = state;
+        this.MessageProcessor = messageProcessor;
 
         dateFormat = new SimpleDateFormat("mm:ss.SSS");
 
@@ -48,8 +48,8 @@ public class Server {
 
     void spreadMessage(String raw, int source){
         for(String msg : raw.split(";")) {
-            OutcomeMessage outcomeMessage = this.STATE.parseMessage(new IncomeMessage(msg, source));
-            System.out.println(dateFormat.format(new Date()) + ": " + outcomeMessage.toString());
+            OutcomeMessage outcomeMessage = this.MessageProcessor.parseMessage(new IncomeMessage(msg, source));
+            System.out.println(dateFormat.format(new Date()) + ": " + outcomeMessage.toString()+" is sending");
             for (Connection connection : connections) {
                 connection.sendMessage(outcomeMessage);
             }
