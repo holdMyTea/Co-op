@@ -47,4 +47,20 @@ public class Object {
     public int getHeight() {
         return height;
     }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public void setX2(float x2){
+        this.x = x2 - width;
+    }
+
+    public void setY2(float y2){
+        this.y = y2 - height;
+    }
 }

@@ -21,7 +21,7 @@ public class IncomeMessage {
 
             PARAMS = new HashMap<String, Float>();
             String buff = raw.substring(raw.indexOf(':') + 1, raw.lastIndexOf('#'));
-            System.out.println("buff of "+RAW+" = "+buff);
+            //System.out.println("buff of "+RAW+" = "+buff);
             for (String s : buff.split(":")) {
                 int bracket = s.indexOf('(');
                 PARAMS.put(
@@ -34,8 +34,8 @@ public class IncomeMessage {
     }
 
     public float getParam(Parameters parameter){
-        System.out.println(RAW+" is getting params");
-        System.out.println("which are: "+PARAMS.toString());
+        //System.out.println(RAW+" is getting params");
+        //System.out.println("which are: "+PARAMS.toString());
         return PARAMS.get(parameter.name());
     }
 }

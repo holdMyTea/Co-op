@@ -24,14 +24,6 @@ public class Hero extends Object {
         this.angle = angle;
     }
 
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
-
     public void rotate(int angle){
         this.angle = angle;
     }

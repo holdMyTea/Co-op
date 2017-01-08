@@ -79,6 +79,8 @@ public class PlayState extends State {
                 )
         );
         objects.add(anotherHero);
+
+        objects.add(new Object("block.png",220,1360));
     }
 
     @Override

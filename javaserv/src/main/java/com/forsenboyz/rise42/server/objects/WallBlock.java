@@ -1,6 +1,6 @@
 package com.forsenboyz.rise42.server.objects;
 
-import com.forsenboyz.rise42.server.collisions.Collision;
+import com.forsenboyz.rise42.server.collisions.Direction;
 
 public class WallBlock {
 
@@ -9,13 +9,49 @@ public class WallBlock {
     private int y;
     private int y2;
 
-    public Collision checkCollision(Object object){
-        if(object.getX() < x2 && object.getX() > x){
-            if(object.getY() < y2 && object.getY() > y){
-                return Collision.ALL;
+    public Direction checkCollision(Object object){
+        if(object.getX() > x && object.getX2() < x2){
+            if(object.getY() > y && object.getY2() < y2){
+                return Direction.ALL;
+            } else if(object.getY() < y2 && object.getY2() > y2){
+                return Direction.TOP;
+            } else if(object.getY2() > y && object.getY() < y){
+                return Direction.BOT;
+            }
+        } else if(object.getX2() > x && object.getX() < x){
+            if(object.getY() > y && object.getY2() < y2){
+                return Direction.LEFT;
+            } else if(object.getY() < y2 && object.getY2() > y2){
+                return Direction.TOP_LEFT;
+            } else if(object.getY2() > y && object.getY() < y){
+                return Direction.BOT_LEFT;
+            }
+        } else if(object.getX() < x2 && object.getX2() > x){
+            if(object.getY() > y && object.getY2() < y2){
+                return Direction.RIGHT;
+            } else if(object.getY() < y2 && object.getY2() > y2){
+                return Direction.TOP_RIGHT;
+            } else if(object.getY2() > y && object.getY() < y){
+                return Direction.BOT_RIGHT;
             }
         }
-        return Collision.NO;
+        return Direction.NO;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getX2() {
+        return x2;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getY2() {
+        return y2;
     }
 
     @Override

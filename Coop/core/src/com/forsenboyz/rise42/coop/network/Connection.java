@@ -11,7 +11,10 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Queue;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Connection {
 
@@ -31,6 +34,9 @@ public class Connection {
 
     private long lastOutputTime;
 
+    // stores parts of read buffer, that were read with current message, but belong to the next one
+    private String messagePart = "";
+
     Connection(String host, int port) {
         this.HOST = host;
         this.PORT = port;
@@ -47,7 +53,7 @@ public class Connection {
             socket = new Socket();
             socket.connect(new InetSocketAddress(HOST, PORT));
             log.network("Connected");
-        } catch (IOException ioex){
+        } catch (IOException ioex) {
             log.network("No connection");
             return;
         }
@@ -71,7 +77,7 @@ public class Connection {
     void sendMessage(String message) {
         synchronized (outcomeMessages) {
             lastOutputTime = TimeUtils.millis();
-            outcomeMessages.add("c"+message+"#"+time.getTime()+";");
+            outcomeMessages.add("c" + message + "#" + time.getTime() + ";");
             outcomeMessages.notify();
             //log.network("Sending in q: " + message);
         }
@@ -87,47 +93,46 @@ public class Connection {
 
     //TODO: apparently, does not what is expected
     boolean isConnected() {
-        return (this.socket != null) && this.socket.isConnected() ;
+        return (this.socket != null) && this.socket.isConnected();
     }
 
-    private void startInputThread(){
+    private void startInputThread() {
         new Thread(
                 () -> {
                     try {
                         while (this.socket.isConnected()) {
                             String s = readMessage();
-                            log.network("Input read: "+s);
+                            log.network("Input read: " + s);
 
                             synchronized (incomeMessages) {
                                 if (s != null) {
                                     incomeMessages.add(s);
-                                    log.network("Added: "+s);
-                                    log.network("Current input q: "+incomeMessages.size());
+                                    log.network("Current input q: " + incomeMessages.size());
                                 } else System.exit(0);
                             }
                         }
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
         ).start();
     }
 
-    private void startOutputThread(){
+    private void startOutputThread() {
         new Thread(
                 () -> {
                     try {
                         while (this.socket.isConnected()) {
                             synchronized (outcomeMessages) {
                                 while (!outcomeMessages.isEmpty()) {
-                                    log.network("Sending: "+outcomeMessages.peek());
+                                    log.network("Sending: " + outcomeMessages.peek());
                                     outputWriter.write(outcomeMessages.poll());
                                     outputWriter.flush();
                                 }
                                 outcomeMessages.wait();
                             }
                         }
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -136,17 +141,22 @@ public class Connection {
 
     private String readMessage() {
         try {
-            byte[] buffer = new byte[255];
+            byte[] buffer = new byte[70];
             if (inputStream.read(buffer) > 0) {
-                ArrayList<Character> list = new ArrayList<>();
-                for (byte b : buffer) {
-                    //System.out.println(b);
-                    if (b == 0) {
-                        break;
-                    }
-                    list.add((char) b);
-                }
-                return list.toString().replaceAll("[,\\s\\[\\]]", "");
+
+                String[] read =
+                        (
+                                messagePart +
+                                        new String(buffer).replaceAll(
+                                                Character.toString((char) 0),
+                                                ""
+                                        )
+                        ).split(";");
+
+                if (read.length > 1) {
+                    messagePart = read[1];
+                } else messagePart = "";
+                return read[0] + ";";
             }
             return null;
         } catch (IOException e) {
