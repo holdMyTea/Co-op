@@ -49,10 +49,15 @@ public class ConfigParser {
 
         ArrayList<WallBlock> wallBlocks = new ArrayList<>();
 
-        Gson gson = new Gson();
+        //Gson gson = new Gson();
         for (JsonElement element : staticObjects.getAsJsonArray("blocks")) {
             wallBlocks.add(
-                    gson.fromJson(element, WallBlock.class)
+                    new WallBlock(
+                            element.getAsJsonObject().get("x").getAsInt(),
+                            element.getAsJsonObject().get("x2").getAsInt(),
+                            element.getAsJsonObject().get("y").getAsInt(),
+                            element.getAsJsonObject().get("y2").getAsInt()
+                    )
             );
         }
         return wallBlocks;

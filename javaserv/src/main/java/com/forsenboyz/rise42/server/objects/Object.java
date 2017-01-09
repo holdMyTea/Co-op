@@ -24,6 +24,39 @@ public class Object {
         this.height = (int) Math.abs(y2 - y);
     }
 
+
+    /**
+     moves Object along the X axis so its left edge will be equal to parameter x
+     * @param x desired X position of an Object's left edge
+     */
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    /**
+     moves Object along the Y axis so its left edge will be equal to parameter y
+     * @param y desired Y position of an Object's left edge
+     */
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    /**
+     moves Object along the X axis so its right edge will be equal to parameter x
+     * @param x2 desired X position of an Object's right edge
+     */
+    public void setX2(float x2){
+        this.x = x2 - width;
+    }
+
+    /**
+     moves Object along the Y axis so its right edge will be equal to parameter y
+     * @param y2 desired Y position of an Object's right edge
+     */
+    public void setY2(float y2){
+        this.y = y2 - height;
+    }
+
     public float getX() {
         return x;
     }
@@ -46,21 +79,5 @@ public class Object {
 
     public int getHeight() {
         return height;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    public void setX2(float x2){
-        this.x = x2 - width;
-    }
-
-    public void setY2(float y2){
-        this.y = y2 - height;
     }
 }

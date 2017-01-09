@@ -3,11 +3,14 @@ package com.forsenboyz.rise42.coop.states;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.forsenboyz.rise42.coop.App;
+import com.forsenboyz.rise42.coop.config.ConfigParser;
 import com.forsenboyz.rise42.coop.input.InputProcessor;
 import com.forsenboyz.rise42.coop.network.MessageManager;
 import com.forsenboyz.rise42.coop.objects.AttachedAnimation;
@@ -80,7 +83,7 @@ public class PlayState extends State {
         );
         objects.add(anotherHero);
 
-        objects.add(new Object("block.png",220,1360));
+        objects.addAll(ConfigParser.getBlocks());
     }
 
     @Override

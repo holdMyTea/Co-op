@@ -83,9 +83,10 @@ public class CollisionDetector {
             if (direction != Direction.NO){
                 System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\tCollision "+ direction +" with "+wallBlock);
                 switch (direction){
+			// for bot object.setY2();
                     case TOP_LEFT:
                         object.setY(wallBlock.getY2()+SOME_GAP_CONST);
-                        object.setX(wallBlock.getX()-SOME_GAP_CONST);
+                        object.setX2(wallBlock.getX()-SOME_GAP_CONST);
                         break;
                     case TOP:
                         object.setY(wallBlock.getY2()+SOME_GAP_CONST);
@@ -95,7 +96,7 @@ public class CollisionDetector {
                         object.setX(wallBlock.getX2()+SOME_GAP_CONST);
                         break;
                     case LEFT:
-                        object.setX(wallBlock.getX()-SOME_GAP_CONST);
+                        object.setX2(wallBlock.getX()-SOME_GAP_CONST);
                         break;
                     case ALL:
                         break;
@@ -103,14 +104,14 @@ public class CollisionDetector {
                         object.setX(wallBlock.getX2()+SOME_GAP_CONST);
                         break;
                     case BOT_LEFT:
-                        object.setY(wallBlock.getY()-SOME_GAP_CONST);
-                        object.setX(wallBlock.getX()-SOME_GAP_CONST);
+                        object.setY2(wallBlock.getY()-SOME_GAP_CONST);
+                        object.setX2(wallBlock.getX()-SOME_GAP_CONST);
                         break;
                     case BOT:
-                        object.setY(wallBlock.getY()-SOME_GAP_CONST);
+                        object.setY2(wallBlock.getY()-SOME_GAP_CONST);
                         break;
                     case BOT_RIGHT:
-                        object.setY(wallBlock.getY()-SOME_GAP_CONST);
+                        object.setY2(wallBlock.getY()-SOME_GAP_CONST);
                         object.setX(wallBlock.getX2()+SOME_GAP_CONST);
                         break;
                 }

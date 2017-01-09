@@ -50,6 +50,9 @@ public class Hero extends Object {
 
     @Override
     public String toString() {
-        return "x:{"+this.x+"}, y:{"+this.y+"}, angle:{"+this.angle+"};";
+        return "hero x:" + x
+                + ", x2:" + getX2()
+                + ", y:" + y
+                + ", y2:" + getY2();
     }
 }
