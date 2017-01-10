@@ -1,7 +1,7 @@
 package com.forsenboyz.rise42.server.parser;
 
 import com.forsenboyz.rise42.server.objects.Hero;
-import com.forsenboyz.rise42.server.objects.WallBlock;
+import com.forsenboyz.rise42.server.objects.Object;
 import com.google.gson.*;
 
 import java.io.IOException;
@@ -40,19 +40,18 @@ public class ConfigParser {
                 .get("static").getAsJsonObject().get("border").getAsInt();
     }
 
-    public static ArrayList<WallBlock> getWallBlocks() {
+    public static ArrayList<Object> getWallBlocks() {
 
         JsonObject staticObjects = new JsonParser()
                 .parse(readFile())
                 .getAsJsonObject()
                 .get("static").getAsJsonObject();
 
-        ArrayList<WallBlock> wallBlocks = new ArrayList<>();
+        ArrayList<Object> wallBlocks = new ArrayList<>();
 
-        //Gson gson = new Gson();
         for (JsonElement element : staticObjects.getAsJsonArray("blocks")) {
             wallBlocks.add(
-                    new WallBlock(
+                    new Object(
                             element.getAsJsonObject().get("x").getAsInt(),
                             element.getAsJsonObject().get("x2").getAsInt(),
                             element.getAsJsonObject().get("y").getAsInt(),

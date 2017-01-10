@@ -6,12 +6,12 @@
  		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
 
 
-    <bean class="com.forsenboyz.rise42.server.message.MessageProcessor" name="messageProcessor"/>
+    <bean class="com.forsenboyz.rise42.server.message.IncomeProcessor" name="incomeProcessor"/>
 
     <bean class="com.forsenboyz.rise42.server.network.Server" name="server">
         <constructor-arg name="host" value="localhost" type="java.lang.String"/>
         <constructor-arg name="port" value="1488" type="int"/>
-        <constructor-arg ref="messageProcessor" type="com.forsenboyz.rise42.server.message.MessageProcessor"/>
+        <constructor-arg ref="incomeProcessor" type="com.forsenboyz.rise42.server.message.IncomeProcessor"/>
     </bean>
 
     <bean class="com.forsenboyz.rise42.server.Main" name="app">

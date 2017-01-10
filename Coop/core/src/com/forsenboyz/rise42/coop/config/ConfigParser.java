@@ -36,7 +36,6 @@ public class ConfigParser {
 
         ArrayList<Object> wallBlocks = new ArrayList<>();
 
-        //Gson gson = new Gson();
         for (JsonElement element : staticObjects.getAsJsonArray("blocks")) {
             int x = element.getAsJsonObject().get("x").getAsInt();
             int x2 = element.getAsJsonObject().get("x2").getAsInt();

@@ -1,15 +1,12 @@
 package com.forsenboyz.rise42.server.objects;
 
-public class Hero extends Object {
+public class Hero extends RotatableObject {
 
     private float moveSpeed;
 
-    private int angle;
-
     public Hero(float moveSpeed, float x, float y, int angle, int width, int height) {
-        super(x,y,width,height);
+        super(x,y,width,height,angle);
         this.moveSpeed = moveSpeed;
-        this.angle = angle;
     }
 
     public void move(int angle, boolean forward){
@@ -22,14 +19,6 @@ public class Hero extends Object {
             this.y += this.moveSpeed * Math.sin(Math.toRadians(reversedAngle));
         }
         this.angle = angle;
-    }
-
-    public void rotate(int angle){
-        this.angle = angle;
-    }
-
-    public int getAngle() {
-        return angle;
     }
 
     /**

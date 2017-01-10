@@ -1,31 +1,34 @@
 package com.forsenboyz.rise42.server.network;
 
-import com.forsenboyz.rise42.server.message.IncomeMessage;
+import com.forsenboyz.rise42.server.cycle.MainCycle;
+import com.forsenboyz.rise42.server.message.IncomeProcessor;
 import com.forsenboyz.rise42.server.message.OutcomeMessage;
-import com.forsenboyz.rise42.server.message.MessageProcessor;
+import com.forsenboyz.rise42.server.message.OutcomeProcessor;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Server {
 
-    private final String HOST;
     private final int PORT;
-    private final MessageProcessor MessageProcessor;
-
     private ServerSocket serverSocket;
 
-    ArrayList<Connection> connections;
+    private MainCycle mainCycle;
+    private IncomeProcessor incomeProcessor;
+    private OutcomeProcessor outcomeProcessor;
 
-    SimpleDateFormat dateFormat;
+    private ArrayList<Connection> connections;
 
-    Server(String host, int port, MessageProcessor messageProcessor) {
-        this.HOST = host;
+    private SimpleDateFormat dateFormat;
+
+    Server(int port) {
         this.PORT = port;
-        this.MessageProcessor = messageProcessor;
+
+        this.mainCycle = new MainCycle();
+        this.incomeProcessor = mainCycle.getIncomeProcessor();
+        this.outcomeProcessor = mainCycle.getOutcomeProcessor();
 
         dateFormat = new SimpleDateFormat("mm:ss.SSS");
 
@@ -46,13 +49,21 @@ public class Server {
         }
     }
 
-    void spreadMessage(String raw, int source){
+    void processMessage(String raw, int source){
         for(String msg : raw.split(";")) {
-            OutcomeMessage outcomeMessage = this.MessageProcessor.parseMessage(new IncomeMessage(msg, source));
-            System.out.println(dateFormat.format(new Date()) + ": " + outcomeMessage.toString()+" is sending");
-            for (Connection connection : connections) {
-                connection.sendMessage(outcomeMessage);
-            }
+            this.incomeProcessor.parseMessage(msg, source);
         }
+    }
+
+    private void startSpreadingThread(){
+        Thread spreadThread = new Thread(
+                () -> {
+                    for(OutcomeMessage outcomeMessage:outcomeProcessor.getMessages()){
+                        for(Connection connection: connections){
+                            connection.sendMessage(outcomeMessage);
+                        }
+                    }
+                }
+        );
     }
 }

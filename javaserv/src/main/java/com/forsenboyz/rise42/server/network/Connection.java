@@ -58,10 +58,8 @@ public class Connection {
                     while(socket.isConnected()){
                         String msg = readMessage();
 
-                        //System.out.println("connection "+NUMBER+" read: "+msg);
-
                         if(msg != null){
-                            server.spreadMessage(msg, this.NUMBER);
+                            server.processMessage(msg, this.NUMBER);
                         } else System.exit(0);
 
                     }

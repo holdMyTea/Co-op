@@ -2,7 +2,7 @@ package com.forsenboyz.rise42.server.collisions;
 
 import com.forsenboyz.rise42.server.objects.Hero;
 import com.forsenboyz.rise42.server.objects.Object;
-import com.forsenboyz.rise42.server.objects.WallBlock;
+import com.forsenboyz.rise42.server.objects.ObjectHolder;
 import com.forsenboyz.rise42.server.parser.ConfigParser;
 
 import java.util.ArrayList;
@@ -19,19 +19,23 @@ public class CollisionDetector {
     private final int HERO_MIN_Y;
     private final int HERO_MAX_Y;
 
+    private ObjectHolder objectHolder;
+
     private Hero mage;
     private Hero war;
 
-    private ArrayList<WallBlock> wallBlocks;
+    private ArrayList<Object> wallBlocks;
 
-    public CollisionDetector(Hero mage, Hero war){
+    public CollisionDetector(ObjectHolder objectHolder){
         BORDER_THICK = ConfigParser.getBorderThick();
         this.wallBlocks = ConfigParser.getWallBlocks();
 
         int backgroundSize = ConfigParser.getBackgroundSize();
 
-        this.mage = mage;
-        this.war = war;
+        this.objectHolder = objectHolder;
+
+        this.mage = objectHolder.getMage();
+        this.war = objectHolder.getWar();
 
         HERO_MIN_X = BORDER_THICK;
         HERO_MIN_Y = BORDER_THICK;
@@ -78,12 +82,11 @@ public class CollisionDetector {
     }
 
     private void moveFromBlocks(Object object){
-        for(WallBlock wallBlock:wallBlocks){
+        for(Object wallBlock:wallBlocks){
             Direction direction = wallBlock.checkCollision(object);
             if (direction != Direction.NO){
                 System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\tCollision "+ direction +" with "+wallBlock);
                 switch (direction){
-			// for bot object.setY2();
                     case TOP_LEFT:
                         object.setY(wallBlock.getY2()+SOME_GAP_CONST);
                         object.setX2(wallBlock.getX()-SOME_GAP_CONST);
