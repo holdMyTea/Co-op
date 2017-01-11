@@ -1,7 +1,5 @@
 package com.forsenboyz.rise42.server.network;
 
-import com.forsenboyz.rise42.server.message.OutcomeMessage;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -14,7 +12,7 @@ public class Connection {
 
     private Server server;
 
-    //private Socket socket;
+    private Socket socket;
 
     private OutputStreamWriter outputWriter;
     private InputStream inputStream;
@@ -22,6 +20,7 @@ public class Connection {
     Connection(int number, Socket socket, Server server) {
         this.NUMBER = number;
         this.server = server;
+        this.socket = socket;
 
         try {
             this.outputWriter = new OutputStreamWriter(socket.getOutputStream());
@@ -39,13 +38,9 @@ public class Connection {
         System.out.println("Connection "+NUMBER+" created");
     }
 
-    void sendMessage(OutcomeMessage outcomeMessage){
+    void sendMessage(String outcomeMessage){
         try{
-            if(outcomeMessage.SOURCE == this.NUMBER){
-                outputWriter.write(outcomeMessage.getSourceResponse());
-            } else{
-                outputWriter.write(outcomeMessage.getOthersResponse());
-            }
+            outputWriter.write(outcomeMessage);
             outputWriter.flush();
         } catch(IOException e){
             e.printStackTrace();
@@ -94,5 +89,10 @@ public class Connection {
         outputWriter.write("s0:VAR("+NUMBER+");");
         outputWriter.flush();
         System.out.println("connection "+NUMBER+" preset send");
+    }
+
+    //TODO: isn't correct
+    boolean isConnected(){
+        return this.socket.isConnected();
     }
 }

@@ -16,21 +16,11 @@
         </plugins>
     </build>
 
-    <properties>
-        <spring.ver>4.3.3.RELEASE</spring.ver>
-    </properties>
-
     <groupId>com.forsenboyz.rise42.server</groupId>
     <artifactId>java-serv</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.ver}</version>
-        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>

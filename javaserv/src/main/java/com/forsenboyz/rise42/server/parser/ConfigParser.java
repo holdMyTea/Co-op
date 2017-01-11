@@ -26,7 +26,6 @@ public class ConfigParser {
                         .reduce((s1, s2) -> s1 + s2)
                         .orElse("");
 
-                System.out.println(configFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -91,6 +90,7 @@ public class ConfigParser {
     }
 
     public static int getBackgroundSize() {
+
         return new JsonParser()
                 .parse(readFile())
                 .getAsJsonObject()

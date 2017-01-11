@@ -61,7 +61,6 @@ public class PlayState extends State {
 
         TextureAtlas strikeAtlas = new TextureAtlas(Gdx.files.internal("strk.atlas"));
 
-        // r3:X(849.0):Y(1064.0):ANG(131.0);
         hero = new Character(charAtlas.findRegion("mage"), 850, 1064, 180);
         hero.addAnimation(
                 0,
@@ -72,7 +71,6 @@ public class PlayState extends State {
         );
         objects.add(hero);
 
-        // r3:X(1197.0):Y(1056.0):ANG(357.0);
         anotherHero = new Character(charAtlas.findRegion("war"), 1200, 1056, 0);
         anotherHero.addAnimation(
                 0,
@@ -89,10 +87,6 @@ public class PlayState extends State {
     @Override
     protected void render(SpriteBatch sb, float delta) {
         sb.setProjectionMatrix(camera.combined);
-
-        //TODO: check whether it's needed
-        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         super.render(sb, delta);
     }
 

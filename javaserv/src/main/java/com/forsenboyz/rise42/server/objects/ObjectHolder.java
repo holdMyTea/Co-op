@@ -1,5 +1,6 @@
 package com.forsenboyz.rise42.server.objects;
 
+import com.forsenboyz.rise42.server.objects.projectiles.Projectile;
 import com.forsenboyz.rise42.server.parser.ConfigParser;
 
 import java.util.ArrayList;

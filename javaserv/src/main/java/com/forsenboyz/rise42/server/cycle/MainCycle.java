@@ -10,34 +10,37 @@ public class MainCycle {
     private final int INTERVAL_WAIT = 1000 / 40;
     private long lastCycle;
 
+    private boolean paused;
+
     private ObjectHolder objectHolder;
     private CollisionDetector collisionDetector;
     private IncomeProcessor incomeProcessor;
     private OutcomeProcessor outcomeProcessor;
 
     public MainCycle(){
+        System.out.println("Main init");
         this.lastCycle = System.currentTimeMillis();
+        this.paused = true;
 
         this.objectHolder = new ObjectHolder();
         this.incomeProcessor = new IncomeProcessor(this);
+        this.collisionDetector = new CollisionDetector(this.objectHolder);
+        this.outcomeProcessor = new OutcomeProcessor(this.objectHolder);
+
+        outcomeProcessor.makeMessage();
+        System.out.println(outcomeProcessor.getMessage());
     }
 
     public void runCycle(){
         Thread cycle = new Thread(
                 () -> {
                     while(true){
+                        if(paused) continue;
+
                         if(System.currentTimeMillis() - lastCycle > INTERVAL_WAIT){
-
-
-
-
-
-
-
                             lastCycle = System.currentTimeMillis();
+                            outcomeProcessor.makeMessage();
                         }
-
-
                     }
                 }
         );

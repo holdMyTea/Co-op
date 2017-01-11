@@ -1,6 +1,11 @@
-package com.forsenboyz.rise42.server.objects;
+package com.forsenboyz.rise42.server.objects.projectiles;
 
-public class Projectile extends Object {
+import com.forsenboyz.rise42.server.objects.Object;
+import com.forsenboyz.rise42.server.objects.RotatableObject;
+
+public class Projectile extends RotatableObject {
+
+    private final int type;
 
     private final int maxMovementRange;
     private final int moveSpeed;
@@ -8,13 +13,14 @@ public class Projectile extends Object {
     private int movementAngle;
     private int currentRangeMoved;
 
-    public Projectile(float x, float y, int width, int height,
-                      int maxMovementRange, int moveSpeed, int movementAngle, int currentRangeMoved) {
-        super(x, y, width, height);
+    public Projectile(int type, float x, float y, int width, int height,
+                      int maxMovementRange, int moveSpeed, int movementAngle) {
+        super(x, y, width, height, movementAngle);
+        this.type = type;
         this.maxMovementRange = maxMovementRange;
         this.moveSpeed = moveSpeed;
         this.movementAngle = movementAngle;
-        this.currentRangeMoved = currentRangeMoved;
+        this.currentRangeMoved = 0;
     }
 
     public void move(){
@@ -25,5 +31,9 @@ public class Projectile extends Object {
 
     public boolean hasReachedDestination(){
         return currentRangeMoved - maxMovementRange > 0;
+    }
+
+    public int getType() {
+        return type;
     }
 }

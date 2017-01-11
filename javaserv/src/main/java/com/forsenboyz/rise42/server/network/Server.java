@@ -2,7 +2,6 @@ package com.forsenboyz.rise42.server.network;
 
 import com.forsenboyz.rise42.server.cycle.MainCycle;
 import com.forsenboyz.rise42.server.message.IncomeProcessor;
-import com.forsenboyz.rise42.server.message.OutcomeMessage;
 import com.forsenboyz.rise42.server.message.OutcomeProcessor;
 
 import java.io.IOException;
@@ -23,7 +22,7 @@ public class Server {
 
     private SimpleDateFormat dateFormat;
 
-    Server(int port) {
+    public Server(int port) {
         this.PORT = port;
 
         this.mainCycle = new MainCycle();
@@ -40,7 +39,7 @@ public class Server {
             serverSocket = new ServerSocket(PORT);
 
             System.out.println("Listening");
-            while(connections.size() < 2) {
+            while (connections.size() < 2) {
                 connections.add(new Connection(connections.size(), serverSocket.accept(), this));
                 System.out.println("Got one");
             }
@@ -49,21 +48,31 @@ public class Server {
         }
     }
 
-    void processMessage(String raw, int source){
-        for(String msg : raw.split(";")) {
+    void processMessage(String raw, int source) {
+        for (String msg : raw.split(";")) {
             this.incomeProcessor.parseMessage(msg, source);
         }
     }
 
-    private void startSpreadingThread(){
+    private void startSpreadingThread() {
         Thread spreadThread = new Thread(
                 () -> {
-                    for(OutcomeMessage outcomeMessage:outcomeProcessor.getMessages()){
-                        for(Connection connection: connections){
-                            connection.sendMessage(outcomeMessage);
+                    while (isEverythingConnected()) {
+                        for (Connection connection : connections) {
+                            connection.sendMessage(outcomeProcessor.getMessage());
                         }
                     }
                 }
         );
+        spreadThread.setDaemon(true);
+        spreadThread.start();
+    }
+
+    private boolean isEverythingConnected() {
+        boolean result = true;
+        for (Connection connection : connections) {
+            result = result && connection.isConnected();
+        }
+        return result;
     }
 }

@@ -72,7 +72,7 @@ public class IncomeProcessor {
         if (incomeMessage.SOURCE == MAGE) {
             mainCycle.actionMage(index, angle);
         } else if (incomeMessage.SOURCE == WAR) {
-            mainCycle.actionMage(index, angle);
+            mainCycle.actionWar(index, angle);
         }
     }
 

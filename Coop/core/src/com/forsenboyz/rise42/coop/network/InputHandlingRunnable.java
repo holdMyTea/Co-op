@@ -2,6 +2,9 @@ package com.forsenboyz.rise42.coop.network;
 
 import com.forsenboyz.rise42.coop.objects.Character;
 import com.forsenboyz.rise42.coop.states.StateManager;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.util.Queue;
 import static com.forsenboyz.rise42.coop.network.Parameters.*;
@@ -24,37 +27,12 @@ class InputHandlingRunnable implements Runnable {
             incomes = this.connection.getIncomeMessages();
 
             while (incomes != null && !incomes.isEmpty()) {
-                Message msg = new Message(incomes.poll());
-                System.out.println("!!!!!!!!!!!!!!!!!!" + msg.toString());
+                //TODO: init msg
 
-                switch (msg.getCode()) {
+                JsonObject msg = new JsonParser().parse(incomes.poll()).getAsJsonObject();
 
-                    case INIT_CODE:
-                        int variant = msg.getParams().get(Parameters.VAR).intValue();
-                        this.stateManager.getPlayState().setInitialParameters(variant);
-                        break;
+                stateManager.getPlayState();
 
-                    case PAUSE_CODE:
-                        this.stateManager.pause();
-                        break;
-
-                    case PLAY_CODE:
-                        this.stateManager.play();
-                        break;
-
-                    case MOVE_CODE:
-                        doMove(msg);
-                        break;
-
-                    case ROTATE_CODE:
-                        doRotate(msg);
-                        break;
-
-                    case ANIMATION_CODE:
-                        doAnimation(msg);
-                        break;
-
-                }
             }
 
         }
@@ -64,13 +42,6 @@ class InputHandlingRunnable implements Runnable {
         determineCharacter(message).move(
                 message.getParams().get(Parameters.X),
                 message.getParams().get(Parameters.Y),
-                message.getParams().get(Parameters.ANG).intValue()
-        );
-    }
-
-    private void doRotate(Message message){
-        System.out.println("there is no "+ANG+" in "+message.toString());
-        determineCharacter(message).setRotation(
                 message.getParams().get(Parameters.ANG).intValue()
         );
     }
