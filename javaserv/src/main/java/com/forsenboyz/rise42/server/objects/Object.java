@@ -111,4 +111,9 @@ public class Object {
     public int getHeight() {
         return height;
     }
+
+    @Override
+    public String toString() {
+        return "Object: x:"+x+"-"+getX2()+", y:"+y+"-"+getY2();
+    }
 }

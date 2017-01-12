@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args){
         Main main = new Main(new Server(1488));
-        //main.startServer();
+        main.startServer();
     }
 
     private void startServer(){

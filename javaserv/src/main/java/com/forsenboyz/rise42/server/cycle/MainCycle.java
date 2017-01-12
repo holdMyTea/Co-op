@@ -35,25 +35,31 @@ public class MainCycle {
         Thread cycle = new Thread(
                 () -> {
                     while(true){
-                        if(paused) continue;
+                        if(isPaused()) continue;
 
                         if(System.currentTimeMillis() - lastCycle > INTERVAL_WAIT){
                             lastCycle = System.currentTimeMillis();
                             outcomeProcessor.makeMessage();
+                            System.out.println("cycle");
                         }
                     }
                 }
         );
-        cycle.setDaemon(true);
         cycle.start();
     }
 
-    public void pause(){
-
+    public synchronized void pause(){
+        paused = true;
+        outcomeProcessor.makePauseMessage();
     }
 
-    public void play(){
+    public synchronized void play(){
+        paused = false;
+        outcomeProcessor.makePlayMessage();
+    }
 
+    private synchronized boolean isPaused(){
+        return paused;
     }
 
     public void moveMage(int angle, boolean forward){

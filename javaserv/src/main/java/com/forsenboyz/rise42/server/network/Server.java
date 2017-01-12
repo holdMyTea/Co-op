@@ -42,6 +42,8 @@ public class Server {
             while (connections.size() < 2) {
                 connections.add(new Connection(connections.size(), serverSocket.accept(), this));
                 System.out.println("Got one");
+                mainCycle.runCycle();
+                this.startSpreadingThread();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -59,8 +61,13 @@ public class Server {
                 () -> {
                     while (isEverythingConnected()) {
                         for (Connection connection : connections) {
-                            connection.sendMessage(outcomeProcessor.getMessage());
+                            String message = outcomeProcessor.getMessage();
+                            if(message != null) {
+                                System.out.println("sending: "+message);
+                                connection.sendMessage(message);
+                            }
                         }
+                        //System.out.println("writing");
                     }
                 }
         );

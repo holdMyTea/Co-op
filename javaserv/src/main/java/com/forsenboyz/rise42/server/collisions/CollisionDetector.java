@@ -45,14 +45,14 @@ public class CollisionDetector {
     }
 
     public void moveHero(Hero hero, int angle, boolean forward){
-        System.out.println("initial: "+hero);
+        //System.out.println("initial: "+hero);
         hero.move(angle,forward);
-        System.out.println("interm: "+hero);
+        //System.out.println("interm: "+hero);
         if(!isMovedFromBorders(hero)){
             moveFromBlocks(hero);
         }
 
-        System.out.println("final: "+hero);
+        //System.out.println("final: "+hero);
     }
 
     /**
@@ -85,7 +85,7 @@ public class CollisionDetector {
         for(Object wallBlock:wallBlocks){
             Direction direction = wallBlock.checkCollision(object);
             if (direction != Direction.NO){
-                System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\tCollision "+ direction +" with "+wallBlock);
+                System.out.println("\t\t\t\t\t\t\t\t\t\t\t\t\t\tCollision "+ direction +" with block "+wallBlock);
                 switch (direction){
                     case TOP_LEFT:
                         object.setY(wallBlock.getY2()+SOME_GAP_CONST);

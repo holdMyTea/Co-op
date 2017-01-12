@@ -51,10 +51,10 @@ public class ConfigParser {
         for (JsonElement element : staticObjects.getAsJsonArray("blocks")) {
             wallBlocks.add(
                     new Object(
-                            element.getAsJsonObject().get("x").getAsInt(),
-                            element.getAsJsonObject().get("x2").getAsInt(),
-                            element.getAsJsonObject().get("y").getAsInt(),
-                            element.getAsJsonObject().get("y2").getAsInt()
+                            element.getAsJsonObject().get("x").getAsFloat(),
+                            element.getAsJsonObject().get("x2").getAsFloat(),
+                            element.getAsJsonObject().get("y").getAsFloat(),
+                            element.getAsJsonObject().get("y2").getAsFloat()
                     )
             );
         }

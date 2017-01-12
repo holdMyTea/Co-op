@@ -1,12 +1,9 @@
 package com.forsenboyz.rise42.coop.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.forsenboyz.rise42.coop.App;
@@ -33,8 +30,12 @@ public class PlayState extends State {
 
     private Object background;
 
-    private Character hero;
-    private Character anotherHero;
+    // player-controlled characters
+    private Character mage;
+    private Character war;
+
+    // holds the reference to either mage or war, that determines character controlled by this client
+    private Character thisHero;
 
     // last time input was processed
     private float lastInputTime;
@@ -52,36 +53,39 @@ public class PlayState extends State {
 
         camera = new OrthographicCamera(App.WIDTH, App.HEIGHT);
 
-        CAMERA_MIN_X = (int)(background.getX() + camera.viewportWidth/2);
-        CAMERA_MAX_X = (int)(background.getWidth() + background.getX() - camera.viewportWidth/2);
-        CAMERA_MAX_Y = (int)(background.getY()+background.getHeight() - camera.viewportHeight/2);
-        CAMERA_MIN_Y = (int)(background.getY() + camera.viewportHeight/2);
+        CAMERA_MIN_X = (int) (background.getX() + camera.viewportWidth / 2);
+        CAMERA_MAX_X = (int) (background.getWidth() + background.getX() - camera.viewportWidth / 2);
+        CAMERA_MAX_Y = (int) (background.getY() + background.getHeight() - camera.viewportHeight / 2);
+        CAMERA_MIN_Y = (int) (background.getY() + camera.viewportHeight / 2);
 
         TextureAtlas charAtlas = new TextureAtlas(Gdx.files.internal("characters.atlas"));
 
         TextureAtlas strikeAtlas = new TextureAtlas(Gdx.files.internal("strk.atlas"));
 
-        hero = new Character(charAtlas.findRegion("mage"), 850, 1064, 180);
-        hero.addAnimation(
+        mage = new Character(charAtlas.findRegion("mage"), 850, 1064, 180);
+        mage.addAnimation(
                 0,
                 new AttachedAnimation(
                         strikeAtlas.findRegions("mag-strk"),
                         0.25f
                 )
         );
-        objects.add(hero);
+        objects.add(mage);
 
-        anotherHero = new Character(charAtlas.findRegion("war"), 1200, 1056, 0);
-        anotherHero.addAnimation(
+        war = new Character(charAtlas.findRegion("war"), 1200, 1056, 0);
+        war.addAnimation(
                 0,
                 new AttachedAnimation(
                         strikeAtlas.findRegions("war-strk"),
                         0.25f
                 )
         );
-        objects.add(anotherHero);
+        objects.add(war);
 
         objects.addAll(ConfigParser.getBlocks());
+
+        // default value
+        thisHero = mage;
     }
 
     @Override
@@ -94,7 +98,7 @@ public class PlayState extends State {
     protected void update(float delta) {
         super.update(delta);
         lastInputTime += delta;
-        centerCamera(hero);
+        centerCamera(thisHero);
     }
 
     @Override
@@ -107,17 +111,18 @@ public class PlayState extends State {
 
         lastInputTime = 0;
 
-        // rotating hero according to mouse position, relatively to the center of the screen
-        float angle = (float)Math.atan2(
-                inputProcessor.getMouseY()-Gdx.graphics.getHeight()/2,
-                inputProcessor.getMouseX()-Gdx.graphics.getWidth()/2
+        //TODO: normal mouse tracking
+        // rotating mage according to mouse position, relatively to the center of the screen
+        float angle = (float) Math.atan2(
+                inputProcessor.getMouseY() - Gdx.graphics.getHeight() / 2,
+                inputProcessor.getMouseX() - Gdx.graphics.getWidth() / 2
         ) * MathUtils.radiansToDegrees;
         if (angle < 0) angle = 360 - (angle + 360);
         else angle = 360 - angle;
 
-        if(hero.getRotation() != (int) angle){
+        if (thisHero.getRotation() != (int) angle) {
             rotated = true;
-            this.hero.setRotation((int)angle);
+            thisHero.setRotation((int) angle);
         }
 
         //actually handling input
@@ -126,29 +131,28 @@ public class PlayState extends State {
         } else if (inputProcessor.isHeldDown()) {
             messageManager.move(false);
         } else if (inputProcessor.isHeldQ()) {
-            //hero.activateAnimation(0);
-            messageManager.animation(0, hero.getRotation());
+            messageManager.animation(0, thisHero.getRotation());
         } else if (inputProcessor.isHeldZ()) {
             messageManager.pause();
         }
     }
 
-    private void centerCamera(Object target){
+    private void centerCamera(Object target) {
         camera.unproject(new Vector3(target.getX(), target.getY(), 0));
 
         int targetX = (int) target.getX();
 
-        if(targetX < CAMERA_MIN_X){
+        if (targetX < CAMERA_MIN_X) {
             camera.position.x = CAMERA_MIN_X;
-        } else if(targetX > CAMERA_MAX_X){
+        } else if (targetX > CAMERA_MAX_X) {
             camera.position.x = CAMERA_MAX_X;
         } else camera.position.x = targetX;
 
         int targetY = (int) target.getY();
 
-        if(targetY < CAMERA_MIN_Y){
+        if (targetY < CAMERA_MIN_Y) {
             camera.position.y = CAMERA_MIN_Y;
-        } else if(targetY > CAMERA_MAX_Y){
+        } else if (targetY > CAMERA_MAX_Y) {
             camera.position.y = CAMERA_MAX_Y;
         } else camera.position.y = targetY;
 
@@ -160,23 +164,23 @@ public class PlayState extends State {
     }
 
     public void setInitialParameters(int variant) {
-        if (variant == 1) {
-            Character buffer = hero;
-            hero = anotherHero;
-            anotherHero = buffer;
+        if (variant == 0) {
+            thisHero = mage;
+        } else if (variant == 1) {
+            thisHero = war;
         }
     }
 
-    public Character getHero() {
-        return hero;
+    public Character getMage() {
+        return mage;
     }
 
-    public Character getAnotherHero() {
-        return anotherHero;
+    public Character getWar() {
+        return war;
     }
 
-    public int updateRotation(){
+    public int updateRotation() {
         rotated = false;
-        return hero.getRotation();
+        return thisHero.getRotation();
     }
 }

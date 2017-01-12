@@ -81,12 +81,13 @@ public class Connection {
             return null;
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(0);
             return null;
         }
     }
 
     private void sendInitialMessage() throws IOException {
-        outputWriter.write("s0:VAR("+NUMBER+");");
+        outputWriter.write("{\"init\":"+NUMBER+"}");
         outputWriter.flush();
         System.out.println("connection "+NUMBER+" preset send");
     }

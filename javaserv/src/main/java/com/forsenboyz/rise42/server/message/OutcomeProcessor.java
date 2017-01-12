@@ -9,6 +9,9 @@ public class OutcomeProcessor {
 
     private ObjectHolder objectHolder;
 
+    // flag to prevent multiple sending of the same message
+    private boolean alreadyRead;
+
     private String message;
 
     public OutcomeProcessor(ObjectHolder objectHolder) {
@@ -22,6 +25,17 @@ public class OutcomeProcessor {
         message.add("heroes", makeHeroMessages());
 
         this.message = new Gson().toJson(message);
+        newMessage();
+    }
+
+    public void makePauseMessage(){
+        message = "{\"pause\":1}";
+        newMessage();
+    }
+
+    public void makePlayMessage(){
+        message = "{\"play\":1}";
+        newMessage();
     }
 
     private JsonElement makeHeroMessages() {
@@ -54,7 +68,15 @@ public class OutcomeProcessor {
         return object;
     }
 
+    private void newMessage(){
+        this.message += ";"; // semicolon is used on client to split messages
+        this.alreadyRead = false;
+    }
+
     public String getMessage() {
-        return message;
+        if(!alreadyRead) {
+            this.alreadyRead = true;
+            return message;
+        } return null;
     }
 }

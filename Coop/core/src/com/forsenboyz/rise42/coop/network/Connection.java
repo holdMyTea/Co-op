@@ -141,7 +141,7 @@ public class Connection {
 
     private String readMessage() {
         try {
-            byte[] buffer = new byte[70];
+            byte[] buffer = new byte[120];
             if (inputStream.read(buffer) > 0) {
 
                 String[] read =
@@ -156,7 +156,7 @@ public class Connection {
                 if (read.length > 1) {
                     messagePart = read[1];
                 } else messagePart = "";
-                return read[0] + ";";
+                return read[0] ;
             }
             return null;
         } catch (IOException e) {
