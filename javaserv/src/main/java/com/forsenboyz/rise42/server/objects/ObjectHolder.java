@@ -1,5 +1,6 @@
 package com.forsenboyz.rise42.server.objects;
 
+import com.forsenboyz.rise42.server.objects.actions.Action;
 import com.forsenboyz.rise42.server.objects.projectiles.Projectile;
 import com.forsenboyz.rise42.server.parser.ConfigParser;
 
@@ -7,8 +8,8 @@ import java.util.ArrayList;
 
 public class ObjectHolder {
 
-    private Hero mage;
-    private Hero war;
+    private Character mage;
+    private Character war;
 
     private ArrayList<Projectile> projectiles;
 
@@ -16,7 +17,16 @@ public class ObjectHolder {
         this.projectiles = new ArrayList<>();
 
         this.mage = ConfigParser.getMage();
+        this.mage.addAction(
+                0,
+                new Action(2000,750)
+        );
+
         this.war = ConfigParser.getWar();
+        this.war.addAction(
+                0,
+                new Action(2000, 750)
+        );
     }
 
     public void addProjectile(Projectile projectile){
@@ -27,11 +37,11 @@ public class ObjectHolder {
         this.projectiles.remove(projectile);
     }
 
-    public Hero getMage() {
+    public Character getMage() {
         return mage;
     }
 
-    public Hero getWar() {
+    public Character getWar() {
         return war;
     }
 

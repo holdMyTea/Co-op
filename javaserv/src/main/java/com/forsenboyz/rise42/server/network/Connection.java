@@ -1,5 +1,7 @@
 package com.forsenboyz.rise42.server.network;
 
+import com.sun.istack.internal.Nullable;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -64,6 +66,7 @@ public class Connection {
         thread.start();
     }
 
+    @Nullable
     private String readMessage() {
         try {
             byte[] buffer = new byte[255];
@@ -80,7 +83,7 @@ public class Connection {
             }
             return null;
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Server explosion");
             System.exit(0);
             return null;
         }

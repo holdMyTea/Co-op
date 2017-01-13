@@ -31,7 +31,7 @@ public class Server {
 
         dateFormat = new SimpleDateFormat("mm:ss.SSS");
 
-        connections = new ArrayList<Connection>(2);
+        connections = new ArrayList<>(2);
     }
 
     public void listen() {

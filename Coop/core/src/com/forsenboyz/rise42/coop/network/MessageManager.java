@@ -3,12 +3,21 @@ package com.forsenboyz.rise42.coop.network;
 
 import com.badlogic.gdx.utils.TimeUtils;
 import com.forsenboyz.rise42.coop.states.StateManager;
-import static com.forsenboyz.rise42.coop.network.Parameters.*;
 
 
 public class MessageManager {
 
     private final static int OUTPUT_WAIT = 50;
+
+    private static final String FOR="FOR";
+    private static final String ANG="ANG";
+    private static final String IND = "IND";
+
+    private static final String PAUSE_CODE = "1";
+    private static final String PLAY_CODE = "2";
+    private static final String MOVE_CODE = "3";
+    private static final String ROTATE_CODE = "4";
+    private static final String ANIMATION_CODE = "5";
 
     private Connection connection;
     private StateManager stateManager;
@@ -52,7 +61,7 @@ public class MessageManager {
         this.connection.sendMessage(ROTATE_CODE + ":"+ANG+"(" + angle + ")");
     }
 
-    public void animation(int index, int angle) {
+    public void action(int index, int angle) {
         this.connection.sendMessage(ANIMATION_CODE+":"+IND+"("+index+"):"+ANG+"(" + angle + ")");
     }
 

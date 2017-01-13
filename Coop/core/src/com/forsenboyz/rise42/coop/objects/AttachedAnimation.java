@@ -9,15 +9,18 @@ public class AttachedAnimation {
 
     private Animation animation;
 
+    // time from animation activated, current texture is chosen by it
     private float stateTime;
+
+    private boolean active;
 
     public AttachedAnimation(Array<? extends TextureRegion> regions, float frameDuration) {
         this.animation = new Animation(frameDuration, regions, Animation.PlayMode.NORMAL);
-        stateTime = 0;
+        this.stateTime = 0;
+        this.active = false;
     }
 
     public void render(SpriteBatch sb, RotatableObject object, float delta) {
-        this.stateTime += delta;
         TextureRegion current = animation.getKeyFrame(stateTime);
         sb.draw(
                 current,
@@ -33,14 +36,23 @@ public class AttachedAnimation {
                 1,
                 object.getRotation()
         );
+        this.stateTime += delta;
     }
 
     public boolean hasFinished() {
         return this.animation.isAnimationFinished(this.stateTime);
     }
 
-    public void resetStateTime() {
+    public void activate(){
+        this.active = true;
+    }
+
+    public void deactivate(){
+        this.active = false;
         this.stateTime = 0;
     }
 
+    public boolean isActive() {
+        return active;
+    }
 }

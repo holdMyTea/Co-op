@@ -27,6 +27,7 @@ public class Connection {
     private OutputStreamWriter outputWriter;
     private InputStream inputStream;
 
+    //TODO: concurrent queues
     private final Queue<String> incomeMessages;
     private final Queue<String> outcomeMessages;
 
@@ -141,7 +142,7 @@ public class Connection {
 
     private String readMessage() {
         try {
-            byte[] buffer = new byte[120];
+            byte[] buffer = new byte[255];
             if (inputStream.read(buffer) > 0) {
 
                 String[] read =

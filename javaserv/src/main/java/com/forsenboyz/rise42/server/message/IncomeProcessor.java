@@ -1,9 +1,17 @@
 package com.forsenboyz.rise42.server.message;
 
 import com.forsenboyz.rise42.server.cycle.MainCycle;
-import static com.forsenboyz.rise42.server.message.Codes.*;
 
 public class IncomeProcessor {
+
+    private static final int MAGE = 0;
+    private static final int WAR = 1;
+
+    private static final int PAUSE_CODE = 1;
+    private static final int PLAY_CODE = 2;
+    private static final int MOVE_CODE = 3;
+    private static final int ROTATE_CODE = 4;
+    private static final int ACTION_CODE = 5;
 
     private MainCycle mainCycle;
 
@@ -45,8 +53,8 @@ public class IncomeProcessor {
     }
 
     private void move(IncomeMessage incomeMessage) {
-        boolean forward = incomeMessage.getParam(Parameters.FOR) == 1;
-        int angle = (int) incomeMessage.getParam(Parameters.ANG);
+        boolean forward = incomeMessage.getParam(IncomeParameters.FOR) == 1;
+        int angle = (int) incomeMessage.getParam(IncomeParameters.ANG);
 
         if (incomeMessage.SOURCE == MAGE) {
             mainCycle.moveMage(angle,forward);
@@ -56,7 +64,7 @@ public class IncomeProcessor {
     }
 
     private void rotate(IncomeMessage incomeMessage) {
-        int angle = (int) incomeMessage.getParam(Parameters.ANG);
+        int angle = (int) incomeMessage.getParam(IncomeParameters.ANG);
 
         if (incomeMessage.SOURCE == MAGE) {
             mainCycle.rotateMage(angle);
@@ -66,14 +74,19 @@ public class IncomeProcessor {
     }
 
     private void action(IncomeMessage incomeMessage) {
-        int index = (int) incomeMessage.getParam(Parameters.IND);
-        int angle = (int) incomeMessage.getParam(Parameters.ANG);
+        int index = (int) incomeMessage.getParam(IncomeParameters.IND);
+        int angle = (int) incomeMessage.getParam(IncomeParameters.ANG);
 
         if (incomeMessage.SOURCE == MAGE) {
+            System.out.println("INCOME ACTION MAGE!!!!!!!!!!!!!!!!!!");
             mainCycle.actionMage(index, angle);
         } else if (incomeMessage.SOURCE == WAR) {
             mainCycle.actionWar(index, angle);
         }
     }
 
+}
+
+enum IncomeParameters {
+    ANG, FOR, IND
 }

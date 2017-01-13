@@ -35,7 +35,7 @@ public class PlayState extends State {
     private Character war;
 
     // holds the reference to either mage or war, that determines character controlled by this client
-    private Character thisHero;
+    private Character currentHero;
 
     // last time input was processed
     private float lastInputTime;
@@ -85,7 +85,7 @@ public class PlayState extends State {
         objects.addAll(ConfigParser.getBlocks());
 
         // default value
-        thisHero = mage;
+        currentHero = mage;
     }
 
     @Override
@@ -98,7 +98,7 @@ public class PlayState extends State {
     protected void update(float delta) {
         super.update(delta);
         lastInputTime += delta;
-        centerCamera(thisHero);
+        centerCamera(currentHero);
     }
 
     @Override
@@ -120,9 +120,9 @@ public class PlayState extends State {
         if (angle < 0) angle = 360 - (angle + 360);
         else angle = 360 - angle;
 
-        if (thisHero.getRotation() != (int) angle) {
+        if (currentHero.getRotation() != (int) angle) {
             rotated = true;
-            thisHero.setRotation((int) angle);
+            currentHero.setRotation((int) angle);
         }
 
         //actually handling input
@@ -131,7 +131,8 @@ public class PlayState extends State {
         } else if (inputProcessor.isHeldDown()) {
             messageManager.move(false);
         } else if (inputProcessor.isHeldQ()) {
-            messageManager.animation(0, thisHero.getRotation());
+            messageManager.action(0, currentHero.getRotation());
+            //currentHero.activateAnimation(0);
         } else if (inputProcessor.isHeldZ()) {
             messageManager.pause();
         }
@@ -165,9 +166,9 @@ public class PlayState extends State {
 
     public void setInitialParameters(int variant) {
         if (variant == 0) {
-            thisHero = mage;
+            currentHero = mage;
         } else if (variant == 1) {
-            thisHero = war;
+            currentHero = war;
         }
     }
 
@@ -181,6 +182,6 @@ public class PlayState extends State {
 
     public int updateRotation() {
         rotated = false;
-        return thisHero.getRotation();
+        return currentHero.getRotation();
     }
 }

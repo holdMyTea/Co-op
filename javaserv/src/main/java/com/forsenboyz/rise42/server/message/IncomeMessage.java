@@ -33,7 +33,7 @@ public class IncomeMessage {
         } else PARAMS = null;
     }
 
-    public float getParam(Parameters parameter){
+    public float getParam(IncomeParameters parameter){
         //System.out.println(RAW+" is getting params");
         //System.out.println("which are: "+PARAMS.toString());
         return PARAMS.get(parameter.name());

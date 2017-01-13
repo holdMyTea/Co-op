@@ -1,7 +1,9 @@
 package com.forsenboyz.rise42.server.objects.projectiles;
 
+import static com.forsenboyz.rise42.server.message.JsonProperties.*;
 import com.forsenboyz.rise42.server.objects.Object;
 import com.forsenboyz.rise42.server.objects.RotatableObject;
+import com.google.gson.JsonObject;
 
 public class Projectile extends RotatableObject {
 
@@ -35,5 +37,14 @@ public class Projectile extends RotatableObject {
 
     public int getType() {
         return type;
+    }
+
+    public JsonObject toJson(){
+        JsonObject object = new JsonObject();
+        object.addProperty(X, this.x);
+        object.addProperty(Y, this.y);
+        object.addProperty(ANGLE, this.angle);
+        object.addProperty(TYPE, this.type);
+        return object;
     }
 }

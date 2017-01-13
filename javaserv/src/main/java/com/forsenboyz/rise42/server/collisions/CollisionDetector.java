@@ -1,6 +1,6 @@
 package com.forsenboyz.rise42.server.collisions;
 
-import com.forsenboyz.rise42.server.objects.Hero;
+import com.forsenboyz.rise42.server.objects.Character;
 import com.forsenboyz.rise42.server.objects.Object;
 import com.forsenboyz.rise42.server.objects.ObjectHolder;
 import com.forsenboyz.rise42.server.parser.ConfigParser;
@@ -21,8 +21,8 @@ public class CollisionDetector {
 
     private ObjectHolder objectHolder;
 
-    private Hero mage;
-    private Hero war;
+    private Character mage;
+    private Character war;
 
     private ArrayList<Object> wallBlocks;
 
@@ -44,37 +44,37 @@ public class CollisionDetector {
         HERO_MAX_Y = backgroundSize - BORDER_THICK - mage.getHeight();
     }
 
-    public void moveHero(Hero hero, int angle, boolean forward){
-        //System.out.println("initial: "+hero);
-        hero.move(angle,forward);
-        //System.out.println("interm: "+hero);
-        if(!isMovedFromBorders(hero)){
-            moveFromBlocks(hero);
+    public void moveHero(Character character, int angle, boolean forward){
+        //System.out.println("initial: "+character);
+        character.move(angle,forward);
+        //System.out.println("interm: "+character);
+        if(!isMovedFromBorders(character)){
+            moveFromBlocks(character);
         }
 
-        //System.out.println("final: "+hero);
+        //System.out.println("final: "+character);
     }
 
     /**
-     Checks whether hero is in screen bounds, if not moves it in
-     * @param hero hero to be checked
-     * @return whether hero was moved back into borders
+     Checks whether character is in screen bounds, if not moves it in
+     * @param character character to be checked
+     * @return whether character was moved back into borders
      */
-    private boolean isMovedFromBorders(Hero hero){
+    private boolean isMovedFromBorders(Character character){
         boolean changed = false;
-        if (hero.getX() < HERO_MIN_X) {
-            hero.setX(HERO_MIN_X);
+        if (character.getX() < HERO_MIN_X) {
+            character.setX(HERO_MIN_X);
             changed = true;
-        } else if (hero.getX() > HERO_MAX_X) {
-            hero.setX(HERO_MAX_X);
+        } else if (character.getX() > HERO_MAX_X) {
+            character.setX(HERO_MAX_X);
             changed = true;
         }
 
-        if (hero.getY() < HERO_MIN_Y) {
-            hero.setY(HERO_MIN_Y);
+        if (character.getY() < HERO_MIN_Y) {
+            character.setY(HERO_MIN_Y);
             changed = true;
-        } else if (hero.getY() > HERO_MAX_Y) {
-            hero.setY(HERO_MAX_Y);
+        } else if (character.getY() > HERO_MAX_Y) {
+            character.setY(HERO_MAX_Y);
             changed = true;
         }
 

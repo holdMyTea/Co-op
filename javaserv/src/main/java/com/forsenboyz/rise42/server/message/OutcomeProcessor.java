@@ -1,11 +1,18 @@
 package com.forsenboyz.rise42.server.message;
 
-import com.forsenboyz.rise42.server.objects.Hero;
 import com.forsenboyz.rise42.server.objects.ObjectHolder;
 import com.forsenboyz.rise42.server.objects.projectiles.Projectile;
 import com.google.gson.*;
 
 public class OutcomeProcessor {
+
+    private static final String MAGE = "mage";
+    private static final String WAR = "war";
+    private static final String PROJECTILES = "projectiles";
+    private static final String HEROES = "heroes";
+
+    private static final String PAUSE_MSG = "{\"pause\":1}";
+    private static final String PLAY_MSG = "{\"play\":1}";
 
     private ObjectHolder objectHolder;
 
@@ -19,30 +26,27 @@ public class OutcomeProcessor {
         this.message = "";
     }
 
-    public void makeMessage() {
+    public synchronized void makeMessage() {
         JsonObject message = new JsonObject();
-        message.add("projectiles", makeProjectileMessages());
-        message.add("heroes", makeHeroMessages());
+        message.add(PROJECTILES, makeProjectileMessages());
+        message.add(HEROES, makeHeroMessages());
 
-        this.message = new Gson().toJson(message);
-        newMessage();
+        newMessage(new Gson().toJson(message));
     }
 
     public void makePauseMessage(){
-        message = "{\"pause\":1}";
-        newMessage();
+        newMessage(PAUSE_MSG);
     }
 
     public void makePlayMessage(){
-        message = "{\"play\":1}";
-        newMessage();
+        newMessage(PLAY_MSG);
     }
 
     private JsonElement makeHeroMessages() {
         JsonObject heroes = new JsonObject();
 
-        heroes.add("mage", makeHeroJson(objectHolder.getMage()));
-        heroes.add("war", makeHeroJson(objectHolder.getWar()));
+        heroes.add(MAGE, objectHolder.getMage().toJson());
+        heroes.add(WAR, objectHolder.getWar().toJson());
 
         return heroes;
     }
@@ -50,30 +54,17 @@ public class OutcomeProcessor {
     private JsonElement makeProjectileMessages() {
         JsonArray array = new JsonArray();
         for (Projectile projectile : objectHolder.getProjectiles()) {
-            JsonObject object = new JsonObject();
-            object.addProperty("x", projectile.getX());
-            object.addProperty("y", projectile.getY());
-            object.addProperty("a", projectile.getAngle());
-            object.addProperty("type", projectile.getType());
-            array.add(object);
+            array.add(projectile.toJson());
         }
         return array;
     }
 
-    private JsonElement makeHeroJson(Hero hero) {
-        JsonObject object = new JsonObject();
-        object.addProperty("x", hero.getX());
-        object.addProperty("y", hero.getY());
-        object.addProperty("a", hero.getAngle());
-        return object;
-    }
-
-    private void newMessage(){
-        this.message += ";"; // semicolon is used on client to split messages
+    private void newMessage(String msg){
+        this.message = msg + ";"; // semicolon is used on client to split messages
         this.alreadyRead = false;
     }
 
-    public String getMessage() {
+    public synchronized String getMessage() {
         if(!alreadyRead) {
             this.alreadyRead = true;
             return message;

@@ -1,6 +1,5 @@
 package com.forsenboyz.rise42.coop.network;
 
-import com.forsenboyz.rise42.coop.objects.Character;
 import com.forsenboyz.rise42.coop.states.StateManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -21,6 +20,7 @@ class InputHandlingRunnable implements Runnable {
     private static final String X = "x";
     private static final String Y = "y";
     private static final String ANGLE = "a";
+    private static final String ACTIONS = "act";
 
 
     private Connection connection;
@@ -40,6 +40,7 @@ class InputHandlingRunnable implements Runnable {
             incomes = this.connection.getIncomeMessages();
 
             while (incomes != null && !incomes.isEmpty()) {
+                System.out.println(incomes.peek());
                 JsonObject msg = new JsonParser().parse(incomes.poll()).getAsJsonObject();
 
                 if(msg.has(INIT)){
@@ -47,11 +48,11 @@ class InputHandlingRunnable implements Runnable {
                 }
 
                 if(msg.has(PAUSE)){
-                    if(msg.get("pause").getAsInt() == 1) stateManager.pause();
+                    if(msg.get(PAUSE).getAsInt() == 1) stateManager.pause();
                 }
 
                 if(msg.has(PLAY)){
-                    if(msg.get("play").getAsInt() == 1) stateManager.play();
+                    if(msg.get(PLAY).getAsInt() == 1) stateManager.play();
                 }
 
                 if(msg.has(HEROES)){
@@ -70,6 +71,9 @@ class InputHandlingRunnable implements Runnable {
                 mage.get(Y).getAsFloat(),
                 mage.get(ANGLE).getAsInt()
         );
+        for(JsonElement element: mage.getAsJsonArray(ACTIONS)){
+            this.stateManager.getPlayState().getMage().activateAnimation(element.getAsInt());
+        }
 
         JsonObject war = heroes.get(WAR).getAsJsonObject();
         this.stateManager.getPlayState().getWar().move(
@@ -77,6 +81,9 @@ class InputHandlingRunnable implements Runnable {
                 war.get(Y).getAsFloat(),
                 war.get(ANGLE).getAsInt()
         );
+        for(JsonElement element: war.getAsJsonArray(ACTIONS)){
+            this.stateManager.getPlayState().getWar().activateAnimation(element.getAsInt());
+        }
     }
 
 }

@@ -1,6 +1,6 @@
 package com.forsenboyz.rise42.server.parser;
 
-import com.forsenboyz.rise42.server.objects.Hero;
+import com.forsenboyz.rise42.server.objects.Character;
 import com.forsenboyz.rise42.server.objects.Object;
 import com.google.gson.*;
 
@@ -61,31 +61,41 @@ public class ConfigParser {
         return wallBlocks;
     }
 
-    public static Hero getMage() {
+    public static Character getMage() {
+        JsonObject object = new JsonParser()
+                .parse(readFile())
+                .getAsJsonObject()
+                .get("heroes")
+                .getAsJsonObject()
+                .get("mage")
+                .getAsJsonObject();
 
-        return new Gson().fromJson(
-                new JsonParser()
-                        .parse(readFile())
-                        .getAsJsonObject()
-                        .get("heroes")
-                        .getAsJsonObject()
-                        .get("mage")
-                        .getAsJsonObject(),
-                Hero.class
+        return new Character(
+                object.get("moveSpeed").getAsInt(),
+                object.get("x").getAsFloat(),
+                object.get("y").getAsFloat(),
+                object.get("angle").getAsInt(),
+                object.get("width").getAsInt(),
+                object.get("height").getAsInt()
         );
     }
 
-    public static Hero getWar() {
+    public static Character getWar() {
+        JsonObject object = new JsonParser()
+                .parse(readFile())
+                .getAsJsonObject()
+                .get("heroes")
+                .getAsJsonObject()
+                .get("war")
+                .getAsJsonObject();
 
-        return new Gson().fromJson(
-                new JsonParser()
-                        .parse(readFile())
-                        .getAsJsonObject()
-                        .get("heroes")
-                        .getAsJsonObject()
-                        .get("war")
-                        .getAsJsonObject(),
-                Hero.class
+        return new Character(
+                object.get("moveSpeed").getAsInt(),
+                object.get("x").getAsFloat(),
+                object.get("y").getAsFloat(),
+                object.get("angle").getAsInt(),
+                object.get("width").getAsInt(),
+                object.get("height").getAsInt()
         );
     }
 
