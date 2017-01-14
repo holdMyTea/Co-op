@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.forsenboyz.rise42.coop.App;
@@ -13,6 +14,8 @@ import com.forsenboyz.rise42.coop.network.MessageManager;
 import com.forsenboyz.rise42.coop.objects.AttachedAnimation;
 import com.forsenboyz.rise42.coop.objects.Character;
 import com.forsenboyz.rise42.coop.objects.Object;
+
+import java.util.ArrayList;
 
 
 public class PlayState extends State {
@@ -43,6 +46,9 @@ public class PlayState extends State {
     // indicates, whether hero's angle was changed, if true angle POSSIBLY will be submitted in MessageManager
     private boolean rotated;
 
+    private TextureRegion projectileTexture;
+    private ArrayList<Object> projectiles;
+
     PlayState(MessageManager messageManager, InputProcessor inputProcessor, boolean active) {
         super(messageManager, inputProcessor, active);
 
@@ -61,6 +67,9 @@ public class PlayState extends State {
         TextureAtlas charAtlas = new TextureAtlas(Gdx.files.internal("characters.atlas"));
 
         TextureAtlas strikeAtlas = new TextureAtlas(Gdx.files.internal("strk.atlas"));
+
+        this.projectileTexture = strikeAtlas.findRegion("mag-strk",1);
+        projectiles = new ArrayList<>();
 
         mage = new Character(charAtlas.findRegion("mage"), 850, 1064, 180);
         mage.addAnimation(
@@ -92,6 +101,7 @@ public class PlayState extends State {
     protected void render(SpriteBatch sb, float delta) {
         sb.setProjectionMatrix(camera.combined);
         super.render(sb, delta);
+        this.renderProjectiles(sb, delta);
     }
 
     @Override
@@ -184,4 +194,16 @@ public class PlayState extends State {
         rotated = false;
         return currentHero.getRotation();
     }
+
+    private void renderProjectiles(SpriteBatch sb, float delta){
+        for(Object obj: projectiles){
+            obj.setTexture(projectileTexture);
+            obj.render(sb, delta);
+        }
+    }
+
+    public void setProjectiles(ArrayList<Object> projectiles){
+        this.projectiles = projectiles;
+    }
+
 }

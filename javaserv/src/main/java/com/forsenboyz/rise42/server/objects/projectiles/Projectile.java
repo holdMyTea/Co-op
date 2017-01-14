@@ -1,7 +1,6 @@
 package com.forsenboyz.rise42.server.objects.projectiles;
 
 import static com.forsenboyz.rise42.server.message.JsonProperties.*;
-import com.forsenboyz.rise42.server.objects.Object;
 import com.forsenboyz.rise42.server.objects.RotatableObject;
 import com.google.gson.JsonObject;
 
@@ -33,10 +32,6 @@ public class Projectile extends RotatableObject {
 
     public boolean hasReachedDestination(){
         return currentRangeMoved - maxMovementRange > 0;
-    }
-
-    public int getType() {
-        return type;
     }
 
     public JsonObject toJson(){

@@ -2,10 +2,8 @@
 
 source:
 c - client
-s - server income
-r - server response
 
-animation:
+action:
 basic attack - 0
 
 client:
@@ -13,12 +11,4 @@ pause - c1;
 play - c2;
 move - c3:FOR(0/1):ANG(0-360);
 rotate - c4:ANG(0-360);
-animation - c5:IND(INT):ANG(0-360);
-
-server:
-init - s0:VAR(0/1);
-pause - r1;/s1;
-play - r2;/s2;
-move - r3:X(int):Y(int):ANG(0-360);/s3:X(int):Y(int):ANG(0-360);
-rotate - r4:ANG(0-360);/s4:ANG(0-360);
-animation - r5:IND(INT):ANG(0-360);/s5:IND(INT):ANG(0-360);
+action - c5:IND(INT):ANG(0-360);

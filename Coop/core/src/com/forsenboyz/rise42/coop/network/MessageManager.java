@@ -22,22 +22,16 @@ public class MessageManager {
     private Connection connection;
     private StateManager stateManager;
 
-    private Thread inputThread;
     private Thread outputThread;
 
     public MessageManager(String host, int port, StateManager stateManager) {
         this.stateManager = stateManager;
-        this.connection = new Connection(host, port);
+        this.connection = new Connection(host, port, new InputMessageHandler(stateManager));
     }
 
     public void connect() {
         if (!connection.isConnected()) {
-            if (this.inputThread != null) {
-                this.inputThread.interrupt();
-            }
-
             this.connection.connect();
-            this.startInputThread();
             this.startOutputThread();
         }
     }
@@ -63,14 +57,6 @@ public class MessageManager {
 
     public void action(int index, int angle) {
         this.connection.sendMessage(ANIMATION_CODE+":"+IND+"("+index+"):"+ANG+"(" + angle + ")");
-    }
-
-    private void startInputThread() {
-        inputThread = new Thread(
-                new InputHandlingRunnable(connection,stateManager)
-        );
-        inputThread.setDaemon(true);
-        inputThread.start();
     }
 
     /**

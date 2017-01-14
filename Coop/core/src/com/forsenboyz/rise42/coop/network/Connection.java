@@ -13,6 +13,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,12 +25,14 @@ public class Connection {
     private Socket socket;
     private Log log;
 
+    private InputMessageHandler inputMessageHandler;
+
     private OutputStreamWriter outputWriter;
     private InputStream inputStream;
 
     //TODO: concurrent queues
-    private final Queue<String> incomeMessages;
     private final Queue<String> outcomeMessages;
+    private final Queue<String> incomeMessages;
 
     private final Time time;
 
@@ -38,15 +41,17 @@ public class Connection {
     // stores parts of read buffer, that were read with current message, but belong to the next one
     private String messagePart = "";
 
-    Connection(String host, int port) {
+    Connection(String host, int port, InputMessageHandler inputMessageHandler) {
         this.HOST = host;
         this.PORT = port;
+
+        this.inputMessageHandler = inputMessageHandler;
 
         log = Log.getInstance();
         time = new Time("SSS");
 
-        incomeMessages = new ArrayDeque<String>();
         outcomeMessages = new ArrayDeque<String>();
+        incomeMessages = new ConcurrentLinkedQueue<String>();
     }
 
     void connect() {
@@ -84,10 +89,6 @@ public class Connection {
         }
     }
 
-    synchronized Queue<String> getIncomeMessages() {
-        return incomeMessages;
-    }
-
     long getLastOutputTime() {
         return lastOutputTime;
     }
@@ -105,12 +106,12 @@ public class Connection {
                             String s = readMessage();
                             log.network("Input read: " + s);
 
-                            synchronized (incomeMessages) {
                                 if (s != null) {
                                     incomeMessages.add(s);
+                                    inputMessageHandler.parse(incomeMessages);
                                     log.network("Current input q: " + incomeMessages.size());
                                 } else System.exit(0);
-                            }
+
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -142,7 +143,7 @@ public class Connection {
 
     private String readMessage() {
         try {
-            byte[] buffer = new byte[255];
+            byte[] buffer = new byte[350];
             if (inputStream.read(buffer) > 0) {
 
                 String[] read =

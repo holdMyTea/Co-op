@@ -29,6 +29,16 @@ public class ObjectHolder {
         );
     }
 
+    public void updateProjectiles(){
+        for (int i = 0; i < projectiles.size(); i++) {
+            if(projectiles.get(i).hasReachedDestination()){
+                projectiles.remove(i);
+            } else{
+                projectiles.get(i).move();
+            }
+        }
+    }
+
     public void addProjectile(Projectile projectile){
         this.projectiles.add(projectile);
     }

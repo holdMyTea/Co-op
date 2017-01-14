@@ -5,6 +5,7 @@ import com.forsenboyz.rise42.server.message.IncomeProcessor;
 import com.forsenboyz.rise42.server.message.OutcomeProcessor;
 import com.forsenboyz.rise42.server.objects.Character;
 import com.forsenboyz.rise42.server.objects.ObjectHolder;
+import com.forsenboyz.rise42.server.objects.projectiles.ProjectileBuilder;
 
 public class MainCycle {
 
@@ -21,7 +22,7 @@ public class MainCycle {
     private Character mage;
     private Character war;
 
-    public MainCycle(){
+    public MainCycle() {
         System.out.println("Main init");
         this.lastCycle = System.currentTimeMillis();
         this.paused = true;
@@ -39,16 +40,20 @@ public class MainCycle {
         System.out.println(outcomeProcessor.getMessage());
     }
 
-    public void runCycle(){
+    public void runCycle() {
         Thread cycle = new Thread(
                 () -> {
-                    while(true){
-                        if(isPaused()) continue;
+                    while (true) {
+                        if (isPaused()) continue;
 
-                        if(System.currentTimeMillis() - lastCycle > INTERVAL_WAIT){
+                        if (System.currentTimeMillis() - lastCycle > INTERVAL_WAIT) {
                             lastCycle = System.currentTimeMillis();
-                            this.mage.update(lastCycle);
-                            this.war.update(lastCycle);
+
+                            mage.update(lastCycle);
+                            war.update(lastCycle);
+
+                            objectHolder.updateProjectiles();
+
                             outcomeProcessor.makeMessage();
                             System.out.println("cycle");
                         }
@@ -63,42 +68,50 @@ public class MainCycle {
         cycle.start();
     }
 
-    public synchronized void pause(){
+    public synchronized void pause() {
         paused = true;
         outcomeProcessor.makePauseMessage();
     }
 
-    public synchronized void play(){
+    public synchronized void play() {
         paused = false;
         outcomeProcessor.makePlayMessage();
     }
 
-    private synchronized boolean isPaused(){
+    private synchronized boolean isPaused() {
         return paused;
     }
 
-    public void moveMage(int angle, boolean forward){
+    public void moveMage(int angle, boolean forward) {
         collisionDetector.moveHero(mage, angle, forward);
     }
 
-    public void moveWar(int angle, boolean forward){
+    public void moveWar(int angle, boolean forward) {
         collisionDetector.moveHero(war, angle, forward);
     }
 
-    public void rotateMage(int angle){
+    public void rotateMage(int angle) {
         mage.setAngle(angle);
     }
 
-    public void rotateWar(int angle){
+    public void rotateWar(int angle) {
         war.setAngle(angle);
     }
 
-    public void actionMage(int index, int angle){
+    public void actionMage(int index, int angle) {
         rotateMage(angle);
-        mage.activateAction(index, System.currentTimeMillis());
+        if (mage.activateAction(index, System.currentTimeMillis())) {
+            objectHolder.addProjectile(
+                    ProjectileBuilder.makeFireball(
+                            mage.getX() + mage.getWidth()/2 - ProjectileBuilder.FIREBALL_SIZE/2,
+                            mage.getY() + mage.getHeight(),
+                            mage.getAngle()
+                    )
+            );
+        }
     }
 
-    public void actionWar(int index, int angle){
+    public void actionWar(int index, int angle) {
         rotateWar(angle);
         war.activateAction(index, System.currentTimeMillis());
     }
