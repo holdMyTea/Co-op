@@ -13,6 +13,10 @@ public class IncomeProcessor {
     private static final int ROTATE_CODE = 4;
     private static final int ACTION_CODE = 5;
 
+    private static final String ANG = "ANG";
+    private static final String FOR = "FOR";
+    private static final String IND = "IND";
+
     private MainCycle mainCycle;
 
     public IncomeProcessor(MainCycle mainCycle) {
@@ -53,8 +57,8 @@ public class IncomeProcessor {
     }
 
     private void move(IncomeMessage incomeMessage) {
-        boolean forward = incomeMessage.getParam(IncomeParameters.FOR) == 1;
-        int angle = (int) incomeMessage.getParam(IncomeParameters.ANG);
+        boolean forward = incomeMessage.getParam(FOR) == 1;
+        int angle = (int) incomeMessage.getParam(ANG);
 
         if (incomeMessage.SOURCE == MAGE) {
             mainCycle.moveMage(angle,forward);
@@ -64,7 +68,7 @@ public class IncomeProcessor {
     }
 
     private void rotate(IncomeMessage incomeMessage) {
-        int angle = (int) incomeMessage.getParam(IncomeParameters.ANG);
+        int angle = (int) incomeMessage.getParam(ANG);
 
         if (incomeMessage.SOURCE == MAGE) {
             mainCycle.rotateMage(angle);
@@ -74,8 +78,8 @@ public class IncomeProcessor {
     }
 
     private void action(IncomeMessage incomeMessage) {
-        int index = (int) incomeMessage.getParam(IncomeParameters.IND);
-        int angle = (int) incomeMessage.getParam(IncomeParameters.ANG);
+        int index = (int) incomeMessage.getParam(IND);
+        int angle = (int) incomeMessage.getParam(ANG);
 
         if (incomeMessage.SOURCE == MAGE) {
             System.out.println("INCOME ACTION MAGE!!!!!!!!!!!!!!!!!!");
@@ -85,8 +89,4 @@ public class IncomeProcessor {
         }
     }
 
-}
-
-enum IncomeParameters {
-    ANG, FOR, IND
 }

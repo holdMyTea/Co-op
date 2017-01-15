@@ -4,6 +4,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.forsenboyz.rise42.coop.App;
+import com.forsenboyz.rise42.coop.network.ConnectionTester;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -19,8 +20,9 @@ public class DesktopLauncher {
 	}
 
 	private void doStuff(){
-		TexturePacker.process("/home/rise42/Projects/Co-op/assets_base/animations",
-				"/home/rise42/Projects/Co-op/Coop/core/assets/","strk");
+		//TexturePacker.process("/home/rise42/Projects/Co-op/assets_base/animations", "/home/rise42/Projects/Co-op/Coop/core/assets/","strk");
+
+		ConnectionTester.getPortForConnection("localhost",1488);
 	}
 
 }

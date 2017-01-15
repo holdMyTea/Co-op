@@ -1,5 +1,7 @@
 package com.forsenboyz.rise42.server.message;
 
+import com.forsenboyz.rise42.server.Main;
+import com.forsenboyz.rise42.server.network.Server;
 import com.forsenboyz.rise42.server.objects.ObjectHolder;
 import com.forsenboyz.rise42.server.objects.projectiles.Projectile;
 import com.google.gson.*;
@@ -15,15 +17,11 @@ public class OutcomeProcessor {
     private static final String PLAY_MSG = "{\"play\":1}";
 
     private ObjectHolder objectHolder;
+    private Server server;
 
-    // flag to prevent multiple sending of the same message
-    private boolean alreadyRead;
-
-    private String message;
-
-    public OutcomeProcessor(ObjectHolder objectHolder) {
+    public OutcomeProcessor(ObjectHolder objectHolder, Server server) {
         this.objectHolder = objectHolder;
-        this.message = "";
+        this.server = server;
     }
 
     public synchronized void makeMessage() {
@@ -60,14 +58,7 @@ public class OutcomeProcessor {
     }
 
     private void newMessage(String msg){
-        this.message = msg + ";"; // semicolon is used on client to split messages
-        this.alreadyRead = false;
+        server.spreadMessage(msg + ";");
     }
 
-    public synchronized String getMessage() {
-        if(!alreadyRead) {
-            this.alreadyRead = true;
-            return message;
-        } return null;
-    }
 }

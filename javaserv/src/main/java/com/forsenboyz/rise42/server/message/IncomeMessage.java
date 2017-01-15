@@ -3,14 +3,14 @@ package com.forsenboyz.rise42.server.message;
 import java.util.HashMap;
 import java.util.Map;
 
-public class IncomeMessage {
+class IncomeMessage {
 
-    public final int SOURCE;
-    public final String RAW;
-    public final int CODE;
-    public final Map<String, Float> PARAMS;
+    final int SOURCE;
+    final String RAW;
+    final int CODE;
+    final Map<String, Float> PARAMS;
 
-    public IncomeMessage(String raw, int source){
+    IncomeMessage(String raw, int source){
         this.RAW = raw;
         this.SOURCE = source;
 
@@ -33,9 +33,9 @@ public class IncomeMessage {
         } else PARAMS = null;
     }
 
-    public float getParam(IncomeParameters parameter){
+    float getParam(String parameter){
         //System.out.println(RAW+" is getting params");
         //System.out.println("which are: "+PARAMS.toString());
-        return PARAMS.get(parameter.name());
+        return PARAMS.get(parameter);
     }
 }

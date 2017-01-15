@@ -5,49 +5,42 @@ import com.forsenboyz.rise42.server.message.IncomeProcessor;
 import com.forsenboyz.rise42.server.message.OutcomeProcessor;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Server {
 
-    private final int PORT;
-    private ServerSocket serverSocket;
+    private int salutePort;
+    private int player1Port;
+    private int player2Port;
+    private int spectatorPort;
 
     private MainCycle mainCycle;
     private IncomeProcessor incomeProcessor;
-    private OutcomeProcessor outcomeProcessor;
 
-    private ArrayList<Connection> connections;
+    // hope it's the case
+    private CopyOnWriteArrayList<Connection> connections;
 
     private SimpleDateFormat dateFormat;
 
-    public Server(int port) {
-        this.PORT = port;
+    public Server(int salutePort, int player1Port, int player2Port, int spectatorPort) {
+        this.salutePort = salutePort;
+        this.player1Port = player1Port;
+        this.player2Port = player2Port;
+        this.spectatorPort = spectatorPort;
 
-        this.mainCycle = new MainCycle();
+        connections = new CopyOnWriteArrayList<>();
+
+        this.mainCycle = new MainCycle(this);
         this.incomeProcessor = mainCycle.getIncomeProcessor();
-        this.outcomeProcessor = mainCycle.getOutcomeProcessor();
 
         dateFormat = new SimpleDateFormat("mm:ss.SSS");
-
-        connections = new ArrayList<>(2);
     }
 
     public void listen() {
-        try {
-            serverSocket = new ServerSocket(PORT);
-
-            System.out.println("Listening");
-            while (connections.size() < 2) {
-                connections.add(new Connection(connections.size(), serverSocket.accept(), this));
-                System.out.println("Got one");
-                mainCycle.runCycle();
-                this.startSpreadingThread();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        makeSaluteThread().start();
     }
 
     void processMessage(String raw, int source) {
@@ -56,30 +49,96 @@ public class Server {
         }
     }
 
-    private void startSpreadingThread() {
-        Thread spreadThread = new Thread(
+    public void spreadMessage(String message) {
+        for (Connection connection : connections) {
+            if (message != null) {
+                System.out.println("sending: " + message);
+                connection.sendMessage(message);
+            }
+        }
+    }
+
+    private Thread makeSaluteThread() {
+        Thread thread = new Thread(
                 () -> {
-                    while (isEverythingConnected()) {
-                        for (Connection connection : connections) {
-                            String message = outcomeProcessor.getMessage();
-                            if(message != null) {
-                                System.out.println("sending: "+message);
-                                connection.sendMessage(message);
+                    try {
+                        // here?
+                        mainCycle.runCycle();
+
+                        ServerSocket saluteSocket;
+                        OutputStreamWriter outputStream;
+
+                        System.out.println("Listening");
+                        while (true) {
+                            System.out.println("Collect them all: " + Thread.activeCount());
+                            saluteSocket = new ServerSocket(salutePort);
+                            outputStream = new OutputStreamWriter(
+                                    saluteSocket.accept().getOutputStream()
+                            );
+                            if (connections.size() == 0) {
+                                outputStream.write(Integer.toString(player1Port));
+                                makePlayer1Thread().start();
+                            } else if (connections.size() == 1) {
+                                outputStream.write(Integer.toString(player2Port));
+                                makePlayer2Thread().start();
+                                //break; //TODO: deal with it
+                            } else {
+                                outputStream.write(Integer.toString(spectatorPort));
+                                break;
                             }
+                            outputStream.flush();
+                            outputStream.close();
+                            saluteSocket.close();
                         }
-                        //System.out.println("writing");
+                        System.out.println("Salute is dead");
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
         );
-        spreadThread.setDaemon(true);
-        spreadThread.start();
+        thread.setDaemon(false);
+        return thread;
     }
 
-    private boolean isEverythingConnected() {
-        boolean result = true;
-        for (Connection connection : connections) {
-            result = result && connection.isConnected();
-        }
-        return result;
+    private Thread makePlayer1Thread() {
+        Thread thread = new Thread(
+                () -> {
+                    try {
+                        ServerSocket player1Socket = new ServerSocket(player1Port);
+
+                        connections.add(
+                                new Connection(0, player1Socket.accept(), this)
+                        );
+                        System.out.println("Got the p1");
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
+        thread.setDaemon(true);
+        return thread;
+    }
+
+    private Thread makePlayer2Thread() {
+        Thread thread = new Thread(
+                () -> {
+                    try {
+                        ServerSocket player2Socket = new ServerSocket(player2Port);
+
+                        System.out.println("Waiting for p2");
+                        connections.add(
+                                new Connection(1, player2Socket.accept(), this)
+                        );
+                        System.out.println("Got the p2");
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
+        thread.setDaemon(true);
+        return thread;
     }
 }

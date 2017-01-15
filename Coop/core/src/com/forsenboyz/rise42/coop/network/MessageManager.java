@@ -9,6 +9,9 @@ public class MessageManager {
 
     private final static int OUTPUT_WAIT = 50;
 
+    private final String HOST;
+    private final int PORT;
+
     private static final String FOR="FOR";
     private static final String ANG="ANG";
     private static final String IND = "IND";
@@ -26,11 +29,17 @@ public class MessageManager {
 
     public MessageManager(String host, int port, StateManager stateManager) {
         this.stateManager = stateManager;
-        this.connection = new Connection(host, port, new InputMessageHandler(stateManager));
+        this.HOST = host;
+        this.PORT = port;
     }
 
     public void connect() {
-        if (!connection.isConnected()) {
+        if (this.connection == null || !connection.isConnected()) {
+            this.connection = new Connection(
+                    HOST,
+                    ConnectionTester.getPortForConnection(HOST, PORT),
+                    new InputMessageHandler(stateManager)
+            );
             this.connection.connect();
             this.startOutputThread();
         }
