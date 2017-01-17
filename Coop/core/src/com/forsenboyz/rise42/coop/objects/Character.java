@@ -1,17 +1,17 @@
 package com.forsenboyz.rise42.coop.objects;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Character extends RotatableObject {
 
     private ArrayList<AttachedAnimation> animations;
 
-    public Character(TextureRegion region, float x, float y, int rotation) {
-        super(region, x, y, rotation);
+    public Character(TextureRegion region, float x, float y, int angle) {
+        super(region, x, y, angle);
         animations = new ArrayList<>();
     }
 
@@ -19,12 +19,16 @@ public class Character extends RotatableObject {
         this(region, x, y, 0);
     }
 
+    public Character(String texturePath, float x, float y, int angle) {
+        this(new TextureRegion(new Texture(texturePath)), x, y, angle);
+    }
+
     @Override
     public void render(SpriteBatch sb, float delta) {
         super.render(sb, delta);
-        for(AttachedAnimation a:animations){
-            if(a.isActive()){
-                if(a.hasFinished()){
+        for (AttachedAnimation a : animations) {
+            if (a.isActive()) {
+                if (a.hasFinished()) {
                     a.deactivate();
                     continue;
                 }
@@ -33,19 +37,18 @@ public class Character extends RotatableObject {
         }
     }
 
-    public void addAnimation(int index, AttachedAnimation attachedAnimation){
+    public void addAnimation(int index, AttachedAnimation attachedAnimation) {
         this.animations.add(index, attachedAnimation);
     }
 
-    public void activateAnimation(int index){
-        if(animations.get(index) != null){
+    public void activateAnimation(int index) {
+        if (animations.get(index) != null) {
             animations.get(index).activate();
         }
     }
 
-    public void move(float x, float y, int angle){
-        this.x = x;
-        this.y = y;
-        this.rotation = angle;
+    public void move(float x, float y, int angle) {
+        this.setPosition(x, y);
+        this.setAngle(angle);
     }
 }

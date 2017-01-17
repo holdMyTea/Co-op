@@ -42,6 +42,7 @@ public class Connection {
 
     void sendMessage(String outcomeMessage){
         try{
+            System.out.println("connection: "+NUMBER+" sending: "+outcomeMessage);
             outputWriter.write(outcomeMessage);
             outputWriter.flush();
         } catch(IOException e){

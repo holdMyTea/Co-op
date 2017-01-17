@@ -31,6 +31,7 @@ public class App extends ApplicationAdapter {
 		stateManager.update(Gdx.graphics.getRawDeltaTime());
         stateManager.render(sb, Gdx.graphics.getRawDeltaTime());
 		sb.end();
+		//System.out.println(Gdx.graphics.getFramesPerSecond());
 	}
 	
 	@Override

@@ -7,20 +7,20 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class RotatableObject extends Object {
 
-    protected int rotation;
+    private int angle;
 
     private final int originX;
     private final int originY;
 
-    public RotatableObject(TextureRegion textureRegion, float x, float y, int rotation) {
+    public RotatableObject(TextureRegion textureRegion, float x, float y, int angle) {
         super(textureRegion, x, y);
         this.originX = this.textureRegion.getRegionWidth() / 2;
         this.originY = this.textureRegion.getRegionHeight() / 2;
-        this.rotation = rotation;
+        this.angle = angle;
     }
 
-    public RotatableObject(Texture texture, float x, float y, int rotation) {
-        this(new TextureRegion(texture), x, y, rotation);
+    public RotatableObject(Texture texture, float x, float y, int angle) {
+        this(new TextureRegion(texture), x, y, angle);
     }
 
     public RotatableObject(String texturePath, float x, float y) {
@@ -35,29 +35,34 @@ public class RotatableObject extends Object {
         this(textureRegion, x, y, 0);
     }
 
-    public RotatableObject(String texturePath, float x, float y, int rotation) {
-        this(new Texture(texturePath), x, y, rotation);
+    public RotatableObject(String texturePath, float x, float y, int angle) {
+        this(new Texture(texturePath), x, y, angle);
     }
 
     @Override
     public void render(SpriteBatch sb, float delta) {
-        sb.draw(textureRegion, x, y, originX, originY, textureRegion.getRegionWidth(), textureRegion.getRegionHeight(),
-                1, 1, rotation);
+        sb.draw(textureRegion, getX(), getY(), originX, originY, textureRegion.getRegionWidth(), textureRegion.getRegionHeight(),
+                1, 1, angle);
     }
 
-    public void setRotation(int rotation) {
-        this.rotation = rotation;
+    public void setAngle(int angle) {
+        this.angle = angle;
     }
 
-    public int getRotation() {
-        return rotation;
+    public int getAngle() {
+        return angle;
     }
 
-    public int getOriginX() {
+    int getOriginX() {
         return originX;
     }
 
-    public int getOriginY() {
+    int getOriginY() {
         return originY;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString()+", angle:"+this.angle;
     }
 }

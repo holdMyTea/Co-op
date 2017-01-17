@@ -1,31 +1,29 @@
 package com.forsenboyz.rise42.coop.states;
 
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.forsenboyz.rise42.coop.App;
 import com.forsenboyz.rise42.coop.input.InputProcessor;
-import com.forsenboyz.rise42.coop.network.MessageManager;
+import com.forsenboyz.rise42.coop.network.OutputMessageHandler;
 import com.forsenboyz.rise42.coop.objects.Object;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 abstract class State {
 
     protected InputProcessor inputProcessor;
 
-    protected MessageManager messageManager;
+    protected OutputMessageHandler outputMessageHandler;
     protected ArrayList<Object> objects;
 
-    protected boolean active;
+    private AtomicBoolean active;
 
-    State(MessageManager messageManager, InputProcessor inputProcessor, boolean active) {
-        this.messageManager = messageManager;
-        this.active = active;
+    State(OutputMessageHandler outputMessageHandler, InputProcessor inputProcessor, boolean active) {
+        this.outputMessageHandler = outputMessageHandler;
+        this.active = new AtomicBoolean(false);
         this.inputProcessor = inputProcessor;
 
-        objects = new ArrayList<Object>();
+        objects = new ArrayList<>();
     }
 
     protected void render(SpriteBatch sb, float delta) {
@@ -35,7 +33,7 @@ abstract class State {
     }
 
     protected void update(float delta) {
-        if (!active){
+        if (!active.get()){
            return;
         }
         handleInput();
@@ -45,17 +43,17 @@ abstract class State {
     }
 
     public void activate() {
-        this.active = true;
         synchronized (this) {
+            this.active.set(true);
             this.notify();
         }
     }
 
     public void deactivate() {
-        this.active = false;
+        this.active.set(false);
     }
 
     public boolean isActive() {
-        return active;
+        return active.get();
     }
 }

@@ -9,7 +9,7 @@ import com.google.gson.*;
 import java.util.ArrayList;
 import java.util.Queue;
 
-class InputMessageHandler {
+public class InputMessageHandler {
 
     private static final String INIT = "init";
     private static final String PLAY = "play";
@@ -26,19 +26,23 @@ class InputMessageHandler {
     private static final String ACTIONS = "act";
 
     private StateManager stateManager;
+    private Connection connection;
 
-    InputMessageHandler(StateManager stateManager) {
+    InputMessageHandler(StateManager stateManager, Connection connection) {
         this.stateManager = stateManager;
+        this.connection = connection;
     }
 
-    public void parse(Queue<String> incomes) {
+    public void parse() {
 
-        while (!incomes.isEmpty()) {
+        Queue<String> queue = connection.getIncomeMessages();
+
+        while (!queue.isEmpty()) {
             JsonObject msg;
             try {
-                msg = new JsonParser().parse(incomes.poll()).getAsJsonObject();
-            } catch (JsonSyntaxException ex){
-                continue;
+                msg = new JsonParser().parse(queue.poll()).getAsJsonObject();
+            } catch (JsonSyntaxException ex) {
+                return;
             }
 
 
@@ -58,7 +62,7 @@ class InputMessageHandler {
                 processHeroes(msg.get(HEROES).getAsJsonObject());
             }
 
-            if (msg.has(PROJECTILES)){
+            if (msg.has(PROJECTILES)) {
                 processProjectiles(msg.get(PROJECTILES).getAsJsonArray());
             }
         }
@@ -88,7 +92,7 @@ class InputMessageHandler {
 
     private void processProjectiles(JsonArray projectiles) {
         ArrayList<Object> list = new ArrayList<>();
-        for(JsonElement obj : projectiles){
+        for (JsonElement obj : projectiles) {
             list.add(
                     new Object(
                             new TextureRegion(),

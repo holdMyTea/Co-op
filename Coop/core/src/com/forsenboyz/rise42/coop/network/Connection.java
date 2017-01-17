@@ -17,15 +17,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Connection {
+class Connection {
 
     private final String HOST;
     private final int PORT;
 
     private Socket socket;
     private Log log;
-
-    private InputMessageHandler inputMessageHandler;
 
     private OutputStreamWriter outputWriter;
     private InputStream inputStream;
@@ -41,17 +39,15 @@ public class Connection {
     // stores parts of read buffer, that were read with current message, but belong to the next one
     private String messagePart = "";
 
-    Connection(String host, int port, InputMessageHandler inputMessageHandler) {
+    Connection(String host, int port) {
         this.HOST = host;
         this.PORT = port;
-
-        this.inputMessageHandler = inputMessageHandler;
 
         log = Log.getInstance();
         time = new Time("SSS");
 
-        outcomeMessages = new ArrayDeque<String>();
-        incomeMessages = new ConcurrentLinkedQueue<String>();
+        outcomeMessages = new ConcurrentLinkedQueue<>();
+        incomeMessages = new ConcurrentLinkedQueue<>();
     }
 
     void connect() {
@@ -103,15 +99,7 @@ public class Connection {
                 () -> {
                     try {
                         while (this.socket.isConnected()) {
-                            String s = readMessage();
-                            log.network("Input read: " + s);
-
-                                if (s != null) {
-                                    incomeMessages.add(s);
-                                    inputMessageHandler.parse(incomeMessages);
-                                    log.network("Current input q: " + incomeMessages.size());
-                                } else System.exit(0);
-
+                            readMessage();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -156,9 +144,18 @@ public class Connection {
                         ).split(";");
 
                 if (read.length > 1) {
-                    messagePart = read[1];
+                    System.out.println(">1 part");
+                    if (read[1].contains("}}}")) {
+                        //System.out.println("SQOOPKA");
+                        incomeMessages.add(read[0]);
+                        incomeMessages.add(read[1]);
+                    } else {
+                        messagePart = read[1];
+                        System.out.println("Some missing message crap");
+                        System.out.println(messagePart.length());
+                    }
                 } else messagePart = "";
-                return read[0] ;
+                incomeMessages.add(read[0]);
             }
             return null;
         } catch (IOException e) {
@@ -167,4 +164,7 @@ public class Connection {
         }
     }
 
+    public Queue<String> getIncomeMessages() {
+        return incomeMessages;
+    }
 }

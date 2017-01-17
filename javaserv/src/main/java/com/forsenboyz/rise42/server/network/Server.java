@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Server {
@@ -50,12 +51,15 @@ public class Server {
     }
 
     public void spreadMessage(String message) {
+        if (message == null) return;
+        System.out.println("sending: " + message);
         for (Connection connection : connections) {
-            if (message != null) {
-                System.out.println("sending: " + message);
-                connection.sendMessage(message);
-            }
+            connection.sendMessage(message);
         }
+
+        /* ended here
+                huge clean up is needed
+         */
     }
 
     private Thread makeSaluteThread() {

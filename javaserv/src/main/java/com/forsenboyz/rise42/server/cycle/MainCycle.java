@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainCycle {
 
-    private final int INTERVAL_WAIT = 50;
+    private final int INTERVAL_WAIT = 40;
     private long lastCycle;
 
     private AtomicBoolean paused;

@@ -4,10 +4,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Object {
 
-    protected float x, y;
-    protected TextureRegion textureRegion;
+    private AtomicInteger x, y;
+    TextureRegion textureRegion;
 
     public Object(Texture texture, float x, float y) {
         this(new TextureRegion(texture), x, y);
@@ -15,9 +17,8 @@ public class Object {
 
     public Object(TextureRegion region, float x, float y) {
         this.textureRegion = region;
-        this.x = x;
-        this.y = y;
-
+        this.x = new AtomicInteger(Float.floatToIntBits(x));
+        this.y = new AtomicInteger(Float.floatToIntBits(y));
         System.out.println("Created Object: "+region.getRegionHeight()+" "+region.getRegionWidth());
     }
 
@@ -26,7 +27,10 @@ public class Object {
     }
 
     public void render(SpriteBatch sb, float delta) {
-        sb.draw(textureRegion, x, y);
+        sb.draw(textureRegion,
+                Float.intBitsToFloat(x.get()),
+                Float.intBitsToFloat(y.get())
+        );
     }
 
     public void setTexture(TextureRegion textureRegion) {
@@ -35,17 +39,17 @@ public class Object {
 
     public void setTexture(Texture texture) {this.textureRegion = new TextureRegion(texture);}
 
-    public void setPosition(float x, float y) {
-        this.x = x;
-        this.y = y;
+    synchronized void setPosition(float x, float y) {
+        this.x.set(Float.floatToIntBits(x));
+        this.y.set(Float.floatToIntBits(y));
     }
 
-    public float getX() {
-        return x;
+    public synchronized float getX() {
+        return Float.intBitsToFloat(x.get());
     }
 
-    public float getY() {
-        return y;
+    public synchronized float getY() {
+        return Float.intBitsToFloat(y.get());
     }
 
     public int getWidth(){
@@ -54,5 +58,10 @@ public class Object {
 
     public int getHeight(){
         return textureRegion.getRegionHeight();
+    }
+
+    @Override
+    public String toString() {
+        return "x:"+this.getX()+ ", y:"+this.getY();
     }
 }

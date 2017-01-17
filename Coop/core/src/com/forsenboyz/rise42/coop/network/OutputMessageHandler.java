@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.forsenboyz.rise42.coop.states.StateManager;
 
 
-public class MessageManager {
+public class OutputMessageHandler {
 
     private final static int OUTPUT_WAIT = 50;
 
@@ -25,9 +25,11 @@ public class MessageManager {
     private Connection connection;
     private StateManager stateManager;
 
+    private InputMessageHandler inputMessageHandler;
+
     private Thread outputThread;
 
-    public MessageManager(String host, int port, StateManager stateManager) {
+    public OutputMessageHandler(String host, int port, StateManager stateManager) {
         this.stateManager = stateManager;
         this.HOST = host;
         this.PORT = port;
@@ -37,10 +39,10 @@ public class MessageManager {
         if (this.connection == null || !connection.isConnected()) {
             this.connection = new Connection(
                     HOST,
-                    ConnectionTester.getPortForConnection(HOST, PORT),
-                    new InputMessageHandler(stateManager)
+                    ConnectionTester.getPortForConnection(HOST, PORT)
             );
             this.connection.connect();
+            this.inputMessageHandler = new InputMessageHandler(this.stateManager,this.connection);
             this.startOutputThread();
         }
     }
@@ -68,6 +70,10 @@ public class MessageManager {
         this.connection.sendMessage(ANIMATION_CODE+":"+IND+"("+index+"):"+ANG+"(" + angle + ")");
     }
 
+    public void parseIncomes(){
+        this.inputMessageHandler.parse();
+    }
+
     /**
      * Starts a thread, with hero rotation auto-commit
      */
@@ -77,11 +83,11 @@ public class MessageManager {
                     while (this.connection.isConnected()) {
 
                         while (stateManager.getPlayState().isActive()) {
-                            if (TimeUtils.timeSinceMillis(connection.getLastOutputTime()) > OUTPUT_WAIT) {
+                            //if (TimeUtils.timeSinceMillis(connection.getLastOutputTime()) > OUTPUT_WAIT) {
                                 if(stateManager.getPlayState().hasRotated()){
                                     this.rotate(stateManager.getPlayState().updateRotation());
                                 }
-                            }
+                            //}
                         }
 
                         try {

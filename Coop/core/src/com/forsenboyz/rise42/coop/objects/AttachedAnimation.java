@@ -25,16 +25,16 @@ public class AttachedAnimation {
         sb.draw(
                 current,
                 object.getX()+object.getOriginX()-(current.getRegionWidth()/2)
-                        +1.5f*(object.getOriginX()*(float)Math.cos(Math.toRadians(object.getRotation()))),
+                        +1.5f*(object.getOriginX()*(float)Math.cos(Math.toRadians(object.getAngle()))),
                 object.getY()+object.getOriginY()-(current.getRegionHeight()/2)
-                        +1.5f*(object.getOriginY()*(float)Math.sin(Math.toRadians(object.getRotation()))),
+                        +1.5f*(object.getOriginY()*(float)Math.sin(Math.toRadians(object.getAngle()))),
                 current.getRegionWidth()/2,
                 current.getRegionHeight()/ 2,
                 current.getRegionWidth(),
                 current.getRegionHeight(),
                 1,
                 1,
-                object.getRotation()
+                object.getAngle()
         );
         this.stateTime += delta;
     }

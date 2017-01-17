@@ -5,15 +5,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.forsenboyz.rise42.coop.App;
 import com.forsenboyz.rise42.coop.input.InputProcessor;
-import com.forsenboyz.rise42.coop.network.MessageManager;
+import com.forsenboyz.rise42.coop.network.OutputMessageHandler;
 import com.forsenboyz.rise42.coop.objects.Object;
 
 class PauseState extends State {
 
     private Object background;
 
-    PauseState(final MessageManager messageManager, InputProcessor inputProcessor, boolean active) {
-        super(messageManager, inputProcessor, active);
+    PauseState(final OutputMessageHandler outputMessageHandler, InputProcessor inputProcessor, boolean active) {
+        super(outputMessageHandler, inputProcessor, active);
         background = new Object(new Texture("play.png"), 0, 0);
         objects.add(background);
 
@@ -34,8 +34,8 @@ class PauseState extends State {
     protected void handleInput() {
         super.handleInput();
         if (inputProcessor.isHeldSpace()) {
-            messageManager.connect();
-            messageManager.play();
+            outputMessageHandler.connect();
+            outputMessageHandler.play();
         }
     }
 }
