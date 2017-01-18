@@ -24,8 +24,6 @@ public class Server {
     // hope it's the case
     private CopyOnWriteArrayList<Connection> connections;
 
-    private SimpleDateFormat dateFormat;
-
     public Server(int salutePort, int player1Port, int player2Port, int spectatorPort) {
         this.salutePort = salutePort;
         this.player1Port = player1Port;
@@ -36,8 +34,6 @@ public class Server {
 
         this.mainCycle = new MainCycle(this);
         this.incomeProcessor = mainCycle.getIncomeProcessor();
-
-        dateFormat = new SimpleDateFormat("mm:ss.SSS");
     }
 
     public void listen() {
@@ -56,10 +52,6 @@ public class Server {
         for (Connection connection : connections) {
             connection.sendMessage(message);
         }
-
-        /* ended here
-                huge clean up is needed
-         */
     }
 
     private Thread makeSaluteThread() {
@@ -85,7 +77,6 @@ public class Server {
                             } else if (connections.size() == 1) {
                                 outputStream.write(Integer.toString(player2Port));
                                 makePlayer2Thread().start();
-                                //break; //TODO: deal with it
                             } else {
                                 outputStream.write(Integer.toString(spectatorPort));
                                 break;

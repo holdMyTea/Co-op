@@ -45,12 +45,11 @@ public class InputProcessor extends InputAdapter{
             heldRight = true;
         } else if (keyCode == Input.Keys.W) {
             heldUp = true;
-            System.out.println("true");
         } else if (keyCode == Input.Keys.S) {
             heldDown = true;
         } else if (keyCode == Input.Keys.Q) {
             heldQ = true;
-        } else if (keyCode == Input.Keys.Z) {   //TODO: i need correctly working ESC button
+        } else if (keyCode == Input.Keys.Z) {
             heldZ = true;
         } else if (keyCode == Input.Keys.SPACE) {
             heldSpace = true;

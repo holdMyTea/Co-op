@@ -41,8 +41,8 @@ public class RotatableObject extends Object {
 
     @Override
     public void render(SpriteBatch sb, float delta) {
-        sb.draw(textureRegion, getX(), getY(), originX, originY, textureRegion.getRegionWidth(), textureRegion.getRegionHeight(),
-                1, 1, angle);
+        sb.draw(textureRegion, getX(), getY(), originX, originY, textureRegion.getRegionWidth(),
+                textureRegion.getRegionHeight(), 1, 1, angle);
     }
 
     public void setAngle(int angle) {

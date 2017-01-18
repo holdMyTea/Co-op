@@ -33,7 +33,7 @@ public class InputMessageHandler {
         this.connection = connection;
     }
 
-    public void parse() {
+    void parse() {
 
         Queue<String> queue = connection.getIncomeMessages();
 

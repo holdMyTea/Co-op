@@ -164,7 +164,7 @@ class Connection {
         }
     }
 
-    public Queue<String> getIncomeMessages() {
+    Queue<String> getIncomeMessages() {
         return incomeMessages;
     }
 }

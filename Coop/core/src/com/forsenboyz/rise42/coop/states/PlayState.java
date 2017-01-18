@@ -81,7 +81,6 @@ public class PlayState extends State {
         objects.add(war);
 
         mage = new Character(charAtlas.findRegion("mage"), 850, 1064, 180);
-        //mage = new Character("mage.png", 850, 1064, 180);
         mage.addAnimation(
                 0,
                 new AttachedAnimation(
@@ -121,14 +120,13 @@ public class PlayState extends State {
 
         lastInputTime = 0;
 
-        //TODO: normal mouse tracking
-        // rotating hero according to mouse position, relatively to the center of the screen
-        float angle = new Vector2(
-                inputProcessor.getMouseX()- Gdx.graphics.getWidth() / 2,
-                inputProcessor.getMouseY()- Gdx.graphics.getHeight() / 2
+        float angle = 360 - new Vector2(
+                (currentHero.getCentreX() - camera.viewportWidth/2  + inputProcessor.getMouseX() +
+                        (camera.position.x - currentHero.getCentreX())) - currentHero.getCentreX(),
+                (currentHero.getCentreY() - camera.viewportHeight/2 + inputProcessor.getMouseY() -
+                        (camera.position.y - currentHero.getCentreY())) - currentHero.getCentreY()
         ).angle();
-        if (angle < 0) angle = 360 - (angle + 360);
-        else angle = 360 - angle;
+        System.out.println("Final angle: "+angle);
 
         if (currentHero.getAngle() != (int) angle) {
             rotated = true;
@@ -142,14 +140,13 @@ public class PlayState extends State {
             outputMessageHandler.move(false);
         } else if (inputProcessor.isHeldQ()) {
             outputMessageHandler.action(0, currentHero.getAngle());
-            //currentHero.activateAnimation(0);
         } else if (inputProcessor.isHeldZ()) {
             outputMessageHandler.pause();
         }
     }
 
-    private synchronized void centerCamera(Object target) {
-        int newX = (int) target.getX();
+    private void centerCamera(Object target) {
+        int newX = (int) target.getCentreX();
 
         if (newX < CAMERA_MIN_X) {
             newX = CAMERA_MIN_X;
@@ -157,7 +154,7 @@ public class PlayState extends State {
             newX = CAMERA_MAX_X;
         }
 
-        int newY = (int) target.getY();
+        int newY = (int) target.getCentreY();
 
         if (newY < CAMERA_MIN_Y) {
             newY = CAMERA_MIN_Y;

@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Object {
 
-    private AtomicInteger x, y;
+    private float x, y;
     TextureRegion textureRegion;
 
     public Object(Texture texture, float x, float y) {
@@ -17,8 +17,8 @@ public class Object {
 
     public Object(TextureRegion region, float x, float y) {
         this.textureRegion = region;
-        this.x = new AtomicInteger(Float.floatToIntBits(x));
-        this.y = new AtomicInteger(Float.floatToIntBits(y));
+        this.x = x;
+        this.y = y;
         System.out.println("Created Object: "+region.getRegionHeight()+" "+region.getRegionWidth());
     }
 
@@ -28,8 +28,8 @@ public class Object {
 
     public void render(SpriteBatch sb, float delta) {
         sb.draw(textureRegion,
-                Float.intBitsToFloat(x.get()),
-                Float.intBitsToFloat(y.get())
+                x,
+                y
         );
     }
 
@@ -39,17 +39,17 @@ public class Object {
 
     public void setTexture(Texture texture) {this.textureRegion = new TextureRegion(texture);}
 
-    synchronized void setPosition(float x, float y) {
-        this.x.set(Float.floatToIntBits(x));
-        this.y.set(Float.floatToIntBits(y));
+    void setPosition(float x, float y) {
+        this.x=x;
+        this.y=y;
     }
 
-    public synchronized float getX() {
-        return Float.intBitsToFloat(x.get());
+    public float getX() {
+        return x;
     }
 
-    public synchronized float getY() {
-        return Float.intBitsToFloat(y.get());
+    public float getY() {
+        return y;
     }
 
     public int getWidth(){
@@ -58,6 +58,14 @@ public class Object {
 
     public int getHeight(){
         return textureRegion.getRegionHeight();
+    }
+
+    public float getCentreX(){
+        return this.x + (this.getWidth()/2);
+    }
+
+    public float getCentreY(){
+        return this.y + (this.getHeight()/2);
     }
 
     @Override
