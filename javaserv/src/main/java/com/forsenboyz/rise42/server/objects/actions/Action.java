@@ -3,37 +3,78 @@ package com.forsenboyz.rise42.server.objects.actions;
 
 public class Action {
 
-    private final long COOLDOWN;
-    private final long CAST_TIME;
+    private long COOLDOWN;
+    private long CAST_TIME;
 
+    private Castable castable;
+
+    private long startedCasting;
     private long lastUsed;
-    private boolean active;
 
+    private boolean casting;
+    private boolean ready;
 
-    public Action(long cooldown, long castTime) {
+    public Action(Castable castable, long cooldown, long castTime) {
+        this.castable = castable;
+
         this.COOLDOWN = cooldown;
         this.CAST_TIME = castTime;
 
+        this.startedCasting = 0;
         this.lastUsed = 0;
-        this.active = false;
+
+        this.casting = false;
+        this.ready = false;
     }
 
-    public boolean activate(long currentTimeMillis){
-        if((currentTimeMillis - (lastUsed + CAST_TIME)) > COOLDOWN){
-            lastUsed = currentTimeMillis;
-            active = true;
+    /**
+     * Starts count down for cast time, if cooldown is over
+     * @param currentTimeMillis time according which timings are updated
+     * @return  whether casting was started
+     */
+    public boolean startCasting(long currentTimeMillis){
+        if(currentTimeMillis - lastUsed > COOLDOWN){
+            this.startedCasting = currentTimeMillis;
+            this.casting = true;
             return true;
         }
         return false;
     }
 
+
+    /**
+     * Checks whether cast time has expired, if so changes ready status
+     * @param currentTimeMillis time according which timings are updated
+     */
     public void update(long currentTimeMillis){
-        if (currentTimeMillis - lastUsed > CAST_TIME){
-            active = false;
+        if (casting && currentTimeMillis - startedCasting > CAST_TIME){
+            this.ready = true;
         }
     }
 
-    public boolean isActive() {
-        return active;
+
+    /**
+     * Resets statuses and returns corresponding Castable in advance, if ready == true,
+     * does nothing and returns null otherwise
+     * @param currentTimeMillis time according which timings are updated
+     * @return corresponding Castable or null
+     */
+    public Castable cast(long currentTimeMillis){
+        if(this.ready) {
+            this.ready = false;
+            this.casting = false;
+
+            this.lastUsed = currentTimeMillis;
+
+            return this.castable;
+        } else return null;
+    }
+
+    public boolean isCasting() {
+        return casting;
+    }
+
+    public boolean isReady(){
+        return this.ready;
     }
 }

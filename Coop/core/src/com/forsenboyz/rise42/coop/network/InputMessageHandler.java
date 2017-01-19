@@ -68,6 +68,7 @@ public class InputMessageHandler {
         }
     }
 
+    //TODO: duplicate code
     private void processHeroes(JsonObject heroes) {
         JsonObject mage = heroes.get(MAGE).getAsJsonObject();
         this.stateManager.getPlayState().getMage().move(
@@ -75,8 +76,12 @@ public class InputMessageHandler {
                 mage.get(Y).getAsFloat(),
                 mage.get(ANGLE).getAsInt()
         );
-        for (JsonElement element : mage.getAsJsonArray(ACTIONS)) {
-            this.stateManager.getPlayState().getMage().activateAnimation(element.getAsInt());
+
+        // if empty - not sent
+        if(mage.has(ACTIONS)) {
+            for (JsonElement element : mage.getAsJsonArray(ACTIONS)) {
+                this.stateManager.getPlayState().getMage().activateAnimation(element.getAsInt());
+            }
         }
 
         JsonObject war = heroes.get(WAR).getAsJsonObject();
@@ -85,8 +90,10 @@ public class InputMessageHandler {
                 war.get(Y).getAsFloat(),
                 war.get(ANGLE).getAsInt()
         );
-        for (JsonElement element : war.getAsJsonArray(ACTIONS)) {
-            this.stateManager.getPlayState().getWar().activateAnimation(element.getAsInt());
+        if(war.has(ACTIONS)) {
+            for (JsonElement element : war.getAsJsonArray(ACTIONS)) {
+                this.stateManager.getPlayState().getWar().activateAnimation(element.getAsInt());
+            }
         }
     }
 

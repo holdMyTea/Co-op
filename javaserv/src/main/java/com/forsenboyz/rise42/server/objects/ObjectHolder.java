@@ -2,6 +2,7 @@ package com.forsenboyz.rise42.server.objects;
 
 import com.forsenboyz.rise42.server.objects.actions.Action;
 import com.forsenboyz.rise42.server.objects.projectiles.Projectile;
+import com.forsenboyz.rise42.server.objects.projectiles.ProjectileBuilder;
 import com.forsenboyz.rise42.server.parser.ConfigParser;
 
 import java.util.ArrayList;
@@ -13,37 +14,53 @@ public class ObjectHolder {
 
     private ArrayList<Projectile> projectiles;
 
-    public ObjectHolder(){
+    public ObjectHolder() {
         this.projectiles = new ArrayList<>();
 
         this.mage = ConfigParser.getMage();
         this.mage.addAction(
                 0,
-                new Action(2000,750)
+                new Action(
+                        (objectHolder) -> {
+                            objectHolder.addProjectile(
+                                    ProjectileBuilder.makeFireball(
+                                            mage.getX(),
+                                            mage.getY(),
+                                            mage.getAngle()
+                                    )
+                            );
+                        },
+                        2000,
+                        750)
         );
 
         this.war = ConfigParser.getWar();
         this.war.addAction(
                 0,
-                new Action(2000, 750)
+                new Action(
+                        (objectHolder) -> {
+
+                        },
+                        2000,
+                        750)
         );
     }
 
-    public void updateProjectiles(){
+    public void updateProjectiles() {
         for (int i = 0; i < projectiles.size(); i++) {
-            if(projectiles.get(i).hasReachedDestination()){
+            if (projectiles.get(i).hasReachedDestination()) {
                 projectiles.remove(i);
-            } else{
+            } else {
                 projectiles.get(i).move();
             }
         }
     }
 
-    public void addProjectile(Projectile projectile){
+    public void addProjectile(Projectile projectile) {
         this.projectiles.add(projectile);
     }
 
-    public void removeProjectile(Projectile projectile){
+    public void removeProjectile(Projectile projectile) {
         this.projectiles.remove(projectile);
     }
 

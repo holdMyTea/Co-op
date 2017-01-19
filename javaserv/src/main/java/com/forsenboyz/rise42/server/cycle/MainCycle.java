@@ -6,6 +6,8 @@ import com.forsenboyz.rise42.server.message.OutcomeProcessor;
 import com.forsenboyz.rise42.server.network.Server;
 import com.forsenboyz.rise42.server.objects.Character;
 import com.forsenboyz.rise42.server.objects.ObjectHolder;
+import com.forsenboyz.rise42.server.objects.actions.Action;
+import com.forsenboyz.rise42.server.objects.actions.Castable;
 import com.forsenboyz.rise42.server.objects.projectiles.ProjectileBuilder;
 
 import java.text.SimpleDateFormat;
@@ -52,8 +54,20 @@ public class MainCycle {
                         if (!paused.get()) {
                             lastCycle = System.currentTimeMillis();
 
-                            mage.update(lastCycle);
-                            war.update(lastCycle);
+                            /*
+                                ended here:
+                                finish actions,
+                                separate from ObjectHandler ProjectileManager,
+                                make at least smth work
+                             */
+
+                            for(Castable castable : mage.update(lastCycle)){
+                                castable.onCast(this.objectHolder);
+                            }
+
+                            for(Castable castable : war.update(lastCycle)){
+                                castable.onCast(this.objectHolder);
+                            }
 
                             objectHolder.updateProjectiles();
 
@@ -103,7 +117,7 @@ public class MainCycle {
 
     public void actionMage(int index, int angle) {
         rotateMage(angle);
-        if (mage.activateAction(index, System.currentTimeMillis())) {
+        if (mage.startAction(index, System.currentTimeMillis())) {
             objectHolder.addProjectile(
                     ProjectileBuilder.makeFireball(
                             mage.getX() + mage.getWidth() / 2 - ProjectileBuilder.FIREBALL_SIZE / 2,
@@ -116,7 +130,7 @@ public class MainCycle {
 
     public void actionWar(int index, int angle) {
         rotateWar(angle);
-        war.activateAction(index, System.currentTimeMillis());
+        war.startAction(index, System.currentTimeMillis());
     }
 
     public IncomeProcessor getIncomeProcessor() {

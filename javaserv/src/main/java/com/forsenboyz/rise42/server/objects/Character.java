@@ -3,10 +3,12 @@ package com.forsenboyz.rise42.server.objects;
 import static com.forsenboyz.rise42.server.message.JsonProperties.*;
 
 import com.forsenboyz.rise42.server.objects.actions.Action;
+import com.forsenboyz.rise42.server.objects.actions.Castable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 public class Character extends RotatableObject {
 
@@ -32,23 +34,20 @@ public class Character extends RotatableObject {
         this.angle = angle;
     }
 
-    public void update(long currentTimeMillis) {
-        for (Action action : this.actions) {
-            action.update(currentTimeMillis);
-        }
+    public Castable[] update(long currentTimeMillis) {
+        return this.actions.stream()
+                .peek(action -> action.update(currentTimeMillis))
+                .filter(Action::isReady)
+                .toArray(Castable[]::new);
     }
 
-    public void addAction(int index, Action action) {
+    void addAction(int index, Action action) {
         this.actions.add(index, action);
     }
 
-    public boolean activateAction(int index, long currentTimeMillis) {
+    public boolean startAction(int index, long currentTimeMillis) {
         System.out.println("ACTIVATING ACTION " + index);
-        return this.actions.get(index).activate(currentTimeMillis);
-    }
-
-    public ArrayList<Action> getActions() {
-        return this.actions;
+        return this.actions.get(index).startCasting(currentTimeMillis);
     }
 
     public JsonObject toJson() {
@@ -59,11 +58,13 @@ public class Character extends RotatableObject {
 
         JsonArray array = new JsonArray();
         for (int i = 0; i < this.actions.size(); i++) {
-            if (this.actions.get(i).isActive()) {
+            if (this.actions.get(i).isCasting()) {
                 array.add(i);
             }
         }
-        object.add(ACTIONS, array);
+        if(array.size() > 0) {
+            object.add(ACTIONS, array);
+        }
 
         return object;
     }
