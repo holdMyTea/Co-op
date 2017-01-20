@@ -112,6 +112,10 @@ public class Object {
         return height;
     }
 
+    public float getCentreX() {return this.x+(this.width/2);}
+
+    public float getCentreY() {return this.y+(this.height/2);}
+
     @Override
     public String toString() {
         return "Object: x:"+x+"-"+getX2()+", y:"+y+"-"+getY2();

@@ -38,6 +38,7 @@ public class Character extends RotatableObject {
         return this.actions.stream()
                 .peek(action -> action.update(currentTimeMillis))
                 .filter(Action::isReady)
+                .map(action -> action.cast(currentTimeMillis))
                 .toArray(Castable[]::new);
     }
 

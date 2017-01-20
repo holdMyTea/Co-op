@@ -117,15 +117,7 @@ public class MainCycle {
 
     public void actionMage(int index, int angle) {
         rotateMage(angle);
-        if (mage.startAction(index, System.currentTimeMillis())) {
-            objectHolder.addProjectile(
-                    ProjectileBuilder.makeFireball(
-                            mage.getX() + mage.getWidth() / 2 - ProjectileBuilder.FIREBALL_SIZE / 2,
-                            mage.getY() + mage.getHeight(),
-                            mage.getAngle()
-                    )
-            );
-        }
+        mage.startAction(index, System.currentTimeMillis());
     }
 
     public void actionWar(int index, int angle) {

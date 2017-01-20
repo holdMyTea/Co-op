@@ -53,10 +53,15 @@ public class RotatableObject extends Object {
         return angle;
     }
 
+
+    /**@return offset from left border to the X coordinate of centre of the object
+     */
     int getOriginX() {
         return originX;
     }
 
+    /**@return offset from top border to the Y coordinate of centre of the object
+     */
     int getOriginY() {
         return originY;
     }

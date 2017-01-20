@@ -11,4 +11,5 @@ public class ProjectileBuilder {
     public static Projectile makeFireball(float x, float y, int angle){
         return new Projectile(FIREBALL,x,y,FIREBALL_SIZE,FIREBALL_SIZE,FIREBALL_RANGE,FIREBALL_SPEED,angle);
     }
+
 }

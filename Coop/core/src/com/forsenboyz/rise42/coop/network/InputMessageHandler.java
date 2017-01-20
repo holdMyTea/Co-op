@@ -1,6 +1,5 @@
 package com.forsenboyz.rise42.coop.network;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.forsenboyz.rise42.coop.objects.Object;
 import com.forsenboyz.rise42.coop.states.StateManager;

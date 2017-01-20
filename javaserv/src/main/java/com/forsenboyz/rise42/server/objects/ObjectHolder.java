@@ -24,8 +24,15 @@ public class ObjectHolder {
                         (objectHolder) -> {
                             objectHolder.addProjectile(
                                     ProjectileBuilder.makeFireball(
-                                            mage.getX(),
-                                            mage.getY(),
+                                            mage.getCentreX()
+                                                    -ProjectileBuilder.FIREBALL_SIZE/2
+                                                    +1.5f*(mage.getWidth()/2
+                                                    *(float)Math.cos(Math.toRadians(mage.getAngle())))
+                                            ,
+                                            mage.getCentreY()
+                                                    -ProjectileBuilder.FIREBALL_SIZE/2
+                                                    +1.5f*(mage.getHeight()/2
+                                                    *(float)Math.sin(Math.toRadians(mage.getAngle()))),
                                             mage.getAngle()
                                     )
                             );

@@ -33,7 +33,7 @@ public class Action {
      * @return  whether casting was started
      */
     public boolean startCasting(long currentTimeMillis){
-        if(currentTimeMillis - lastUsed > COOLDOWN){
+        if(!casting && currentTimeMillis - lastUsed > COOLDOWN){
             this.startedCasting = currentTimeMillis;
             this.casting = true;
             return true;
@@ -60,6 +60,7 @@ public class Action {
      * @return corresponding Castable or null
      */
     public Castable cast(long currentTimeMillis){
+        System.out.println("Castcastcastcastcastcastcastcastcastcastcastcast");
         if(this.ready) {
             this.ready = false;
             this.casting = false;
