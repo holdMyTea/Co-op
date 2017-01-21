@@ -1,8 +1,8 @@
 package com.forsenboyz.rise42.server.objects.actions;
 
-import com.forsenboyz.rise42.server.objects.ObjectHolder;
+import com.forsenboyz.rise42.server.objects.projectiles.ProjectileManager;
 
 public interface Castable {
 
-    void onCast(ObjectHolder objectHolder);
+    void onCast(ProjectileManager projectileManager);
 }

@@ -1,6 +1,5 @@
 package com.forsenboyz.rise42.server.message;
 
-import com.forsenboyz.rise42.server.Main;
 import com.forsenboyz.rise42.server.network.Server;
 import com.forsenboyz.rise42.server.objects.ObjectHolder;
 import com.forsenboyz.rise42.server.objects.projectiles.Projectile;
@@ -51,7 +50,7 @@ public class OutcomeProcessor {
 
     private JsonElement makeProjectileMessages() {
         JsonArray array = new JsonArray();
-        for (Projectile projectile : objectHolder.getProjectiles()) {
+        for (Projectile projectile : objectHolder.getProjectileManager().getProjectiles()) {
             array.add(projectile.toJson());
         }
         return array;

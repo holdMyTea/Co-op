@@ -3,6 +3,7 @@ package com.forsenboyz.rise42.server.collisions;
 import com.forsenboyz.rise42.server.objects.Character;
 import com.forsenboyz.rise42.server.objects.Object;
 import com.forsenboyz.rise42.server.objects.ObjectHolder;
+import com.forsenboyz.rise42.server.objects.projectiles.Projectile;
 import com.forsenboyz.rise42.server.parser.ConfigParser;
 
 import java.util.ArrayList;
@@ -14,15 +15,12 @@ public class CollisionDetector {
 
     private final int SOME_GAP_CONST = 4;
 
-    private final int HERO_MIN_X;
-    private final int HERO_MAX_X;
-    private final int HERO_MIN_Y;
-    private final int HERO_MAX_Y;
+    private final int OBJECT_MIN_X;
+    private final int OBJECT_MAX_X;
+    private final int OBJECT_MIN_Y;
+    private final int OBJECT_MAX_Y;
 
     private ObjectHolder objectHolder;
-
-    private Character mage;
-    private Character war;
 
     private ArrayList<Object> wallBlocks;
 
@@ -34,25 +32,25 @@ public class CollisionDetector {
 
         this.objectHolder = objectHolder;
 
-        this.mage = objectHolder.getMage();
-        this.war = objectHolder.getWar();
+        OBJECT_MIN_X = BORDER_THICK;
+        OBJECT_MIN_Y = BORDER_THICK;
 
-        HERO_MIN_X = BORDER_THICK;
-        HERO_MIN_Y = BORDER_THICK;
-
-        HERO_MAX_X = backgroundSize - BORDER_THICK - mage.getWidth();
-        HERO_MAX_Y = backgroundSize - BORDER_THICK - mage.getHeight();
+        OBJECT_MAX_X = backgroundSize - BORDER_THICK;
+        OBJECT_MAX_Y = backgroundSize - BORDER_THICK;
     }
 
     public void moveHero(Character character, int angle, boolean forward){
-        //System.out.println("initial: "+character);
         character.move(angle,forward);
-        //System.out.println("interm: "+character);
         if(!isMovedFromBorders(character)){
             moveFromBlocks(character);
         }
+    }
 
-        //System.out.println("final: "+character);
+    public void moveProjectile(Projectile projectile){
+        projectile.move();
+        if(!isDestroyedFromBorders(projectile)){
+            destroyByBlocks(projectile);
+        }
     }
 
     /**
@@ -62,23 +60,32 @@ public class CollisionDetector {
      */
     private boolean isMovedFromBorders(Character character){
         boolean changed = false;
-        if (character.getX() < HERO_MIN_X) {
-            character.setX(HERO_MIN_X);
+        if (character.getX() < OBJECT_MIN_X) {
+            character.setX(OBJECT_MIN_X);
             changed = true;
-        } else if (character.getX() > HERO_MAX_X) {
-            character.setX(HERO_MAX_X);
+        } else if (character.getX() > OBJECT_MAX_X - objectHolder.getMage().getWidth()) {
+            character.setX(OBJECT_MAX_X - objectHolder.getMage().getWidth());
             changed = true;
         }
 
-        if (character.getY() < HERO_MIN_Y) {
-            character.setY(HERO_MIN_Y);
+        if (character.getY() < OBJECT_MIN_Y) {
+            character.setY(OBJECT_MIN_Y);
             changed = true;
-        } else if (character.getY() > HERO_MAX_Y) {
-            character.setY(HERO_MAX_Y);
+        } else if (character.getY() > OBJECT_MAX_Y - objectHolder.getMage().getHeight()) {
+            character.setY(OBJECT_MAX_Y - objectHolder.getMage().getHeight());
             changed = true;
         }
 
         return changed;
+    }
+
+    private boolean isDestroyedFromBorders(Projectile projectile){
+        if(projectile.getX() < OBJECT_MIN_X || projectile.getX() > OBJECT_MAX_X - projectile.getWidth()
+                || projectile.getY() < OBJECT_MIN_Y || projectile.getY() > OBJECT_MAX_Y - projectile.getHeight()){
+            projectile.destroy();
+            return true;
+        }
+        return false;
     }
 
     private void moveFromBlocks(Object object){
@@ -118,6 +125,15 @@ public class CollisionDetector {
                         object.setX(wallBlock.getX2()+SOME_GAP_CONST);
                         break;
                 }
+            }
+        }
+    }
+
+    private void destroyByBlocks(Projectile projectile) {
+        for (Object wallBlock : wallBlocks){
+            if(wallBlock.checkCollision(projectile) != Direction.NO){
+                projectile.destroy();
+                return;
             }
         }
     }

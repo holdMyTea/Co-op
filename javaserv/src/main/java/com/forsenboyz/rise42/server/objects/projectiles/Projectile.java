@@ -1,10 +1,12 @@
 package com.forsenboyz.rise42.server.objects.projectiles;
 
 import static com.forsenboyz.rise42.server.message.JsonProperties.*;
+
+import com.forsenboyz.rise42.server.objects.Destructible;
 import com.forsenboyz.rise42.server.objects.RotatableObject;
 import com.google.gson.JsonObject;
 
-public class Projectile extends RotatableObject {
+public class Projectile extends RotatableObject implements Destructible {
 
     private final int type;
 
@@ -14,7 +16,9 @@ public class Projectile extends RotatableObject {
     private int movementAngle;
     private int currentRangeMoved;
 
-    public Projectile(int type, float x, float y, int width, int height,
+    private boolean destroyed;
+
+    Projectile(int type, float x, float y, int width, int height,
                       int maxMovementRange, int moveSpeed, int movementAngle) {
         super(x, y, width, height, movementAngle);
         this.type = type;
@@ -22,6 +26,7 @@ public class Projectile extends RotatableObject {
         this.moveSpeed = moveSpeed;
         this.movementAngle = movementAngle;
         this.currentRangeMoved = 0;
+        this.destroyed = false;
     }
 
     public void move(){
@@ -30,8 +35,16 @@ public class Projectile extends RotatableObject {
         currentRangeMoved += moveSpeed;
     }
 
-    public boolean hasReachedDestination(){
-        return currentRangeMoved - maxMovementRange > 0;
+    @Override
+    public void destroy() {
+        this.destroyed = true;
+    }
+
+    /**
+     * @return true, if projectile was destroyed by collision or range expiration
+     */
+    boolean isDestroyed() {
+        return destroyed || currentRangeMoved - maxMovementRange >= 0;
     }
 
     public JsonObject toJson(){
@@ -40,6 +53,9 @@ public class Projectile extends RotatableObject {
         object.addProperty(Y, this.y);
         object.addProperty(ANGLE, this.angle);
         object.addProperty(TYPE, this.type);
+        if(isDestroyed()){
+            object.addProperty(DESTROYED, true);
+        }
         return object;
     }
 }

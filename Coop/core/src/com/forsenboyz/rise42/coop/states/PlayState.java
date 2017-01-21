@@ -126,7 +126,6 @@ public class PlayState extends State {
                 (currentHero.getCentreY() - camera.viewportHeight/2 + inputProcessor.getMouseY() -
                         (camera.position.y - currentHero.getCentreY())) - currentHero.getCentreY()
         ).angle();
-        System.out.println("Final angle: "+angle);
 
         if (currentHero.getAngle() != (int) angle) {
             rotated = true;
@@ -194,7 +193,6 @@ public class PlayState extends State {
 
     private void renderProjectiles(SpriteBatch sb, float delta) {
         for (Object obj : projectiles) {
-            obj.setTexture(projectileTexture);
             obj.render(sb, delta);
         }
     }

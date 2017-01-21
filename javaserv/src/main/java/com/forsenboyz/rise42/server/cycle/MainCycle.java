@@ -9,6 +9,7 @@ import com.forsenboyz.rise42.server.objects.ObjectHolder;
 import com.forsenboyz.rise42.server.objects.actions.Action;
 import com.forsenboyz.rise42.server.objects.actions.Castable;
 import com.forsenboyz.rise42.server.objects.projectiles.ProjectileBuilder;
+import com.forsenboyz.rise42.server.objects.projectiles.ProjectileManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,6 +23,8 @@ public class MainCycle {
     private AtomicBoolean paused;
 
     private ObjectHolder objectHolder;
+    private ProjectileManager projectileManager;
+
     private CollisionDetector collisionDetector;
     private IncomeProcessor incomeProcessor;
     private OutcomeProcessor outcomeProcessor;
@@ -35,6 +38,7 @@ public class MainCycle {
         this.paused = new AtomicBoolean(true);
 
         this.objectHolder = new ObjectHolder();
+        this.projectileManager = this.objectHolder.getProjectileManager();
 
         this.mage = objectHolder.getMage();
         this.war = objectHolder.getWar();
@@ -54,22 +58,21 @@ public class MainCycle {
                         if (!paused.get()) {
                             lastCycle = System.currentTimeMillis();
 
-                            /*
-                                ended here:
-                                finish actions,
-                                separate from ObjectHandler ProjectileManager,
-                                make at least smth work
-                             */
-
                             for(Castable castable : mage.update(lastCycle)){
-                                castable.onCast(this.objectHolder);
+                                castable.onCast(this.projectileManager);
                             }
 
                             for(Castable castable : war.update(lastCycle)){
-                                castable.onCast(this.objectHolder);
+                                castable.onCast(this.projectileManager);
                             }
 
-                            objectHolder.updateProjectiles();
+                            // projectiles are removed on the next cycle,
+                            // it allows send unified projectile message
+                            // with DESTROYED flag
+                            projectileManager.removeDestroyed();
+                            projectileManager.getProjectiles().forEach(
+                                    (projectile -> this.collisionDetector.moveProjectile(projectile))
+                            );
 
                             outcomeProcessor.makeMessage();
                             System.out.println("cycle: " + dateFormat.format(new Date()));
@@ -129,7 +132,4 @@ public class MainCycle {
         return incomeProcessor;
     }
 
-    public boolean isRunning() {
-        return !this.paused.get();
-    }
 }

@@ -1,7 +1,7 @@
 package com.forsenboyz.rise42.coop.network;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.forsenboyz.rise42.coop.objects.Object;
+import com.forsenboyz.rise42.coop.objects.ProjectileBuilder;
 import com.forsenboyz.rise42.coop.states.StateManager;
 import com.google.gson.*;
 
@@ -24,6 +24,9 @@ public class InputMessageHandler {
     private static final String ANGLE = "a";
     private static final String ACTIONS = "act";
 
+    private static final String TYPE = "t";
+    private static final String DESTROYED = "destr";
+
     private StateManager stateManager;
     private Connection connection;
 
@@ -37,6 +40,7 @@ public class InputMessageHandler {
         Queue<String> queue = connection.getIncomeMessages();
 
         while (!queue.isEmpty()) {
+            System.out.println("Net input: "+queue.peek());
             JsonObject msg;
             try {
                 msg = new JsonParser().parse(queue.poll()).getAsJsonObject();
@@ -77,7 +81,7 @@ public class InputMessageHandler {
         );
 
         // if empty - not sent
-        if(mage.has(ACTIONS)) {
+        if (mage.has(ACTIONS)) {
             for (JsonElement element : mage.getAsJsonArray(ACTIONS)) {
                 this.stateManager.getPlayState().getMage().activateAnimation(element.getAsInt());
             }
@@ -89,7 +93,7 @@ public class InputMessageHandler {
                 war.get(Y).getAsFloat(),
                 war.get(ANGLE).getAsInt()
         );
-        if(war.has(ACTIONS)) {
+        if (war.has(ACTIONS)) {
             for (JsonElement element : war.getAsJsonArray(ACTIONS)) {
                 this.stateManager.getPlayState().getWar().activateAnimation(element.getAsInt());
             }
@@ -98,14 +102,28 @@ public class InputMessageHandler {
 
     private void processProjectiles(JsonArray projectiles) {
         ArrayList<Object> list = new ArrayList<>();
-        for (JsonElement obj : projectiles) {
-            list.add(
-                    new Object(
-                            new TextureRegion(),
-                            obj.getAsJsonObject().get(X).getAsFloat(),
-                            obj.getAsJsonObject().get(Y).getAsFloat()
-                    )
-            );
+        for (JsonElement element : projectiles) {
+            if (element.getAsJsonObject().has(DESTROYED)) {
+                list.add(
+                        ProjectileBuilder.makeProjectile(
+                                element.getAsJsonObject().get(X).getAsFloat(),
+                                element.getAsJsonObject().get(Y).getAsFloat(),
+                                element.getAsJsonObject().get(ANGLE).getAsInt(),
+                                element.getAsJsonObject().get(TYPE).getAsInt(),
+                                true
+                        )
+                );
+            } else {
+                list.add(
+                        ProjectileBuilder.makeProjectile(
+                                element.getAsJsonObject().get(X).getAsFloat(),
+                                element.getAsJsonObject().get(Y).getAsFloat(),
+                                element.getAsJsonObject().get(ANGLE).getAsInt(),
+                                element.getAsJsonObject().get(TYPE).getAsInt(),
+                                false
+                        )
+                );
+            }
         }
         this.stateManager.getPlayState().setProjectiles(list);
     }
