@@ -1,12 +1,13 @@
 package com.forsenboyz.rise42.server.objects.projectiles;
 
-import static com.forsenboyz.rise42.server.message.JsonProperties.*;
-
-import com.forsenboyz.rise42.server.objects.Destructible;
+import com.forsenboyz.rise42.server.collisions.Direction;
+import com.forsenboyz.rise42.server.objects.Object;
 import com.forsenboyz.rise42.server.objects.RotatableObject;
 import com.google.gson.JsonObject;
 
-public class Projectile extends RotatableObject implements Destructible {
+import static com.forsenboyz.rise42.server.message.JsonProperties.*;
+
+public class Projectile extends RotatableObject {
 
     private final int type;
 
@@ -36,8 +37,10 @@ public class Projectile extends RotatableObject implements Destructible {
     }
 
     @Override
-    public void destroy() {
-        this.destroyed = true;
+    public void onCollided(Object other, int direction) {
+        if(direction != Direction.NO) {
+            this.destroyed = true;
+        }
     }
 
     /**

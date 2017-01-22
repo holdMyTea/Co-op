@@ -15,7 +15,6 @@ public class Object {
 
         this.width = width;
         this.height = height;
-
     }
 
     public Object(float x, float x2, float y, float y2) {
@@ -26,34 +25,57 @@ public class Object {
         this.height = (int) Math.abs(y2 - y);
     }
 
-    public Direction checkCollision(Object other){
+    /**Checks whether this Object collides with other using onCollisionCheck(Object other)
+     * then calls onCollisionDetected(Object other, int direction)
+     * @param other Object to check collision with
+     */
+    public final void checkCollision(Object other){
+        int direction = onCollisionCheck(other);
+        onCollisionDetected(other, direction);
+    }
+
+    /**Returns one of the Direction constants indicating direction of collision
+     * @param other Object to check collision with
+     * @return one of the Direction constants indicating direction of collision
+     */
+    protected int onCollisionCheck(Object other){
         float x2 = this.getX2(), y2 = this.getY2();
+        int direction = Direction.NO;
         if(other.getX() > x && other.getX2() < x2){
             if(other.getY() > y && other.getY2() < y2){
-                return Direction.ALL;
+                direction =  Direction.ALL;
             } else if(other.getY() < y2 && other.getY2() > y2){
-                return Direction.TOP;
+                direction =  Direction.TOP;
             } else if(other.getY2() > y && other.getY() < y){
-                return Direction.BOT;
+                direction = Direction.BOT;
             }
         } else if(other.getX2() > x && other.getX() < x){
             if(other.getY() > y && other.getY2() < y2){
-                return Direction.LEFT;
+                direction = Direction.LEFT;
             } else if(other.getY() < y2 && other.getY2() > y2){
-                return Direction.TOP_LEFT;
+                direction = Direction.TOP_LEFT;
             } else if(other.getY2() > y && other.getY() < y){
-                return Direction.BOT_LEFT;
+                direction = Direction.BOT_LEFT;
             }
         } else if(other.getX() < x2 && other.getX2() > x){
             if(other.getY() > y && other.getY2() < y2){
-                return Direction.RIGHT;
+                direction = Direction.RIGHT;
             } else if(other.getY() < y2 && other.getY2() > y2){
-                return Direction.TOP_RIGHT;
+                direction = Direction.TOP_RIGHT;
             } else if(other.getY2() > y && other.getY() < y){
-                return Direction.BOT_RIGHT;
+                direction = Direction.BOT_RIGHT;
             }
         }
-        return Direction.NO;
+        return direction;
+    }
+
+    protected void onCollisionDetected(Object other, int direction){
+        onCollided(other, direction);
+        other.onCollided(this, direction);
+    }
+
+    public void onCollided(Object other, int direction){
+
     }
 
     /**
@@ -66,7 +88,7 @@ public class Object {
 
     /**
      moves Object along the Y axis so its left edge will be equal to parameter y
-     * @param y desired Y position of an Object's left edge
+     * @param y desired Y position of an Object's bot edge
      */
     public void setY(float y) {
         this.y = y;
@@ -82,7 +104,7 @@ public class Object {
 
     /**
      moves Object along the Y axis so its right edge will be equal to parameter y
-     * @param y2 desired Y position of an Object's right edge
+     * @param y2 desired Y position of an Object's top edge
      */
     public void setY2(float y2){
         this.y = y2 - height;

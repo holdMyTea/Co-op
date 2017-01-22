@@ -2,13 +2,14 @@ package com.forsenboyz.rise42.server.objects;
 
 import static com.forsenboyz.rise42.server.message.JsonProperties.*;
 
+import com.forsenboyz.rise42.server.collisions.CollisionDetector;
+import com.forsenboyz.rise42.server.collisions.Direction;
 import com.forsenboyz.rise42.server.objects.actions.Action;
 import com.forsenboyz.rise42.server.objects.actions.Castable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
-import java.util.stream.Stream;
 
 public class Character extends RotatableObject {
 
@@ -42,13 +43,49 @@ public class Character extends RotatableObject {
                 .toArray(Castable[]::new);
     }
 
+    public boolean startAction(int index, long currentTimeMillis) {
+        System.out.println("ACTIVATING ACTION " + index);
+        return this.actions.get(index).startCasting(currentTimeMillis);
+    }
+
     void addAction(int index, Action action) {
         this.actions.add(index, action);
     }
 
-    public boolean startAction(int index, long currentTimeMillis) {
-        System.out.println("ACTIVATING ACTION " + index);
-        return this.actions.get(index).startCasting(currentTimeMillis);
+    @Override
+    public void onCollided(Object other, int direction) {
+        switch (direction) {
+            case Direction.TOP_LEFT:
+                this.setY(other.getY2() + CollisionDetector.SOME_GAP_CONST);
+                this.setX2(other.getX() - CollisionDetector.SOME_GAP_CONST);
+                break;
+            case Direction.TOP:
+                this.setY(other.getY2() + CollisionDetector.SOME_GAP_CONST);
+                break;
+            case Direction.TOP_RIGHT:
+                this.setY(other.getY2() + CollisionDetector.SOME_GAP_CONST);
+                this.setX(other.getX2() + CollisionDetector.SOME_GAP_CONST);
+                break;
+            case Direction.LEFT:
+                this.setX2(other.getX() - CollisionDetector.SOME_GAP_CONST);
+                break;
+            case Direction.ALL:
+                break;
+            case Direction.RIGHT:
+                this.setX(other.getX2() + CollisionDetector.SOME_GAP_CONST);
+                break;
+            case Direction.BOT_LEFT:
+                this.setY2(other.getY() - CollisionDetector.SOME_GAP_CONST);
+                this.setX2(other.getX() - CollisionDetector.SOME_GAP_CONST);
+                break;
+            case Direction.BOT:
+                this.setY2(other.getY() - CollisionDetector.SOME_GAP_CONST);
+                break;
+            case Direction.BOT_RIGHT:
+                this.setY2(other.getY() - CollisionDetector.SOME_GAP_CONST);
+                this.setX(other.getX2() + CollisionDetector.SOME_GAP_CONST);
+                break;
+        }
     }
 
     public JsonObject toJson() {
@@ -63,7 +100,7 @@ public class Character extends RotatableObject {
                 array.add(i);
             }
         }
-        if(array.size() > 0) {
+        if (array.size() > 0) {
             object.add(ACTIONS, array);
         }
 

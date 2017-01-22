@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainCycle {
 
-    private final int INTERVAL_WAIT = 40;
+    private final int INTERVAL_WAIT = 30;
     private long lastCycle;
 
     private AtomicBoolean paused;
@@ -71,7 +71,10 @@ public class MainCycle {
                             // with DESTROYED flag
                             projectileManager.removeDestroyed();
                             projectileManager.getProjectiles().forEach(
-                                    (projectile -> this.collisionDetector.moveProjectile(projectile))
+                                    (projectile -> {
+                                        projectile.move();
+                                        this.collisionDetector.check(projectile);
+                                    })
                             );
 
                             outcomeProcessor.makeMessage();
@@ -103,11 +106,13 @@ public class MainCycle {
     }
 
     public void moveMage(int angle, boolean forward) {
-        collisionDetector.moveHero(mage, angle, forward);
+        mage.move(angle, forward);
+        collisionDetector.check(mage);
     }
 
     public void moveWar(int angle, boolean forward) {
-        collisionDetector.moveHero(war, angle, forward);
+        war.move(angle, forward);
+        collisionDetector.check(war);
     }
 
     public void rotateMage(int angle) {

@@ -33,12 +33,6 @@ public class ConfigParser {
         return configFile;
     }
 
-
-    public static int getBorderThick() {
-        return new JsonParser().parse(readFile()).getAsJsonObject()
-                .get("static").getAsJsonObject().get("border").getAsInt();
-    }
-
     public static ArrayList<Object> getWallBlocks() {
 
         JsonObject staticObjects = new JsonParser()
@@ -59,6 +53,27 @@ public class ConfigParser {
             );
         }
         return wallBlocks;
+    }
+
+    public static Object[] getBorderBlocks() {
+        JsonObject staticObjects = new JsonParser()
+                .parse(readFile())
+                .getAsJsonObject()
+                .get("static").getAsJsonObject();
+
+        Object[] borderBlocks = new Object[4];
+        JsonArray jsonArray = staticObjects.getAsJsonArray("border");
+
+        for (int i = 0; i < 4; i++) {
+            borderBlocks[i] = new Object(
+                    jsonArray.get(i).getAsJsonObject().get("x").getAsFloat(),
+                    jsonArray.get(i).getAsJsonObject().get("x2").getAsFloat(),
+                    jsonArray.get(i).getAsJsonObject().get("y").getAsFloat(),
+                    jsonArray.get(i).getAsJsonObject().get("y2").getAsFloat()
+            );
+        }
+
+        return borderBlocks;
     }
 
     public static Character getMage() {
