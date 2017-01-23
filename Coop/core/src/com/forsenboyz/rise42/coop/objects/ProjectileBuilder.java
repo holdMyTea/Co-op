@@ -9,12 +9,13 @@ public class ProjectileBuilder {
             float x,
             float y,
             int angle,
-            int type,
-            boolean destroyed
+            int type
     ){
         switch(type){
             case 0:
-                return new RotatableObject(destroyed ? "firbalexpl.png" : "firbal.png", x, y, angle);
+                return new RotatableObject("firbal.png", x, y, angle);
+            case 1:
+                return new RotatableObject("firbalexpl.png",x,y);
             default:
                 return new RotatableObject(
                         new TextureRegion(new Texture("block.png"), 32, 32),

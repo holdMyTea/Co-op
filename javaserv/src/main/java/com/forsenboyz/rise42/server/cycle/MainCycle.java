@@ -66,16 +66,13 @@ public class MainCycle {
                                 castable.onCast(this.projectileManager);
                             }
 
-                            // projectiles are removed on the next cycle,
-                            // it allows send unified projectile message
-                            // with DESTROYED flag
-                            projectileManager.removeDestroyed();
                             projectileManager.getProjectiles().forEach(
                                     (projectile -> {
                                         projectile.move();
                                         this.collisionDetector.check(projectile);
                                     })
                             );
+                            projectileManager.removeDestroyed();
 
                             outcomeProcessor.makeMessage();
                             System.out.println("cycle: " + dateFormat.format(new Date()));

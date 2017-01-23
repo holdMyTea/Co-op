@@ -40,7 +40,7 @@ public class InputMessageHandler {
         Queue<String> queue = connection.getIncomeMessages();
 
         while (!queue.isEmpty()) {
-            System.out.println("Net input: "+queue.peek());
+            System.out.println("Net input: " + queue.peek());
             JsonObject msg;
             try {
                 msg = new JsonParser().parse(queue.poll()).getAsJsonObject();
@@ -103,27 +103,14 @@ public class InputMessageHandler {
     private void processProjectiles(JsonArray projectiles) {
         ArrayList<Object> list = new ArrayList<>();
         for (JsonElement element : projectiles) {
-            if (element.getAsJsonObject().has(DESTROYED)) {
-                list.add(
-                        ProjectileBuilder.makeProjectile(
-                                element.getAsJsonObject().get(X).getAsFloat(),
-                                element.getAsJsonObject().get(Y).getAsFloat(),
-                                element.getAsJsonObject().get(ANGLE).getAsInt(),
-                                element.getAsJsonObject().get(TYPE).getAsInt(),
-                                true
-                        )
-                );
-            } else {
-                list.add(
-                        ProjectileBuilder.makeProjectile(
-                                element.getAsJsonObject().get(X).getAsFloat(),
-                                element.getAsJsonObject().get(Y).getAsFloat(),
-                                element.getAsJsonObject().get(ANGLE).getAsInt(),
-                                element.getAsJsonObject().get(TYPE).getAsInt(),
-                                false
-                        )
-                );
-            }
+            list.add(
+                    ProjectileBuilder.makeProjectile(
+                            element.getAsJsonObject().get(X).getAsFloat(),
+                            element.getAsJsonObject().get(Y).getAsFloat(),
+                            element.getAsJsonObject().get(ANGLE).getAsInt(),
+                            element.getAsJsonObject().get(TYPE).getAsInt()
+                    )
+            );
         }
         this.stateManager.getPlayState().setProjectiles(list);
     }

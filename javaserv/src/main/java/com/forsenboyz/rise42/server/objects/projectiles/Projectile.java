@@ -3,10 +3,14 @@ package com.forsenboyz.rise42.server.objects.projectiles;
 import com.forsenboyz.rise42.server.collisions.Direction;
 import com.forsenboyz.rise42.server.objects.Object;
 import com.forsenboyz.rise42.server.objects.RotatableObject;
+import com.forsenboyz.rise42.server.objects.actions.Castable;
 import com.google.gson.JsonObject;
 
 import static com.forsenboyz.rise42.server.message.JsonProperties.*;
 
+/**
+ * Class to represent various projectiles. Gets destroyed by collision or by reaching max travel distance.
+ */
 public class Projectile extends RotatableObject {
 
     private final int type;
@@ -47,7 +51,11 @@ public class Projectile extends RotatableObject {
      * @return true, if projectile was destroyed by collision or range expiration
      */
     boolean isDestroyed() {
-        return destroyed || currentRangeMoved - maxMovementRange >= 0;
+        return destroyed || currentRangeMoved >= maxMovementRange;
+    }
+
+    public int getType() {
+        return type;
     }
 
     public JsonObject toJson(){
@@ -56,9 +64,6 @@ public class Projectile extends RotatableObject {
         object.addProperty(Y, this.y);
         object.addProperty(ANGLE, this.angle);
         object.addProperty(TYPE, this.type);
-        if(isDestroyed()){
-            object.addProperty(DESTROYED, true);
-        }
         return object;
     }
 }

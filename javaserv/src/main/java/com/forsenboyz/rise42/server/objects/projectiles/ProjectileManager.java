@@ -11,9 +11,10 @@ public class ProjectileManager {
     }
 
     public void removeDestroyed(){
-        for (int i = 0; i < projectiles.size(); i++) {
+        for (int i = projectiles.size()-1; i >= 0 ; i--) {
             Projectile p = projectiles.get(i);
             if (p.isDestroyed()) {
+                this.handleRemoves(p);
                 projectiles.remove(i);
             }
         }
@@ -25,5 +26,16 @@ public class ProjectileManager {
 
     public ArrayList<Projectile> getProjectiles() {
         return projectiles;
+    }
+
+    private void handleRemoves(Projectile projectile){
+        if(projectile.getType() == ProjectileBuilder.FIREBALL){
+            addProjectile(
+                    ProjectileBuilder.makeFireballExplosion(
+                            projectile.getX(),
+                            projectile.getY()
+                    )
+            );
+        }
     }
 }
