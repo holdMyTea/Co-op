@@ -56,15 +56,21 @@ public class Character extends RotatableObject {
     public void onCollided(Object other, int direction) {
         switch (direction) {
             case Direction.TOP_LEFT:
-                this.setY(other.getY2() + CollisionDetector.SOME_GAP_CONST);
-                this.setX2(other.getX() - CollisionDetector.SOME_GAP_CONST);
+                if (this.getX2() - other.getX() > this.y - other.getY2()) {
+                    this.setX2(other.getX() - CollisionDetector.SOME_GAP_CONST);
+                } else {
+                    this.setY(other.getY2() + CollisionDetector.SOME_GAP_CONST);
+                }
                 break;
             case Direction.TOP:
                 this.setY(other.getY2() + CollisionDetector.SOME_GAP_CONST);
                 break;
             case Direction.TOP_RIGHT:
-                this.setY(other.getY2() + CollisionDetector.SOME_GAP_CONST);
-                this.setX(other.getX2() + CollisionDetector.SOME_GAP_CONST);
+                if (this.getX() - other.getX2() > this.y - other.getY2()) {
+                    this.setX(other.getX2() + CollisionDetector.SOME_GAP_CONST);
+                } else {
+                    this.setY(other.getY2() + CollisionDetector.SOME_GAP_CONST);
+                }
                 break;
             case Direction.LEFT:
                 this.setX2(other.getX() - CollisionDetector.SOME_GAP_CONST);
@@ -75,15 +81,21 @@ public class Character extends RotatableObject {
                 this.setX(other.getX2() + CollisionDetector.SOME_GAP_CONST);
                 break;
             case Direction.BOT_LEFT:
-                this.setY2(other.getY() - CollisionDetector.SOME_GAP_CONST);
-                this.setX2(other.getX() - CollisionDetector.SOME_GAP_CONST);
+                if (this.getX2() - other.getX() > this.getY2() - other.getY()) {
+                    this.setX2(other.getX() - CollisionDetector.SOME_GAP_CONST);
+                } else {
+                    this.setY2(other.getY() - CollisionDetector.SOME_GAP_CONST);
+                }
                 break;
             case Direction.BOT:
                 this.setY2(other.getY() - CollisionDetector.SOME_GAP_CONST);
                 break;
             case Direction.BOT_RIGHT:
-                this.setY2(other.getY() - CollisionDetector.SOME_GAP_CONST);
-                this.setX(other.getX2() + CollisionDetector.SOME_GAP_CONST);
+                if (this.getX() - other.getX2() > this.getY2() - other.getY()) {
+                    this.setX(other.getX2() + CollisionDetector.SOME_GAP_CONST);
+                } else {
+                    this.setY2(other.getY() - CollisionDetector.SOME_GAP_CONST);
+                }
                 break;
         }
     }

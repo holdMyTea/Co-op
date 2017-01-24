@@ -30,8 +30,16 @@ public class Object {
      * @param other Object to check collision with
      */
     public final void checkCollision(Object other){
-        int direction = onCollisionCheck(other);
-        onCollisionDetected(other, direction);
+        int direction;
+        System.out.println("cycle start");
+        while(true){
+            direction = onCollisionCheck(other);
+            if(direction == Direction.NO){
+                return;
+            }
+            System.out.println("kukle "+direction);
+            onCollisionDetected(other, direction);
+        }
     }
 
     /**Returns one of the Direction constants indicating direction of collision
@@ -74,7 +82,12 @@ public class Object {
         other.onCollided(this, direction);
     }
 
-    public void onCollided(Object other, int direction){
+
+    /** The method is called, when collision is detected
+     * @param other object collision was detected with
+     * @param direction direction of the collision
+     */
+    protected void onCollided(Object other, int direction){
 
     }
 

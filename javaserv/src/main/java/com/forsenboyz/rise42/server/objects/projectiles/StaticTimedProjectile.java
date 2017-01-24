@@ -1,5 +1,6 @@
 package com.forsenboyz.rise42.server.objects.projectiles;
 
+import com.forsenboyz.rise42.server.collisions.Direction;
 import com.forsenboyz.rise42.server.objects.Object;
 
 public class StaticTimedProjectile extends TimedProjectile {
@@ -11,6 +12,11 @@ public class StaticTimedProjectile extends TimedProjectile {
     @Override
     public void move() {
         this.currentTime++;
+    }
+
+    @Override
+    protected int onCollisionCheck(Object other) {
+        return Direction.NO;
     }
 
     @Override
