@@ -4,8 +4,8 @@ public class RotatableObject extends Object {
 
     protected int angle;
 
-    public RotatableObject(float x, float y, int width, int height, int angle) {
-        super(x, y, width, height);
+    public RotatableObject(Type type, float x, float y, int width, int height, int angle) {
+        super(type, x, y, width, height);
         this.angle = angle;
     }
 
@@ -17,7 +17,7 @@ public class RotatableObject extends Object {
         this.angle = angle;
     }
 
-    /**
+    /**r
      * changes angle preserving it in [0;360)
      * @param initial initial angle
      * @param delta signed value by which angle will be changed

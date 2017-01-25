@@ -29,7 +29,7 @@ public class ProjectileManager {
     }
 
     private void handleRemoves(Projectile projectile){
-        if(projectile.getType() == ProjectileBuilder.FIREBALL){
+        if(projectile.getProjectileType() == ProjectileBuilder.FIREBALL){
             addProjectile(
                     ProjectileBuilder.makeFireballExplosion(
                             projectile.getX(),

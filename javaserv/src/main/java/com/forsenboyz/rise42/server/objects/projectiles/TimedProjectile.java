@@ -18,7 +18,6 @@ public class TimedProjectile extends Projectile {
         this.currentTime++;
     }
 
-
     /**
      * @return true, if projectile was destroyed by collision or expiration of distance or time
      */

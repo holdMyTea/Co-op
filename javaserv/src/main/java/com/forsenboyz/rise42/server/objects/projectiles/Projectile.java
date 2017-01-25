@@ -3,7 +3,7 @@ package com.forsenboyz.rise42.server.objects.projectiles;
 import com.forsenboyz.rise42.server.collisions.Direction;
 import com.forsenboyz.rise42.server.objects.Object;
 import com.forsenboyz.rise42.server.objects.RotatableObject;
-import com.forsenboyz.rise42.server.objects.actions.Castable;
+import com.forsenboyz.rise42.server.objects.Type;
 import com.google.gson.JsonObject;
 
 import static com.forsenboyz.rise42.server.message.JsonProperties.*;
@@ -13,7 +13,7 @@ import static com.forsenboyz.rise42.server.message.JsonProperties.*;
  */
 public class Projectile extends RotatableObject {
 
-    private final int type;
+    private final int projectileType;
 
     private final int maxMovementRange;
     private final int moveSpeed;
@@ -23,10 +23,10 @@ public class Projectile extends RotatableObject {
 
     private boolean destroyed;
 
-    Projectile(int type, float x, float y, int width, int height,
-                      int maxMovementRange, int moveSpeed, int movementAngle) {
-        super(x, y, width, height, movementAngle);
-        this.type = type;
+    Projectile(int projectileType, float x, float y, int width, int height,
+               int maxMovementRange, int moveSpeed, int movementAngle) {
+        super(Type.Projectile, x, y, width, height, movementAngle);
+        this.projectileType = projectileType;
         this.maxMovementRange = maxMovementRange;
         this.moveSpeed = moveSpeed;
         this.movementAngle = movementAngle;
@@ -41,10 +41,11 @@ public class Projectile extends RotatableObject {
     }
 
     @Override
-    public void onCollided(Object other, int direction) {
+    public boolean onCollided(Object other, int direction) {
         if(direction != Direction.NO) {
             this.destroyed = true;
         }
+        return false;
     }
 
     /**
@@ -54,8 +55,8 @@ public class Projectile extends RotatableObject {
         return destroyed || currentRangeMoved >= maxMovementRange;
     }
 
-    public int getType() {
-        return type;
+    public int getProjectileType() {
+        return projectileType;
     }
 
     public JsonObject toJson(){
@@ -63,7 +64,7 @@ public class Projectile extends RotatableObject {
         object.addProperty(X, this.x);
         object.addProperty(Y, this.y);
         object.addProperty(ANGLE, this.angle);
-        object.addProperty(TYPE, this.type);
+        object.addProperty(TYPE, this.projectileType);
         return object;
     }
 }

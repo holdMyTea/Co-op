@@ -26,7 +26,8 @@ public class OutcomeProcessor {
     public synchronized void makeMessage() {
         JsonObject message = new JsonObject();
         message.add(PROJECTILES, makeProjectileMessages());
-        message.add(HEROES, makeHeroMessages());
+        message.add(MAGE, objectHolder.getMage().toJson());
+        message.add(WAR, objectHolder.getWar().toJson());
 
         newMessage(new Gson().toJson(message));
     }
@@ -37,15 +38,6 @@ public class OutcomeProcessor {
 
     public void makePlayMessage(){
         newMessage(PLAY_MSG);
-    }
-
-    private JsonElement makeHeroMessages() {
-        JsonObject heroes = new JsonObject();
-
-        heroes.add(MAGE, objectHolder.getMage().toJson());
-        heroes.add(WAR, objectHolder.getWar().toJson());
-
-        return heroes;
     }
 
     private JsonElement makeProjectileMessages() {

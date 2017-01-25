@@ -13,7 +13,6 @@ public class InputMessageHandler {
     private static final String INIT = "init";
     private static final String PLAY = "play";
     private static final String PAUSE = "pause";
-    private static final String HEROES = "heroes";
     private static final String PROJECTILES = "projectiles";
 
     private static final String MAGE = "mage";
@@ -25,7 +24,6 @@ public class InputMessageHandler {
     private static final String ACTIONS = "act";
 
     private static final String TYPE = "t";
-    private static final String DESTROYED = "destr";
 
     private StateManager stateManager;
     private Connection connection;
@@ -61,8 +59,12 @@ public class InputMessageHandler {
                 if (msg.get(PLAY).getAsInt() == 1) stateManager.play();
             }
 
-            if (msg.has(HEROES)) {
-                processHeroes(msg.get(HEROES).getAsJsonObject());
+            if (msg.has(MAGE)) {
+                processMage(msg.get(MAGE).getAsJsonObject());
+            }
+
+            if (msg.has(WAR)) {
+                processWar(msg.get(WAR).getAsJsonObject());
             }
 
             if (msg.has(PROJECTILES)) {
@@ -71,9 +73,7 @@ public class InputMessageHandler {
         }
     }
 
-    //TODO: duplicate code
-    private void processHeroes(JsonObject heroes) {
-        JsonObject mage = heroes.get(MAGE).getAsJsonObject();
+    private void processMage(JsonObject mage){
         this.stateManager.getPlayState().getMage().move(
                 mage.get(X).getAsFloat(),
                 mage.get(Y).getAsFloat(),
@@ -86,8 +86,9 @@ public class InputMessageHandler {
                 this.stateManager.getPlayState().getMage().activateAnimation(element.getAsInt());
             }
         }
+    }
 
-        JsonObject war = heroes.get(WAR).getAsJsonObject();
+    private void processWar(JsonObject war){
         this.stateManager.getPlayState().getWar().move(
                 war.get(X).getAsFloat(),
                 war.get(Y).getAsFloat(),

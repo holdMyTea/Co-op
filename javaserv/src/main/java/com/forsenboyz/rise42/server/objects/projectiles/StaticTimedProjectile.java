@@ -20,11 +20,6 @@ public class StaticTimedProjectile extends TimedProjectile {
     }
 
     @Override
-    public void onCollided(Object other, int direction) {
-        // do nothing
-    }
-
-    @Override
     boolean isDestroyed() {
         return currentTime > maxTime;
     }

@@ -2,6 +2,7 @@ package com.forsenboyz.rise42.server.parser;
 
 import com.forsenboyz.rise42.server.objects.Character;
 import com.forsenboyz.rise42.server.objects.Object;
+import com.forsenboyz.rise42.server.objects.Type;
 import com.google.gson.*;
 
 import java.io.IOException;
@@ -45,6 +46,7 @@ public class ConfigParser {
         for (JsonElement element : staticObjects.getAsJsonArray("blocks")) {
             wallBlocks.add(
                     new Object(
+                            Type.Wall,
                             element.getAsJsonObject().get("x").getAsFloat(),
                             element.getAsJsonObject().get("x2").getAsFloat(),
                             element.getAsJsonObject().get("y").getAsFloat(),
@@ -66,6 +68,7 @@ public class ConfigParser {
 
         for (int i = 0; i < 4; i++) {
             borderBlocks[i] = new Object(
+                    Type.Wall,
                     jsonArray.get(i).getAsJsonObject().get("x").getAsFloat(),
                     jsonArray.get(i).getAsJsonObject().get("x2").getAsFloat(),
                     jsonArray.get(i).getAsJsonObject().get("y").getAsFloat(),
