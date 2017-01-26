@@ -82,7 +82,7 @@ public class Object {
         return direction;
     }
 
-    protected boolean onCollisionDetected(Object other, int direction) {
+    private boolean onCollisionDetected(Object other, int direction) {
         return onCollided(other, direction) || other.onCollided(this, direction);
     }
 
@@ -93,7 +93,7 @@ public class Object {
      * @param direction direction of the collision
      * @return whether further collision check is required
      */
-    protected boolean onCollided(Object other, int direction) {
+    public boolean onCollided(Object other, int direction) {
         return false;
     }
 
@@ -102,7 +102,7 @@ public class Object {
      *
      * @param x desired X position of an Object's left edge
      */
-    protected void setX(float x) {
+    public void setX(float x) {
         this.x = x;
     }
 
@@ -111,7 +111,7 @@ public class Object {
      *
      * @param y desired Y position of an Object's bot edge
      */
-    protected void setY(float y) {
+    public void setY(float y) {
         this.y = y;
     }
 
@@ -120,7 +120,7 @@ public class Object {
      *
      * @param x2 desired X position of an Object's right edge
      */
-    protected void setX2(float x2) {
+    public void setX2(float x2) {
         this.x = x2 - width;
     }
 
@@ -129,7 +129,7 @@ public class Object {
      *
      * @param y2 desired Y position of an Object's top edge
      */
-    protected void setY2(float y2) {
+    public void setY2(float y2) {
         this.y = y2 - height;
     }
 
@@ -141,31 +141,31 @@ public class Object {
         return y;
     }
 
-    protected float getX2() {
+    public float getX2() {
         return x + width;
     }
 
-    protected float getY2() {
+    public float getY2() {
         return y + height;
     }
 
-    protected int getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    protected int getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    protected float getCentreX() {
+    public float getCentreX() {
         return this.x + (this.width / 2);
     }
 
-    protected float getCentreY() {
+    public float getCentreY() {
         return this.y + (this.height / 2);
     }
 
-    protected Type getType() {
+    public Type getType() {
         return this.type;
     }
 

@@ -1,4 +1,7 @@
-package com.forsenboyz.rise42.server.objects.projectiles;
+package com.forsenboyz.rise42.server.objects.managers;
+
+import com.forsenboyz.rise42.server.objects.projectiles.Projectile;
+import com.forsenboyz.rise42.server.objects.projectiles.StaticTimedProjectile;
 
 public class ProjectileBuilder {
 

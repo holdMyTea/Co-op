@@ -1,9 +1,12 @@
-package com.forsenboyz.rise42.server.objects;
+package com.forsenboyz.rise42.server.objects.characters;
 
 import static com.forsenboyz.rise42.server.message.JsonProperties.*;
 
 import com.forsenboyz.rise42.server.collisions.CollisionDetector;
 import com.forsenboyz.rise42.server.collisions.Direction;
+import com.forsenboyz.rise42.server.objects.Object;
+import com.forsenboyz.rise42.server.objects.RotatableObject;
+import com.forsenboyz.rise42.server.objects.Type;
 import com.forsenboyz.rise42.server.objects.actions.Action;
 import com.forsenboyz.rise42.server.objects.actions.Castable;
 import com.google.gson.JsonArray;
@@ -13,26 +16,20 @@ import java.util.ArrayList;
 
 public class Character extends RotatableObject {
 
-    private float moveSpeed;
+    float moveSpeed;
 
-    private ArrayList<Action> actions;
+    ArrayList<Action> actions;
 
-    public Character(float moveSpeed, float x, float y, int angle, int width, int height) {
-        super(Type.Hero, x, y, width, height, angle);
+    int currentHP;
+    int maxHP;
+
+    public Character(Type type, float moveSpeed, int maxHP, float x, float y, int angle, int width, int height) {
+        super(type, x, y, width, height, angle);
         this.moveSpeed = moveSpeed;
         this.actions = new ArrayList<>();
-    }
 
-    public void move(int angle, boolean forward) {
-        if (forward) {
-            this.x += this.moveSpeed * Math.cos(Math.toRadians(angle));
-            this.y += this.moveSpeed * Math.sin(Math.toRadians(angle));
-        } else {
-            int reversedAngle = convertAngle(angle, 180);
-            this.x += this.moveSpeed * Math.cos(Math.toRadians(reversedAngle));
-            this.y += this.moveSpeed * Math.sin(Math.toRadians(reversedAngle));
-        }
-        this.angle = angle;
+        this.maxHP = maxHP;
+        this.currentHP = maxHP;
     }
 
     public Castable[] update(long currentTimeMillis) {
@@ -48,13 +45,13 @@ public class Character extends RotatableObject {
         return this.actions.get(index).startCasting(currentTimeMillis);
     }
 
-    void addAction(int index, Action action) {
+    public void addAction(int index, Action action) {
         this.actions.add(index, action);
     }
 
     @Override
     public boolean onCollided(Object other, int direction) {
-        if (other.getType() == Type.Wall) {
+        if (other.getType() == Type.Wall || other.getType() == Type.Hero || other.getType() == Type.Enemy) {
             switch (direction) {
                 case Direction.TOP_LEFT:
                     if (this.getX2() - other.getX() > this.y - other.getY2()) {
@@ -102,8 +99,14 @@ public class Character extends RotatableObject {
                     return false;
             }
             return true;
+        } else if(other.getType() == Type.Projectile){
+            this.currentHP--;
         }
         return false;
+    }
+
+    public boolean isDead() {
+        return currentHP <= 0;
     }
 
     public JsonObject toJson() {

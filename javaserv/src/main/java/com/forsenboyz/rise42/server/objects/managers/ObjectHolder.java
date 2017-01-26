@@ -1,17 +1,14 @@
-package com.forsenboyz.rise42.server.objects;
+package com.forsenboyz.rise42.server.objects.managers;
 
+import com.forsenboyz.rise42.server.objects.characters.Character;
 import com.forsenboyz.rise42.server.objects.actions.Action;
-import com.forsenboyz.rise42.server.objects.projectiles.Projectile;
-import com.forsenboyz.rise42.server.objects.projectiles.ProjectileBuilder;
-import com.forsenboyz.rise42.server.objects.projectiles.ProjectileManager;
+import com.forsenboyz.rise42.server.objects.characters.Hero;
 import com.forsenboyz.rise42.server.parser.ConfigParser;
-
-import java.util.ArrayList;
 
 public class ObjectHolder {
 
-    private Character mage;
-    private Character war;
+    private Hero mage;
+    private Hero war;
 
     private ProjectileManager projectileManager;
 
@@ -54,11 +51,11 @@ public class ObjectHolder {
         );
     }
 
-    public Character getMage() {
+    public Hero getMage() {
         return mage;
     }
 
-    public Character getWar() {
+    public Hero getWar() {
         return war;
     }
 

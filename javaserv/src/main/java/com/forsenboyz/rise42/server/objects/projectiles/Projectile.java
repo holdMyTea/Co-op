@@ -23,7 +23,7 @@ public class Projectile extends RotatableObject {
 
     private boolean destroyed;
 
-    Projectile(int projectileType, float x, float y, int width, int height,
+    public Projectile(int projectileType, float x, float y, int width, int height,
                int maxMovementRange, int moveSpeed, int movementAngle) {
         super(Type.Projectile, x, y, width, height, movementAngle);
         this.projectileType = projectileType;
@@ -51,7 +51,7 @@ public class Projectile extends RotatableObject {
     /**
      * @return true, if projectile was destroyed by collision or range expiration
      */
-    boolean isDestroyed() {
+    public boolean isDestroyed() {
         return destroyed || currentRangeMoved >= maxMovementRange;
     }
 

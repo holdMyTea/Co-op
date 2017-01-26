@@ -86,17 +86,29 @@
       "x":850,
       "y":1064,
       "angle":180,
-      "moveSpeed":4,
       "width":64,
-      "height":64
+      "height":64,
+      "moveSpeed":4,
+      "maxHP":6
     },
     "war":{
       "x":1200,
       "y":1064,
       "angle":0,
-      "moveSpeed":5,
       "width":64,
-      "height":64
+      "height":64,
+      "moveSpeed":5,
+      "maxHP":8
     }
-  }
+  },
+  "spawns": [
+    {
+      "x":32,
+      "y":1010
+    },
+    {
+      "x":1980,
+      "y":1010
+    }
+  ]
 }

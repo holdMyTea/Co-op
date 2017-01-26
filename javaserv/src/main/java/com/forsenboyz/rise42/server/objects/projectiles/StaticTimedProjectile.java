@@ -5,7 +5,7 @@ import com.forsenboyz.rise42.server.objects.Object;
 
 public class StaticTimedProjectile extends TimedProjectile {
 
-    StaticTimedProjectile(int type, float x, float y, int width, int height, int maxCycles) {
+    public StaticTimedProjectile(int type, float x, float y, int width, int height, int maxCycles) {
         super(type, x, y, width, height, 1, 0, 0, maxCycles);
     }
 

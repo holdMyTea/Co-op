@@ -1,7 +1,7 @@
 package com.forsenboyz.rise42.server.message;
 
 import com.forsenboyz.rise42.server.network.Server;
-import com.forsenboyz.rise42.server.objects.ObjectHolder;
+import com.forsenboyz.rise42.server.objects.managers.ObjectHolder;
 import com.forsenboyz.rise42.server.objects.projectiles.Projectile;
 import com.google.gson.*;
 

@@ -4,12 +4,11 @@ import com.forsenboyz.rise42.server.collisions.CollisionDetector;
 import com.forsenboyz.rise42.server.message.IncomeProcessor;
 import com.forsenboyz.rise42.server.message.OutcomeProcessor;
 import com.forsenboyz.rise42.server.network.Server;
-import com.forsenboyz.rise42.server.objects.Character;
-import com.forsenboyz.rise42.server.objects.ObjectHolder;
-import com.forsenboyz.rise42.server.objects.actions.Action;
+import com.forsenboyz.rise42.server.objects.characters.Character;
+import com.forsenboyz.rise42.server.objects.characters.Hero;
+import com.forsenboyz.rise42.server.objects.managers.ObjectHolder;
 import com.forsenboyz.rise42.server.objects.actions.Castable;
-import com.forsenboyz.rise42.server.objects.projectiles.ProjectileBuilder;
-import com.forsenboyz.rise42.server.objects.projectiles.ProjectileManager;
+import com.forsenboyz.rise42.server.objects.managers.ProjectileManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,8 +28,8 @@ public class MainCycle {
     private IncomeProcessor incomeProcessor;
     private OutcomeProcessor outcomeProcessor;
 
-    private Character mage;
-    private Character war;
+    private Hero mage;
+    private Hero war;
 
     public MainCycle(Server server) {
         System.out.println("Main init");

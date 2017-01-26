@@ -1,10 +1,10 @@
 package com.forsenboyz.rise42.server.collisions;
 
-import com.forsenboyz.rise42.server.objects.Character;
+import com.forsenboyz.rise42.server.objects.characters.Character;
 import com.forsenboyz.rise42.server.objects.Object;
-import com.forsenboyz.rise42.server.objects.ObjectHolder;
-import com.forsenboyz.rise42.server.objects.RotatableObject;
+import com.forsenboyz.rise42.server.objects.managers.ObjectHolder;
 import com.forsenboyz.rise42.server.objects.projectiles.Projectile;
+import com.forsenboyz.rise42.server.objects.managers.ProjectileManager;
 import com.forsenboyz.rise42.server.parser.ConfigParser;
 
 import java.util.ArrayList;
@@ -19,24 +19,31 @@ public class CollisionDetector {
     private Object[] borderBlocks;
     private ArrayList<Object> wallBlocks;
 
+    private ProjectileManager projectileManager;
+
     public CollisionDetector(ObjectHolder objectHolder) {
         borderBlocks = ConfigParser.getBorderBlocks();
         this.wallBlocks = ConfigParser.getWallBlocks();
 
+        this.projectileManager = objectHolder.getProjectileManager();
+
         this.objectHolder = objectHolder;
     }
 
-    /**
-     * Checks whether object collides with other objects, should be called after object.move(...)
-     *
-     * @param object object to check collisions with
-     */
-    public void check(RotatableObject object) {
-        checkBorderCollision(object);
-        checkBlockCollision(object);
+    public void check(Projectile projectile){
+        checkBlockCollision(projectile);
+        checkBorderCollision(projectile);
+        objectHolder.getMage().checkCollision(projectile);
+        objectHolder.getWar().checkCollision(projectile);
     }
 
-    private void checkBorderCollision(RotatableObject object) {
+    public void check(Character character){
+        checkBorderCollision(character);
+        checkBlockCollision(character);
+        checkProjectileCollision(character);
+    }
+
+    private void checkBorderCollision(Object object) {
         for (Object borderBlock : borderBlocks) {
             borderBlock.checkCollision(object);
         }
@@ -45,6 +52,12 @@ public class CollisionDetector {
     private void checkBlockCollision(Object object) {
         for (Object wallBlock : wallBlocks) {
             wallBlock.checkCollision(object);
+        }
+    }
+
+    private void checkProjectileCollision(Object object){
+        for (Projectile projectile : projectileManager.getProjectiles()){
+            projectile.checkCollision(object);
         }
     }
 

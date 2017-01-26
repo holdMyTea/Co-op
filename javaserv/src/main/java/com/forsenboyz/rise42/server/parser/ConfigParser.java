@@ -1,8 +1,9 @@
 package com.forsenboyz.rise42.server.parser;
 
-import com.forsenboyz.rise42.server.objects.Character;
+import com.forsenboyz.rise42.server.objects.characters.Character;
 import com.forsenboyz.rise42.server.objects.Object;
 import com.forsenboyz.rise42.server.objects.Type;
+import com.forsenboyz.rise42.server.objects.characters.Hero;
 import com.google.gson.*;
 
 import java.io.IOException;
@@ -79,7 +80,7 @@ public class ConfigParser {
         return borderBlocks;
     }
 
-    public static Character getMage() {
+    public static Hero getMage() {
         JsonObject object = new JsonParser()
                 .parse(readFile())
                 .getAsJsonObject()
@@ -88,8 +89,9 @@ public class ConfigParser {
                 .get("mage")
                 .getAsJsonObject();
 
-        return new Character(
+        return new Hero(
                 object.get("moveSpeed").getAsInt(),
+                object.get("maxHP").getAsInt(),
                 object.get("x").getAsFloat(),
                 object.get("y").getAsFloat(),
                 object.get("angle").getAsInt(),
@@ -98,7 +100,7 @@ public class ConfigParser {
         );
     }
 
-    public static Character getWar() {
+    public static Hero getWar() {
         JsonObject object = new JsonParser()
                 .parse(readFile())
                 .getAsJsonObject()
@@ -107,14 +109,32 @@ public class ConfigParser {
                 .get("war")
                 .getAsJsonObject();
 
-        return new Character(
+        return new Hero(
                 object.get("moveSpeed").getAsInt(),
+                object.get("maxHP").getAsInt(),
                 object.get("x").getAsFloat(),
                 object.get("y").getAsFloat(),
                 object.get("angle").getAsInt(),
                 object.get("width").getAsInt(),
                 object.get("height").getAsInt()
         );
+    }
+
+    public static Coordinates[] getSpawns() {
+        JsonArray spawns = new JsonParser()
+                .parse(readFile())
+                .getAsJsonObject()
+                .get("spawns")
+                .getAsJsonArray();
+
+        Coordinates[] coordinates = new Coordinates[spawns.size()];
+        for (int i = 0; i < coordinates.length; i++) {
+            coordinates[i] = new Coordinates(
+                    spawns.get(i).getAsJsonObject().get("x").getAsInt(),
+                    spawns.get(i).getAsJsonObject().get("y").getAsInt()
+            );
+        }
+        return coordinates;
     }
 
     public static int getBackgroundSize() {
