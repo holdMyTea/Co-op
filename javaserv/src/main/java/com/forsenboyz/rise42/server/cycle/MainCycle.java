@@ -4,8 +4,8 @@ import com.forsenboyz.rise42.server.collisions.CollisionDetector;
 import com.forsenboyz.rise42.server.message.IncomeProcessor;
 import com.forsenboyz.rise42.server.message.OutcomeProcessor;
 import com.forsenboyz.rise42.server.network.Server;
-import com.forsenboyz.rise42.server.objects.characters.Character;
 import com.forsenboyz.rise42.server.objects.characters.Hero;
+import com.forsenboyz.rise42.server.objects.managers.EnemyManager;
 import com.forsenboyz.rise42.server.objects.managers.ObjectHolder;
 import com.forsenboyz.rise42.server.objects.actions.Castable;
 import com.forsenboyz.rise42.server.objects.managers.ProjectileManager;
@@ -17,12 +17,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MainCycle {
 
     private final int INTERVAL_WAIT = 30;
-    private long lastCycle;
+    private long currentCycle;
 
     private AtomicBoolean paused;
 
     private ObjectHolder objectHolder;
     private ProjectileManager projectileManager;
+    private EnemyManager enemyManager;
 
     private CollisionDetector collisionDetector;
     private IncomeProcessor incomeProcessor;
@@ -33,11 +34,12 @@ public class MainCycle {
 
     public MainCycle(Server server) {
         System.out.println("Main init");
-        this.lastCycle = System.currentTimeMillis();
+        this.currentCycle = System.currentTimeMillis();
         this.paused = new AtomicBoolean(true);
 
         this.objectHolder = new ObjectHolder();
         this.projectileManager = this.objectHolder.getProjectileManager();
+        this.enemyManager = this.objectHolder.getEnemyManager();
 
         this.mage = objectHolder.getMage();
         this.war = objectHolder.getWar();
@@ -55,13 +57,13 @@ public class MainCycle {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss.SSS");
                     while (true) {
                         if (!paused.get()) {
-                            lastCycle = System.currentTimeMillis();
+                            currentCycle = System.currentTimeMillis();
 
-                            for(Castable castable : mage.update(lastCycle)){
+                            for(Castable castable : mage.update(currentCycle)){
                                 castable.onCast(this.projectileManager);
                             }
 
-                            for(Castable castable : war.update(lastCycle)){
+                            for(Castable castable : war.update(currentCycle)){
                                 castable.onCast(this.projectileManager);
                             }
 
@@ -72,6 +74,17 @@ public class MainCycle {
                                     })
                             );
                             projectileManager.removeDestroyed();
+
+                            enemyManager.getEnemies().forEach(
+                                    (enemy) -> {
+                                        enemy.move(mage, war);
+                                        this.collisionDetector.check(enemy);
+                                        enemy.afterMove();
+                                        this.collisionDetector.check(enemy);
+                                    }
+                            );
+                            enemyManager.removeDead();
+                            enemyManager.spawn(currentCycle);
 
                             outcomeProcessor.makeMessage();
                             System.out.println("cycle: " + dateFormat.format(new Date()));

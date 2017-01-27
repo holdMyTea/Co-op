@@ -13,6 +13,7 @@ import com.forsenboyz.rise42.coop.network.OutputMessageHandler;
 import com.forsenboyz.rise42.coop.objects.AttachedAnimation;
 import com.forsenboyz.rise42.coop.objects.Character;
 import com.forsenboyz.rise42.coop.objects.Object;
+import com.forsenboyz.rise42.coop.objects.RotatableObject;
 
 import java.util.ArrayList;
 
@@ -45,8 +46,8 @@ public class PlayState extends State {
     // indicates, whether hero's angle was changed, if true angle POSSIBLY will be submitted in OutputMessageHandler
     private boolean rotated;
 
-    private TextureRegion projectileTexture;
-    private ArrayList<Object> projectiles;
+    private Object[] projectiles;
+    private RotatableObject[] enemies;
 
     PlayState(OutputMessageHandler outputMessageHandler, InputProcessor inputProcessor, boolean active) {
         super(outputMessageHandler, inputProcessor, active);
@@ -67,8 +68,8 @@ public class PlayState extends State {
 
         TextureAtlas strikeAtlas = new TextureAtlas(Gdx.files.internal("strk.atlas"));
 
-        this.projectileTexture = strikeAtlas.findRegion("mag-strk", 1);
-        projectiles = new ArrayList<>();
+        projectiles = new Object[0];
+        enemies = new RotatableObject[0];
 
         war = new Character(charAtlas.findRegion("war"), 1200, 1056, 0);
         war.addAnimation(
@@ -108,6 +109,7 @@ public class PlayState extends State {
         sb.setProjectionMatrix(camera.combined);
         super.render(sb, delta);
         this.renderProjectiles(sb, delta);
+        this.renderEnemies(sb, delta);
     }
 
     @Override
@@ -121,9 +123,9 @@ public class PlayState extends State {
         lastInputTime = 0;
 
         float angle = 360 - new Vector2(
-                (currentHero.getCentreX() - camera.viewportWidth/2  + inputProcessor.getMouseX() +
+                (currentHero.getCentreX() - camera.viewportWidth / 2 + inputProcessor.getMouseX() +
                         (camera.position.x - currentHero.getCentreX())) - currentHero.getCentreX(),
-                (currentHero.getCentreY() - camera.viewportHeight/2 + inputProcessor.getMouseY() -
+                (currentHero.getCentreY() - camera.viewportHeight / 2 + inputProcessor.getMouseY() -
                         (camera.position.y - currentHero.getCentreY())) - currentHero.getCentreY()
         ).angle();
 
@@ -197,8 +199,17 @@ public class PlayState extends State {
         }
     }
 
-    public void setProjectiles(ArrayList<Object> projectiles) {
+    private void renderEnemies(SpriteBatch sb, float delta) {
+        for (RotatableObject obj : enemies) {
+            obj.render(sb, delta);
+        }
+    }
+
+    public void setProjectiles(Object[] projectiles) {
         this.projectiles = projectiles;
     }
 
+    public void setEnemies(RotatableObject[] enemies) {
+        this.enemies = enemies;
+    }
 }

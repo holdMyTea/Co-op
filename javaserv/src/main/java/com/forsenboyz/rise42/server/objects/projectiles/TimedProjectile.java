@@ -22,7 +22,7 @@ public class TimedProjectile extends Projectile {
      * @return true, if projectile was destroyed by collision or expiration of distance or time
      */
     @Override
-    boolean isDestroyed() {
+    public boolean isDestroyed() {
         return super.isDestroyed() || currentTime >= maxTime;
     }
 }

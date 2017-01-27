@@ -5,20 +5,42 @@ import com.forsenboyz.rise42.server.objects.Object;
 
 public class NPC extends Character {
 
+    private float previousX;
+    private float previousY;
+
     public NPC(float moveSpeed, int maxHP, float x, float y, int angle, int width, int height) {
         super(Type.Enemy, moveSpeed, maxHP, x, y, angle, width, height);
     }
 
     public void move(Hero first, Hero second) {
+        this.previousX = this.x;
+        this.previousY = this.y;
+
         if (distanceTo(first) < distanceTo(second)) {
-            moveTo(first);
+            this.angle = angleTo(first);
         } else {
-            moveTo(second);
+            this.angle = angleTo(second);
+        }
+        changeCoordinates();
+    }
+
+    public void afterMove() {
+        if ((Math.abs(this.x - previousX) < 1)
+                &&
+                (Math.abs(this.y - previousY) < 1)
+                ) {
+            if(this.angle < 0){
+                this.angle = -90;
+            } else if(this.angle > 0){
+                this.angle = 90;
+            }
+            changeCoordinates();
         }
     }
 
-    private void moveTo(Object target) {
-        // learn to walk again
+    private void changeCoordinates() {
+        this.x += this.moveSpeed * Math.cos(Math.toRadians(angle));
+        this.y += this.moveSpeed * Math.sin(Math.toRadians(angle));
     }
 
     private float distanceTo(Object target) {

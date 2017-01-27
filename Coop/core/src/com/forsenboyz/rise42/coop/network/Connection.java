@@ -131,7 +131,7 @@ class Connection {
 
     private String readMessage() {
         try {
-            byte[] buffer = new byte[350];
+            byte[] buffer = new byte[500];
             if (inputStream.read(buffer) > 0) {
 
                 String[] read =

@@ -12,8 +12,11 @@ public class ObjectHolder {
 
     private ProjectileManager projectileManager;
 
+    private EnemyManager enemyManager;
+
     public ObjectHolder() {
         this.projectileManager = new ProjectileManager();
+        this.enemyManager = new EnemyManager();
 
         this.mage = ConfigParser.getMage();
         this.mage.addAction(
@@ -61,5 +64,9 @@ public class ObjectHolder {
 
     public ProjectileManager getProjectileManager() {
         return projectileManager;
+    }
+
+    public EnemyManager getEnemyManager() {
+        return enemyManager;
     }
 }

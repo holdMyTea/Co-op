@@ -1,7 +1,9 @@
 package com.forsenboyz.rise42.coop.network;
 
+import com.forsenboyz.rise42.coop.objects.EnemyBuilder;
 import com.forsenboyz.rise42.coop.objects.Object;
 import com.forsenboyz.rise42.coop.objects.ProjectileBuilder;
+import com.forsenboyz.rise42.coop.objects.RotatableObject;
 import com.forsenboyz.rise42.coop.states.StateManager;
 import com.google.gson.*;
 
@@ -14,6 +16,7 @@ public class InputMessageHandler {
     private static final String PLAY = "play";
     private static final String PAUSE = "pause";
     private static final String PROJECTILES = "projectiles";
+    private static final String ENEMIES = "enemies";
 
     private static final String MAGE = "mage";
     private static final String WAR = "war";
@@ -70,6 +73,10 @@ public class InputMessageHandler {
             if (msg.has(PROJECTILES)) {
                 processProjectiles(msg.get(PROJECTILES).getAsJsonArray());
             }
+
+            if (msg.has(ENEMIES)) {
+                processEnemies(msg.get(ENEMIES).getAsJsonArray());
+            }
         }
     }
 
@@ -102,18 +109,30 @@ public class InputMessageHandler {
     }
 
     private void processProjectiles(JsonArray projectiles) {
-        ArrayList<Object> list = new ArrayList<>();
-        for (JsonElement element : projectiles) {
-            list.add(
-                    ProjectileBuilder.makeProjectile(
-                            element.getAsJsonObject().get(X).getAsFloat(),
-                            element.getAsJsonObject().get(Y).getAsFloat(),
-                            element.getAsJsonObject().get(ANGLE).getAsInt(),
-                            element.getAsJsonObject().get(TYPE).getAsInt()
-                    )
+        Object[] objects = new Object[projectiles.size()];
+        for (int i = 0; i < projectiles.size(); i++) {
+            objects[i] = ProjectileBuilder.makeProjectile(
+                    projectiles.get(i).getAsJsonObject().get(X).getAsFloat(),
+                    projectiles.get(i).getAsJsonObject().get(Y).getAsFloat(),
+                    projectiles.get(i).getAsJsonObject().get(ANGLE).getAsInt(),
+                    projectiles.get(i).getAsJsonObject().get(TYPE).getAsInt()
             );
         }
-        this.stateManager.getPlayState().setProjectiles(list);
+        this.stateManager.getPlayState().setProjectiles(objects);
+    }
+
+    private void processEnemies(JsonArray enemies){
+        RotatableObject[] objects = new RotatableObject[enemies.size()];
+
+        for (int i = 0; i < enemies.size(); i++) {
+            objects[i] = EnemyBuilder.buildSkeleton(
+                    enemies.get(i).getAsJsonObject().get(X).getAsFloat(),
+                    enemies.get(i).getAsJsonObject().get(Y).getAsFloat(),
+                    enemies.get(i).getAsJsonObject().get(ANGLE).getAsInt()
+            );
+        }
+
+        this.stateManager.getPlayState().setEnemies(objects);
     }
 
 }

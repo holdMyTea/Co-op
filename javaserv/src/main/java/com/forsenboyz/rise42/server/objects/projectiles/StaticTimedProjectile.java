@@ -20,7 +20,7 @@ public class StaticTimedProjectile extends TimedProjectile {
     }
 
     @Override
-    boolean isDestroyed() {
+    public boolean isDestroyed() {
         return currentTime > maxTime;
     }
 }
