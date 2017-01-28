@@ -55,6 +55,15 @@ public class ConfigParser {
                     )
             );
         }
+
+        // sorting by x for easier pathmaking
+        wallBlocks.sort(
+                (block1, block2) ->
+                        (int) (block1.getX() - block2.getX())
+        );
+
+        //wallBlocks.forEach(System.out::println);
+
         return wallBlocks;
     }
 

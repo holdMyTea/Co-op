@@ -1,6 +1,7 @@
 package com.forsenboyz.rise42.server.cycle;
 
 import com.forsenboyz.rise42.server.collisions.CollisionDetector;
+import com.forsenboyz.rise42.server.collisions.PathMaker;
 import com.forsenboyz.rise42.server.message.IncomeProcessor;
 import com.forsenboyz.rise42.server.message.OutcomeProcessor;
 import com.forsenboyz.rise42.server.network.Server;
@@ -77,9 +78,17 @@ public class MainCycle {
 
                             enemyManager.getEnemies().forEach(
                                     (enemy) -> {
-                                        enemy.move(mage, war);
-                                        this.collisionDetector.check(enemy);
-                                        enemy.afterMove();
+                                        if(enemy.hasCompletedPath()){
+                                            enemy.chooseTarget(mage, war);
+                                            PathMaker.makePath(
+                                                    enemy,
+                                                    collisionDetector.getBlockCollidedWithLine(
+                                                            enemy,
+                                                            enemy.getTarget()
+                                                    )
+                                            );
+                                        }
+                                        enemy.moveAlongPath();
                                         this.collisionDetector.check(enemy);
                                     }
                             );

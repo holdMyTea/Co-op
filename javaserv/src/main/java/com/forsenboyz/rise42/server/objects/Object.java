@@ -1,6 +1,7 @@
 package com.forsenboyz.rise42.server.objects;
 
 import com.forsenboyz.rise42.server.collisions.Direction;
+import com.forsenboyz.rise42.server.parser.Coordinates;
 
 public class Object {
 
@@ -167,6 +168,10 @@ public class Object {
 
     public Type getType() {
         return this.type;
+    }
+
+    public Coordinates getCoordinates(){
+        return new Coordinates((int)this.getCentreX(), (int)this.getCentreY());
     }
 
     @Override

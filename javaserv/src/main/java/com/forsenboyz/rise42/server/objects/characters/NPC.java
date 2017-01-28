@@ -2,43 +2,35 @@ package com.forsenboyz.rise42.server.objects.characters;
 
 import com.forsenboyz.rise42.server.objects.Type;
 import com.forsenboyz.rise42.server.objects.Object;
+import com.forsenboyz.rise42.server.parser.Coordinates;
+
+import java.util.ArrayDeque;
+
 
 public class NPC extends Character {
 
-    private float previousX;
-    private float previousY;
+    private Object target;
+    private ArrayDeque<Coordinates> path;
 
     public NPC(float moveSpeed, int maxHP, float x, float y, int angle, int width, int height) {
         super(Type.Enemy, moveSpeed, maxHP, x, y, angle, width, height);
+        this.path = new ArrayDeque<>();
     }
 
-    public void move(Hero first, Hero second) {
-        this.previousX = this.x;
-        this.previousY = this.y;
-
+    public void chooseTarget(Hero first, Hero second) {
         if (distanceTo(first) < distanceTo(second)) {
-            this.angle = angleTo(first);
+            this.target = first;
         } else {
-            this.angle = angleTo(second);
-        }
-        changeCoordinates();
-    }
-
-    public void afterMove() {
-        if ((Math.abs(this.x - previousX) < 1)
-                &&
-                (Math.abs(this.y - previousY) < 1)
-                ) {
-            if(this.angle < 0){
-                this.angle = -90;
-            } else if(this.angle > 0){
-                this.angle = 90;
-            }
-            changeCoordinates();
+            this.target = second;
         }
     }
 
-    private void changeCoordinates() {
+    public void moveAlongPath(){
+        this.angle = angleTo(path.peek());
+        move();
+    }
+
+    private void move() {
         this.x += this.moveSpeed * Math.cos(Math.toRadians(angle));
         this.y += this.moveSpeed * Math.sin(Math.toRadians(angle));
     }
@@ -50,10 +42,25 @@ public class NPC extends Character {
         );
     }
 
-    private int angleTo(Object target) {
+    public int angleTo(Object target) {
         return (int) Math.atan(
                 (target.getCentreX() - this.getCentreX())
                         / (target.getCentreY() - this.getCentreY())
         );
+    }
+
+    public int angleTo(Coordinates target){
+        return (int) Math.atan(
+                (target.x - this.getCentreX())
+                    / ((target.y)- this.getCentreY())
+        );
+    }
+
+    public boolean hasCompletedPath(){
+        return path.isEmpty();
+    }
+
+    public Object getTarget() {
+        return target;
     }
 }
