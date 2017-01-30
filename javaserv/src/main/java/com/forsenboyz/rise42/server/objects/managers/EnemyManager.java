@@ -9,9 +9,9 @@ import java.util.Random;
 
 public class EnemyManager {
 
-    private static final int MAX_ENEMIES = 7;
+    private static final int MAX_ENEMIES = 1;
 
-    private static final int SPAWN_DELAY = 1600;
+    private static final int SPAWN_DELAY = 2500;
 
     private Coordinates[] spawns;
     private Random random;
@@ -40,8 +40,8 @@ public class EnemyManager {
             int r = this.random.nextInt(spawns.length);
             this.enemies.add(
                     EnemyBuilder.makeSkeleton(
-                            spawns[r].x,
-                            spawns[r].y
+                            spawns[1].x,
+                            spawns[1].y
                     )
             );
         }

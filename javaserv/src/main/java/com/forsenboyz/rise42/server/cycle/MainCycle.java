@@ -79,13 +79,11 @@ public class MainCycle {
                             enemyManager.getEnemies().forEach(
                                     (enemy) -> {
                                         if(enemy.hasCompletedPath()){
+                                            System.out.println("Path making");
                                             enemy.chooseTarget(mage, war);
                                             PathMaker.makePath(
                                                     enemy,
-                                                    collisionDetector.getBlockCollidedWithLine(
-                                                            enemy,
-                                                            enemy.getTarget()
-                                                    )
+                                                    collisionDetector.getWallBlocks()
                                             );
                                         }
                                         enemy.moveAlongPath();

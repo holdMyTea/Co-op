@@ -100,7 +100,8 @@ public class Character extends RotatableObject {
             }
             return true;
         } else if(other.getType() == Type.Projectile){
-            this.currentHP--;
+            // TODO: damage
+            //this.currentHP--;
         }
         return false;
     }

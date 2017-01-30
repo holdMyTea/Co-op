@@ -170,6 +170,9 @@ public class Object {
         return this.type;
     }
 
+    /**
+     * @return coordinates of centre of the object
+     */
     public Coordinates getCoordinates(){
         return new Coordinates((int)this.getCentreX(), (int)this.getCentreY());
     }

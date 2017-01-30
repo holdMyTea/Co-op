@@ -18,6 +18,7 @@ public class NPC extends Character {
     }
 
     public void chooseTarget(Hero first, Hero second) {
+        System.out.println("Choosing target");
         if (distanceTo(first) < distanceTo(second)) {
             this.target = first;
         } else {
@@ -26,8 +27,13 @@ public class NPC extends Character {
     }
 
     public void moveAlongPath(){
-        this.angle = angleTo(path.peek());
+        Coordinates nextPoint = path.peek();
+        this.angle = angleTo(nextPoint);
         move();
+        System.out.println("Moving to: "+nextPoint);
+        if (distanceTo(nextPoint) < this.getWidth()/2){
+            this.path.poll();
+        }
     }
 
     private void move() {
@@ -35,25 +41,38 @@ public class NPC extends Character {
         this.y += this.moveSpeed * Math.sin(Math.toRadians(angle));
     }
 
-    private float distanceTo(Object target) {
+    public float distanceTo(Object target) {
+        return this.distanceTo(target.getCoordinates());
+    }
+
+    public float distanceTo(Coordinates coordinates){
         return (float) Math.sqrt(
-                Math.pow(this.getCentreX() - target.getCentreX(), 2)
-                        + Math.pow(this.getCentreY() - target.getCentreY(), 2)
+                Math.pow(this.getCentreX() - coordinates.x, 2)
+                        + Math.pow(this.getCentreY() - coordinates.y, 2)
         );
     }
 
-    public int angleTo(Object target) {
-        return (int) Math.atan(
-                (target.getCentreX() - this.getCentreX())
-                        / (target.getCentreY() - this.getCentreY())
-        );
+    public int angleTo(Object object) {
+        return this.angleTo(object.getCoordinates());
     }
 
-    public int angleTo(Coordinates target){
-        return (int) Math.atan(
-                (target.x - this.getCentreX())
-                    / ((target.y)- this.getCentreY())
+    public int angleTo(Coordinates point){
+        int angle = (int) Math.toDegrees(
+                Math.atan2(
+                    point.y - y, point.x - x
+                )
         );
+
+        if(angle < 0){
+            angle += 360;
+        }
+
+        return angle;
+    }
+
+    public void addToPath(Coordinates point){
+        System.out.println("Kappa "+point);
+        this.path.add(point);
     }
 
     public boolean hasCompletedPath(){
